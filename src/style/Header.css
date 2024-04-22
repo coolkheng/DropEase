@@ -1,9 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
 .header {
+  position: fixed; /* Set position to fixed */
+  top: 0; /* Align header to the top of the viewport */
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Set a higher z-index to ensure it appears above other content */
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   background-color: #f0f0f0;
+  font-family: "Raleway", sans-serif;
 }
 
 .logo img {

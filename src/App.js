@@ -1,19 +1,20 @@
 import React from "react";
-import Header from "./components/Header";
-import "./style/Header.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import OrderPage from "./pages/Order"; // Import your OrderPage component
+import OrderedItemPage from "./pages/OrderedItem";
 
 function App() {
   return (
-    <div className="App">
-      {/* Include the Header component */}
-      <Header username="Your Username" />
-      <main>
-        <p>This is the main content of the app.</p>
-      </main>
-      <footer>
-        <p>&copy; 2024 My App</p>
-      </footer>
-    </div>
+    <Router>
+      <div className="app-container">
+        <div className="content">
+          <Routes>
+            <Route path="/orders" element={<OrderPage />} />
+            <Route path="/ordered-item/:id" component={OrderedItemPage} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 

@@ -1,0 +1,36 @@
+/* SideNav.css */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* Main container */
+.sidenav {
+  height: 100%;
+  width: 200px; /* Adjust as needed */
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #424669; /* Adjust background color */
+  overflow-x: hidden;
+  padding-top: 70px; /* Adjust top padding */
+  font-family: "Raleway", sans-serif;
+}
+
+/* Style for the links */
+.sidenav a {
+  padding: 10px 15px; /* Adjust padding */
+  text-decoration: none;
+  font-size: 18px; /* Adjust font size */
+  color: #f1f1f1; /* Adjust text color */
+  display: block;
+}
+
+/* Change color on hover */
+.sidenav a:hover {
+  color: #f1f1f1; /* Adjust hover color */
+}
+
+/* Active link style */
+.sidenav a.active {
+  color: #ffffff; /* Adjust active link color */
+  background-color: #4caf50; /* Adjust active link background color */
+}
