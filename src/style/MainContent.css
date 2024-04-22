@@ -1,0 +1,14 @@
+/* MainContent.css */
+
+.main-container {
+    display: flex;
+    height: calc(100vh - 100px); /* Adjust as needed to accommodate header and footer height */
+  }
+  
+  .content-frame {
+    flex: 1;
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds frame height */
+  }
+  
+  /* You may also need to adjust padding/margin for better spacing */
+  
