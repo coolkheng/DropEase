@@ -17,7 +17,7 @@
   align-items: center; /* Center content vertically */
   height: 100vh; /* Set the height of the content to fill the viewport */
   position: relative; /* Ensure absolute positioning within content works */
-  margin-left: 100px;
+  margin-left: 120px;
 }
 
 .order-list {

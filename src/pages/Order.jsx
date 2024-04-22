@@ -104,8 +104,10 @@ const OrderPage = ({ data }) => {
     selectableRows: false,
     filterType: "checkbox",
     onRowClick: (rowData, rowMeta) => {
-      const orderId = data[rowMeta.dataIndex].Order; // Assuming each order has an 'id' property
-      navigate(`order/ordered-item/${orderId}`);
+      console.log("Clicked row data:", rowData);
+      console.log("Clicked row index:", rowMeta.dataIndex);
+      const orderId = orders[rowMeta.dataIndex].Order; // Assuming each order has an 'id' property
+      navigate(`/ordered-item/${orderId}`);
     },
   };
 
@@ -126,11 +128,11 @@ const OrderPage = ({ data }) => {
       MuiTableCell: {
         styleOverrides: {
           head: {
-            padding: "5px 90px ",
+            padding: "2px 80px ",
           },
 
           body: {
-            padding: "3px 80px",
+            padding: "2px 65px",
           },
         },
       },

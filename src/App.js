@@ -10,7 +10,7 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/orders" element={<OrderPage />} />
-            <Route path="/ordered-item/:id" component={OrderedItemPage} />
+            <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
           </Routes>
         </div>
       </div>
