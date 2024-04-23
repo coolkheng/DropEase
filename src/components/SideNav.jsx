@@ -1,8 +1,14 @@
 import React from "react";
+import Logo from "../assest/logo.png";
+
 
 const SideNav = () => {
   return (
     <div className="sidenav">
+      <div className="logo">
+        {/* Insert your logo component or image here */}
+        <img src={Logo} alt="Logo" />
+      </div>
       <ul className="sidenav-menu">
         <li className="sidenav-item">
           <a href="#home">Home</a>

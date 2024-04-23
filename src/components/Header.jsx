@@ -1,14 +1,11 @@
-import React from "react";
-import Logo from "../assest/logo.png";
+import React from 'react';
+import "../style/Header.css"
+import DropdownMenu from './UsernameDropDown';
 
-const Header = ({ username }) => {
+const Header = ({ children }) => {
   return (
     <div className="header">
-      <div className="logo">
-        {/* Insert your logo component or image here */}
-        <img src={Logo} alt="Logo" />
-      </div>
-      <div className="username">{username}</div>
+      <DropdownMenu></DropdownMenu>
     </div>
   );
 };

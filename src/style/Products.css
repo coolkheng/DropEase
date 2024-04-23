@@ -21,7 +21,7 @@
 
 .title{
     padding-left: 120px;
-    padding-top: 60px;
+    padding-top: 10px;
     text-align: left;
 }
 
@@ -29,7 +29,7 @@
 .main-content {
     padding-bottom: 50px;
     padding-left: 120px;
-    background-color: aliceblue;
+    background-color: rgb(245, 250, 254);
     min-height: 100%;
 }
 
