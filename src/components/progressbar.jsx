@@ -3,13 +3,17 @@ import "../style/progressbar.css";
 
 const StepProgressBar = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
 
   useEffect(() => {
     refresh();
   }, [currentStep]);
 
   const next = () => {
-    setCurrentStep((prevStep) => Math.min(prevStep + 1, 6)); // Assuming 5 steps
+    if (currentStep < 5) {
+      setShowModal(true);
+    } // Assuming 5 steps
   };
 
   const prev = () => {
@@ -47,6 +51,17 @@ const StepProgressBar = () => {
     }
   };
 
+  const handleConfirm = () => {
+    // Handle confirmation and update delivery status
+    setConfirmation(true); // Simulated confirmation, replace with actual logic
+    setShowModal(false);
+    setCurrentStep((prevStep) => Math.min(prevStep + 1, 6));
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="wrapper">
       <div className="progress-container">
@@ -81,6 +96,23 @@ const StepProgressBar = () => {
           Update Delivery Status
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Confirm Delivery Status Update</h2>
+            <p>
+              Are you sure you want to proceed to the next step of delivery
+              status?
+            </p>
+            <div className="modal-buttons">
+              <button onClick={handleConfirm}>Yes</button>
+              <button onClick={handleCancel}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
