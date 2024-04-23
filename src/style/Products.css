@@ -1,0 +1,47 @@
+/* Addproduct.css */
+
+.AddProduct {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 50px; /* Add padding to the top to create space for the header */
+}
+
+.content-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+    justify-content: start;
+    height: 100%
+}
+
+.title{
+    padding-left: 120px;
+    padding-top: 60px;
+    text-align: left;
+}
+
+
+.main-content {
+    padding-bottom: 50px;
+    padding-left: 120px;
+    background-color: aliceblue;
+    min-height: 100%;
+}
+
+
+footer {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px; /* Adjust padding as needed */
+    padding-left: 70px;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+

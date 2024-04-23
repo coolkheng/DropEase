@@ -1,12 +1,15 @@
 .product-list {
   display: flex;
-  flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+  flex-wrap: wrap;
+  margin-top: 20px; /* Adjust the top margin as needed */
+  padding-left: 10px;
+  padding-bottom: 10px;
 }
 
 .product-item {
   border: 1px solid #ccc;
   border-radius: 8px;
-  width: 200px;
+  width: 180px;
   padding: 16px;
   margin-bottom: 16px;
   margin-right: 16px; /* Add spacing between items */

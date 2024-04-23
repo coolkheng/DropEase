@@ -1,20 +1,23 @@
 import React from 'react';
 import Header from "../components/Header";
 import SideNav from '../components/SideNav';
-
 import "../style/Header.css";
 import "../style/SideNav.css";
 import "../style/MainContent.css";
+import "../style/Products.css";
 import ProductItem from '../components/ProductItem';
+import AddProductButton from '../components/AddProductButton';
 
-function Addproduct ()  { 
+function Products ()  { 
     return (
-        <div className="AddProduct">
+        <div className="Products">
             <Header />
             <SideNav />
             <div className="main-content">
+                  <div className="title"> 
+                    <h1>Store Products</h1>
+                  </div>
                 <div className="content">
-                    <h1>List of Products</h1>
                     <div className="product-list">
                         <ProductItem
                             title="Sample Product"
@@ -36,6 +39,25 @@ function Addproduct ()  {
                             description="This is a sample product description."
                             imageUrl="https://via.placeholder.com/150"
                         />
+                        <ProductItem
+                            title="Sample Product"
+                            description="This is a sample product description."
+                            imageUrl="https://via.placeholder.com/150"
+                        />
+                        <ProductItem
+                            title="Sample Product"
+                            description="This is a sample product description."
+                            imageUrl="https://via.placeholder.com/150"
+                        />
+                        <ProductItem
+                            title="Sample Product"
+                            description="This is a sample product description."
+                            imageUrl="https://via.placeholder.com/150"
+                        />
+                        <AddProductButton
+                            image={require('../assest/add-button.png')}
+                            description="Add Products"
+                        />
                     </div>
                 </div>
             </div>
@@ -46,4 +68,4 @@ function Addproduct ()  {
     );
 }
   
-export default Addproduct;
+export default Products;

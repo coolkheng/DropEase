@@ -1,0 +1,22 @@
+.add-product-button {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 214px;
+    margin-bottom: 16px;
+    margin-right: 16px; /* Add spacing between items */
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* Show pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Add transition for smooth hover effect */
+}
+
+.add-product-button:hover {
+    background-color: #9b9b9b; /* Change background color on hover */
+}
+
+.add-product-button-image {
+    width: 25%;
+    height: auto; /* Ensure the image maintains its aspect ratio */
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
