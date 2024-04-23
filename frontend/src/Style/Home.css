@@ -1,0 +1,90 @@
+.slider-container {
+  margin-top: 50px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 1200px;
+}
+
+.slide-item {
+  
+  padding: 20px;
+}
+
+.gradient-1 {
+  background: linear-gradient(280deg, #767db8, #ffffff 80%);
+}
+
+.gradient-2 {
+  background: linear-gradient(30deg, #f8b179, #ffffff 80%);
+}
+
+.gradient-3 {
+  background: linear-gradient(300deg, #424669, #f8b179 60%);
+}
+
+.banner-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail {
+  flex: 1;
+  padding-right: 20px;
+  margin-left: 20px;
+}
+
+.detail h3,
+.detail h1,
+.detail h5 {
+  color: #333;
+  margin: 0;
+  margin-left: 20px;
+}
+
+.detail h1 {
+  font-size: 36px;
+  margin-left: 20px;
+}
+
+.detail h3 {
+  font-size: 24px;
+  margin-left: 20px;
+}
+
+.detail h5 {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+.img-box img {
+  max-width: 100%;
+  height: auto;
+  margin-right: 50px;
+}
+
+.btn-primary {
+  background-color: #767db8;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.custom-dots {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  bottom: 10px;
+}
+
+
