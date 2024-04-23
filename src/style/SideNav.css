@@ -8,9 +8,9 @@
 /* Main container */
 .sidenav {
   height: 100%;
-  width: 200px; /* Adjust as needed */
+  width: 205px; /* Adjust as needed */
   position: fixed;
-  z-index: 0;
+  z-index: 1;
   top: 0;
   left: 0;
   background-color: #fff; /* Adjust background color */
@@ -19,7 +19,7 @@
   padding-right: 10px;
   padding-left: 10px;
   font-family: "Raleway", sans-serif;
-  border-right: 1px solid #d6d6d6;
+  border-right: 1px solid #f0f0f0;
   
 }
 

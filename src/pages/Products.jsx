@@ -3,7 +3,6 @@ import Header from "../components/Header"; // Check if the path is correct
 import SideNav from '../components/SideNav'; // Check if the path is correct
 import "../style/Header.css";
 import "../style/SideNav.css";
-import "../style/MainContent.css";
 import "../style/Products.css";
 import ProductItem from '../components/ProductItem';
 import AddProductButton from '../components/AddProductButton';

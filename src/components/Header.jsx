@@ -5,7 +5,8 @@ import DropdownMenu from './UsernameDropDown';
 const Header = ({ children }) => {
   return (
     <div className="header">
-      <DropdownMenu></DropdownMenu>
+      <DropdownMenu className="dropdown">
+      </DropdownMenu>
     </div>
   );
 };
