@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap");
 
 :root {
-  --primary: #eeeeee;
-  --secondary: #2192ff;
+  --primary: #ffffff;
+  --secondary: #767db8;
   /* --grey: #aaaaaa; */
   --grey: #808080;
   --white: #ffffff;
@@ -34,7 +34,7 @@ body {
 
 .progress-container {
   position: relative;
-
+  margin-left: 160px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,7 +60,7 @@ body {
   top: 33%;
   width: 0;
   transform: translateY(-50%);
-  background-color: var(--secondary);
+  background-color: #767db8;
   transition: width 0.2s;
   z-index: 1;
 }
@@ -73,7 +73,7 @@ body {
   color: var(--black);
   z-index: 2;
   text-align: center;
-  margin-right: px;
+  margin-left: 0px;
 }
 
 .progress-step .fa-solid {
@@ -97,21 +97,22 @@ body {
   align-items: center;
   justify-content: center;
   margin-top: 2rem;
+  margin-bottom: 3rem;
 }
 
-.btn-container .btn {
+.btn-container .progress_btn {
   padding: 0.5rem 1.5rem;
   margin: 0 1rem;
   border-radius: 50px;
   cursor: pointer;
   color: var(--white);
   font-weight: 500;
-  background-color: var(--secondary);
+  background-color: #767db8;
 }
 
 .progress-step .fa-solid.active {
-  border: 3px solid var(--secondary);
-  color: var(--secondary);
+  border: 3px solid #767db8;
+  color: #767db8;
 }
 
 .btn.disabled {

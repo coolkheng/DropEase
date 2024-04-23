@@ -74,11 +74,11 @@ const StepProgressBar = () => {
       </div>
 
       <div className="btn-container">
-        <div className="btn" id="prev" onClick={prev}>
-          Previous
+        <div className="progress_btn" id="prev" onClick={prev}>
+          Undo
         </div>
-        <div className="btn" id="next" onClick={next}>
-          Next
+        <div className="progress_btn" id="next" onClick={next}>
+          Update Delivery Status
         </div>
       </div>
     </div>
