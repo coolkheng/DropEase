@@ -2,8 +2,8 @@
 
 import React from "react";
 import "../style/OrderedItem.css"; // Import your CSS file for styling
-import nikebagImage from "../assest/nike-bag.jpeg";
-import nikeshoesImage from "../assest/nike-shoe.png";
+import nikebagImage from "../asset/nike-bag.jpeg";
+import nikeshoesImage from "../asset/nike-shoe.png";
 import StepProgressBar from "../components/progressbar";
 
 const Cart = () => {
