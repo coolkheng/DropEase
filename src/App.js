@@ -8,8 +8,8 @@ import {
 } from "react-router-dom";
 import OrderPage from "./pages/Order"; // Import your OrderPage component
 import OrderedItemPage from "./pages/OrderedItem";
-import Header from "./components/Header";
-import SideNav from "./components/SideNav";
+// import Header from "./components/Header";
+// import SideNav from "./components/SideNav";
 import Signup from "./components/signup.jsx";
 import Login from "./components/login.jsx";
 import Pw from "./components/forgotpw.jsx";
@@ -20,8 +20,8 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        <Header/>
-        <SideNav/>
+        {/* <Header/>
+        <SideNav/> */}
         <div className="content">
           <Routes>
             {user && <Route path="/" exact element={<Main />} />}

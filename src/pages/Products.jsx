@@ -38,7 +38,7 @@ function Products() {
                 imageUrl="https://via.placeholder.com/150"
             />
            <AddProductButton
-                image={require('../assest/add-button.png')}
+                image={require('../asset/add-button.png')}
                 description="Add Products"
             />
             </div>
