@@ -14,9 +14,6 @@ const Shop = () => {
       <aside className="min-h-full w-full max-w-full customShadow">
         <div className="mt-5 flex justify-center flex-col">
           <div className="flex items-center">
-            <div className="text-5xl cursor-pointer relative flex justify-start ml-5">
-              <FaRegCircleUser />
-            </div>
             <Header/>
           </div>
           <Navbar/>
