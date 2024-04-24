@@ -3,6 +3,7 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import Hero from "../components/Hero";
 import Navbar from "../components/SideNav";
 import ProductCard from "../components/ProductCard";
+import Header from "../components/Header";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Productss from "../components/Productss";
@@ -16,7 +17,7 @@ const Shop = () => {
             <div className="text-5xl cursor-pointer relative flex justify-start ml-5">
               <FaRegCircleUser />
             </div>
-            <p className="capitalize text-lg font-semibold ml-2">Username</p>
+            <Header/>
           </div>
           <Navbar/>
         </div>
