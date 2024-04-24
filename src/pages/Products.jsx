@@ -7,6 +7,8 @@ import "../style/Products.css";
 import ProductItem from '../components/ProductItem';
 import AddProductButton from '../components/AddProductButton';
 import DropdownMenu from '../components/UsernameDropDown'; // Check if the path is correct
+import { Link } from 'react-router-dom';
+
 
 function Products() {
   return (
@@ -37,10 +39,12 @@ function Products() {
                 description="This is a sample product description."
                 imageUrl="https://via.placeholder.com/150"
             />
+            <Link to="/suppliers">
            <AddProductButton
                 image={require('../asset/add-button.png')}
                 description="Add Products"
             />
+            </Link>
             </div>
         </div>
       </div>
