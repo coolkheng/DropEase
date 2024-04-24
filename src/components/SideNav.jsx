@@ -6,7 +6,6 @@ const SideNav = () => {
   return (
     <div className="sidenav">
       <div className="logo">
-        {/* Insert your logo component or image here */}
         <img src={Logo} alt="Logo" />
       </div>
       <ul className="sidenav-menu">

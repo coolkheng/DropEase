@@ -7,6 +7,7 @@ import "../style/Products.css";
 import ProductItem from '../components/ProductItem';
 import AddProductButton from '../components/AddProductButton';
 import DropdownMenu from '../components/UsernameDropDown'; // Check if the path is correct
+import SearchBar from '../components/SearchBar';
 
 function Products() {
   return (
@@ -18,10 +19,16 @@ function Products() {
       <SideNav /> {/* Ensure the component is imported correctly */}
       <div className="product-main-content">
         <div className="productpage-title">
-          <h1>Store Products</h1>
+          <p>Store Products</p>
+          <SearchBar/>
         </div>
         <div className="product-content">
         <div className="product-list">
+            <ProductItem
+                title="Sample Product"
+                description="This is a sample product description."
+                imageUrl="https://via.placeholder.com/150"
+            />
             <ProductItem
                 title="Sample Product"
                 description="This is a sample product description."

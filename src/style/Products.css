@@ -11,9 +11,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 20px; /* Adjust the top margin as needed */
+    margin-top: 40px; /* Adjust the top margin as needed */
     padding-left: 10px;
-    padding-bottom: 10px;
   }
 
 .product-content-container {
@@ -30,16 +29,18 @@
 
 .productpage-title{
     padding-left: 80px;
-    padding-top: 10px;
+    padding-top: 30px;
     text-align: left;
+    font-weight: bold;
+    font-size: 30px;
 }
 
 
 .product-main-content {
-    padding-bottom: 50px;
+    padding-bottom: 20px;
     padding-left: 180px;
     background-color: rgb(245, 250, 254);
-    min-height: 100%;
+    min-height: 100vh;
 }
 
 

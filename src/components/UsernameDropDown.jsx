@@ -25,8 +25,7 @@ const DropdownMenu = () => {
         </div>
         {isOpen && (
           <ul className="dropdown-content">
-            <li onClick={handleOptionClick}>Account</li>
-            <li onClick={handleOptionClick}>Settings</li>
+            <li onClick={handleOptionClick}>Edit Profile</li>
             <li onClick={handleOptionClick}>Log Out</li>
           </ul>
         )}
