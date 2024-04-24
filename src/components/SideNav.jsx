@@ -1,5 +1,6 @@
 import React from "react";
 import Logo from "../asset/logo.png";
+import { Link } from 'react-router-dom';
 
 
 const SideNav = () => {
@@ -10,13 +11,13 @@ const SideNav = () => {
       </div>
       <ul className="sidenav-menu">
         <li className="sidenav-item">
-          <a href="home">Home</a>
+          <Link to="/home">Home</Link>
         </li>
         <li className="sidenav-item">
-          <a href="orders">Orders</a>
+          <Link to="/orders">Orders</Link>
         </li>
         <li className="sidenav-item">
-          <a href="products">Products</a>
+          <Link to="/products">Products</Link>
         </li>
       </ul>
     </div>

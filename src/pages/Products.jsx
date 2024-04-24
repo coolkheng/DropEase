@@ -13,8 +13,7 @@ function Products() {
   return (
     <div className="Products">
       <Header>
-        <DropdownMenu 
-        /> 
+        <DropdownMenu /> 
       </Header>
       <SideNav /> {/* Ensure the component is imported correctly */}
       <div className="product-main-content">

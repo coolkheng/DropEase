@@ -23,7 +23,7 @@ const Login = () => {
     }
 
     // Determine the link destination based on the selected user type
-    const linkDestination = userType === "customer" ? "/link1" : "/products";
+    const linkDestination = userType === "customer" ? "/link1" : "/home";
     // Navigate to the appropriate link
     navigate(linkDestination);
   };
