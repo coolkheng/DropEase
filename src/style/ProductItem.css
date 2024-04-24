@@ -1,15 +1,7 @@
-.product-list {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 20px; /* Adjust the top margin as needed */
-  padding-left: 10px;
-  padding-bottom: 10px;
-}
-
 .product-item {
   border: 1px solid #ccc;
   border-radius: 8px;
-  width: 180px;
+  width: 200px;
   padding: 16px;
   margin-bottom: 16px;
   margin-right: 16px; /* Add spacing between items */
@@ -25,7 +17,7 @@
   margin-bottom: 8px;
 }
 
-.product-content {
+.productitem-content {
   display: flex; /* Ensure the content is displayed as a flex container */
   flex-direction: column; /* Stack the title and description vertically */
   align-items: flex-start; /* Align children to the left side */

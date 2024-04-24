@@ -1,24 +1,25 @@
-/* OrderPage.css */
+
 @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
 
-.content-label {
-  position: absolute;
+.order-content-label {
+  position: relative;
   margin-top: 0;
   font-family: "Raleway", sans-serif;
   margin-bottom: -0.2rem;
   font-size: 30px;
   font-weight: 500;
+  width: 1000px;
 }
 
-.content {
+ .order-content {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
-  height: 100vh; /* Set the height of the content to fill the viewport */
-  position: relative; /* Ensure absolute positioning within content works */
-  margin-left: 120px;
-}
+  justify-content: center; 
+  align-items: center; 
+  height: 100vh; 
+  position: relative; 
+  margin-left: 300px;
+} 
 
 .order-list {
   padding: 2.25rem 4rem;

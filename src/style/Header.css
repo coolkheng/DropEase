@@ -2,7 +2,7 @@
 
 .header {
   z-index: 0;
-  top: 0; /* Align header to the top of the viewport */
+  top: 0; 
   left: 0;
   right: 0;
   z-index: 0; 
@@ -13,7 +13,7 @@
   background-color: #fff;
   font-family: "Raleway", sans-serif;
   border-bottom: 1px solid #d6d6d6;
-
+  width: 100%;
 }
 
 .logo {
@@ -21,7 +21,7 @@
 }
 
 .logo img {
-  width: 200px; /* Adjust the width of the logo as needed */
+  width: 200px; 
 }
 
 .dropdown {

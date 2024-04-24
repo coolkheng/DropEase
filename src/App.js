@@ -13,6 +13,8 @@ import OrderedItemPage from "./pages/OrderedItem";
 import Signup from "./components/signup.jsx";
 import Login from "./components/login.jsx";
 import Pw from "./components/forgotpw.jsx";
+import Products from "./pages/Products.jsx";
+import './App.css'
 
 function App() {
   const user = localStorage.getItem("token");
@@ -20,8 +22,6 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        {/* <Header/>
-        <SideNav/> */}
         <div className="content">
           <Routes>
             {user && <Route path="/" exact element={<Main />} />}
@@ -31,6 +31,7 @@ function App() {
             <Route path="/" element={<Navigate replace to="/login" />} />
             <Route path="/orders" element={<OrderPage />} />
             <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
+            <Route path="/products" element={<Products />} />
           </Routes>
         </div>
       </div>

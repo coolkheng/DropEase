@@ -143,8 +143,8 @@ const OrderPage = ({ data }) => {
     <div>
       <Header username={username} />
       <SideNav />
-      <div className="content">
-        <div className="content-label">
+      <div className="order-content">
+        <div className="order-content-label">
           {" "}
           My Orders
           <div />

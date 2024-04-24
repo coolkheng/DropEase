@@ -16,11 +16,11 @@ function Products() {
         /> 
       </Header>
       <SideNav /> {/* Ensure the component is imported correctly */}
-      <div className="main-content">
-        <div className="title">
+      <div className="product-main-content">
+        <div className="productpage-title">
           <h1>Store Products</h1>
         </div>
-        <div className="content">
+        <div className="product-content">
         <div className="product-list">
             <ProductItem
                 title="Sample Product"

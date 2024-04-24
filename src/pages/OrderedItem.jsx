@@ -11,7 +11,7 @@ const OrderedItemPage = () => {
     <body>
       <div>
         <Header username={username} /> {/* Render the Header component */}
-        <div className="content">
+        <div className="ordereditem-content">
           <div className="Ordered-items">
             <Cart />
             <div />

@@ -20,7 +20,7 @@ const DropdownMenu = () => {
     return (
       <div className="dropdown-menu" onClick={handleClick}>
         <div className="username">
-          <span>Eugene See</span>
+          <span>User</span>
           <i className={`arrow-icon ${isOpen ? 'up' : 'down'}`}></i>
         </div>
         {isOpen && (

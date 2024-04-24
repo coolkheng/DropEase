@@ -7,28 +7,37 @@
     padding-top: 50px; /* Add padding to the top to create space for the header */
 }
 
-.content-container {
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px; /* Adjust the top margin as needed */
+    padding-left: 10px;
+    padding-bottom: 10px;
+  }
+
+.product-content-container {
     display: flex;
     flex: 1;
     flex-direction: column;
 }
 
-.content {
+.product-content {
     flex: 1;
     justify-content: start;
-    height: 100%
+    padding-left: 60px;
 }
 
-.title{
-    padding-left: 120px;
+.productpage-title{
+    padding-left: 80px;
     padding-top: 10px;
     text-align: left;
 }
 
 
-.main-content {
+.product-main-content {
     padding-bottom: 50px;
-    padding-left: 120px;
+    padding-left: 180px;
     background-color: rgb(245, 250, 254);
     min-height: 100%;
 }
@@ -39,7 +48,6 @@ footer {
     left: 0;
     width: 100%;
     padding: 20px; /* Adjust padding as needed */
-    padding-left: 70px;
     background-color: #f0f0f0;
     text-align: center;
 }

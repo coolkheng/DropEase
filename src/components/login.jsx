@@ -1,29 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
 
 const Login = () => {
-  const [passwordVisible, setPasswordVisible] = useState(false); // State to manage password visibility
-  const [errorMessage, setErrorMessage] = useState(""); // State to hold the error message
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userType, setUserType] = useState(""); // State to manage selected user type
 
-  // Function to toggle password visibility
-  // const togglePasswordVisibility = () => {
-  //     setPasswordVisible(!passwordVisible);
-  // };
-
-  // Function to handle password input change
   const handlePasswordChange = () => {
-    // Clear the error message when password is changed
     setErrorMessage("");
   };
 
-  // Function to handle form submission
+  const navigate = useNavigate(); // Use useNavigate hook
+
   const handleSubmit = (event) => {
-    // Prevent default form submission behavior
     event.preventDefault();
+
+    // Perform any necessary validation
+    if (!userType) {
+      setErrorMessage("Please select a user type.");
+      return;
+    }
+
+    // Determine the link destination based on the selected user type
+    const linkDestination = userType === "customer" ? "/link1" : "/products";
+    // Navigate to the appropriate link
+    navigate(linkDestination);
   };
 
-  // Function to close the error message
   const handleCloseError = () => {
     setErrorMessage("");
   };
@@ -48,12 +52,12 @@ const Login = () => {
                 className={styles.input_odd}
               />
               <input
-                type={passwordVisible ? "text" : "password"} // Conditional rendering based on passwordVisible state
+                type={passwordVisible ? "text" : "password"}
                 placeholder="Password"
                 name="password"
                 required
                 className={styles.input_even}
-                onChange={handlePasswordChange} // Call handlePasswordChange when password is changed
+                onChange={handlePasswordChange}
               />
               {errorMessage && (
                 <div className={styles.error_container}>
@@ -69,8 +73,7 @@ const Login = () => {
                     />
                   </button>
                 </div>
-              )}{" "}
-              {/* Render error message if exists */}
+              )}
               <div className={styles.remember_me}>
                 <input type="checkbox" id="remember_me" name="remember_me" />
                 <label htmlFor="remember_me">Remember me</label>
@@ -78,23 +81,24 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-              {/* Dropdown button for Retailer or Customer selection */}
               <select
                 className={styles.dropdown}
                 id="user_type"
                 name="user_type"
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)} // Update selected user type
               >
                 <option value="">Select User</option>
                 <option value="retailer">Retailer</option>
                 <option value="customer">Customer</option>
               </select>
+
               <button type="submit" className={styles.orange_btn}>
                 Sign In
               </button>
             </form>
             <div className={styles.or_text}>
-              -------------------------------------- OR
-              ---------------------------------------
+              -------------------------------------- OR ---------------------------------------
             </div>
             <button
               type="button"
