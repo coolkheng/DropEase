@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
   Navigate,
+  Outlet
 } from "react-router-dom";
 import OrderPage from "./pages/Order"; // Import your OrderPage component
 import OrderedItemPage from "./pages/OrderedItem";
@@ -14,6 +15,7 @@ import Signup from "./components/signup.jsx";
 import Login from "./components/login.jsx";
 import Pw from "./components/forgotpw.jsx";
 import Products from "./pages/Products.jsx";
+import Shop from "./pages/Shop.jsx";
 import './App.css'
 
 function App() {
@@ -32,6 +34,9 @@ function App() {
             <Route path="/orders" element={<OrderPage />} />
             <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/home" element={<Shop />} />
+
+            
           </Routes>
         </div>
       </div>
