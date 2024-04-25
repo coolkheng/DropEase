@@ -49,23 +49,20 @@ const Productss = () => {
 
   return (
     <div>
-        <div className="ml-5 pt-16">
-      <h2 className="font-medium text-2xl pb-4">Products</h2>
-    </div>
+      <div className="ml-5 pt-5"></div>
       <div className="mx-auto w-[90%] container pt-1">
         <div className="grid grid-cols-1 place-items-center sm:place-items-start sm:grid-cols-2 lg:grid-col-3 xl:grid-cols-5 gap-10 xl:gap-x-20 xl:gap-y-10">
-  {productsData.map((item, index) => (
-    <ProductCard
-      key={index}
-      img={item.img}
-      title={item.title}
-      desc={item.desc}
-      rating={item.rating}
-      price={item.price}
-    />
-  ))}
-</div>
-
+          {productsData.map((item, index) => (
+            <ProductCard
+              key={index}
+              img={item.img}
+              title={item.title}
+              desc={item.desc}
+              rating={item.rating}
+              price={item.price}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

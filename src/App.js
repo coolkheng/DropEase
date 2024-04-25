@@ -1,4 +1,5 @@
 import React from "react";
+import "./App.css";
 import Main from "./components/main.jsx";
 import {
   BrowserRouter as Router,
@@ -28,6 +29,10 @@ import CustomerHome from "./pages/Home(Customer).jsx";
 import CustomerCart from "./pages/Cart(Customer).jsx";
 import ShopCategory from "./pages/ShopCategory(Customer).jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
+import EditShop from "./pages/EditShop.js";
+import Women from "./pages/Women.jsx";
+import Men from "./pages/Men.jsx";
+import Kids from "./pages/Kids.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -59,11 +64,17 @@ function App() {
             <Route path="/customerhome" element={<CustomerHome />} />
             <Route path="/customercart" element={<CustomerCart />} />
             <Route path="/ProductDetails" element={<ProductDetails />} />
+            <Route path="/edit-store" element={<EditShop />} />
+            <Route path="/women" element={<Women />} />
+            <Route path="/men" element={<Men />} />
+            <Route path="/kids" element={<Kids />} />
+
+
           </Routes>
         </div>
       </div>
+      {/* </div> */}
     </Router>
   );
 }
-
 export default App;
