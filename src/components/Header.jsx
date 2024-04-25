@@ -12,7 +12,7 @@ const Header = ({ children }) => {
                 <li onClick={()=>{setMenu("Home")}}>Home{menu==="Home"?<hr/>:<></>}</li>
                 <li onClick={()=>{setMenu("Product From Suppliers")}}><Link to="/suppliers" style={{textDecoration:'none'}}>Products From Suppliers</Link>{menu==="Product From Suppliers"?<hr/>:<></>}</li>
                 <li onClick={()=>{setMenu("Your Store")}}><Link to="/products" style={{textDecoration: 'none'}}>Your Store</Link>{menu==="Your Store"?<hr/>:<></>}</li>
-                <li onClick={()=>{setMenu("Contact")}}>Contact{menu==="Contact"?<hr/>:<></>}</li>
+               
                 
                 <div className="dropdown">
         <DropdownMenu />

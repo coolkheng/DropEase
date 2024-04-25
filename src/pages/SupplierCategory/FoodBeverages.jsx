@@ -6,6 +6,7 @@ import "../../style/SideNav.css";
 import "../../style/Products.css";
 import ProductItem from '../../components/ProductItem';
 import DropdownMenu from '../../components/UsernameDropDown'; // Check if the path is correct
+import { Link } from 'react-router-dom';
 
 function FoodBeverages() {
   return (
@@ -21,11 +22,13 @@ function FoodBeverages() {
         </div>
         <div className="product-content">
         <div className="product-list">
+            <Link to="/paymentpage" style={{textDecoration:'none', textDecorationColor:'none'}}>
             <ProductItem
                 title="12 X 550ml Spritzer Mineral Water (12 in 1)"
                 description="RM11.92       /carton"
                 imageUrl="https://www.borong.com/product-images/597c759b557c3f32f391cafe26974b370b90d8d0.jpeg"
             />
+            </Link>
             <ProductItem
                 title="Milo Original Can 240ml x 24
                 "

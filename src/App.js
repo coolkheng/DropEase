@@ -21,6 +21,7 @@ import HomeKitchen from "./pages/SupplierCategory/HomeKitchen.jsx";
 import OfficeStationaries from "./pages/SupplierCategory/OfficeStationaries.jsx";
 import HouseholdCleaning from "./pages/SupplierCategory/HouseholdCleaning.jsx";
 import SportsGames from "./pages/SupplierCategory/SportsGames.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -44,6 +45,7 @@ function App() {
             <Route path="/officestationaries" element={<OfficeStationaries />}/>
             <Route path="/householdcleaning" element={<HouseholdCleaning />}/>
             <Route path="/sportsgames" element={<SportsGames />}/>
+            <Route path="/paymentpage" element={<PaymentPage />}/>
 
           </Routes>
         </div>
