@@ -18,6 +18,9 @@ import Products from "./pages/Products.jsx";
 import Shop from "./pages/Shop.jsx";
 import './App.css'
 import EditShop from "./pages/EditShop.js";
+import Women from "./pages/Women.jsx";
+import Men from "./pages/Men.jsx";
+import Kids from "./pages/Kids.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -37,6 +40,9 @@ function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/home" element={<Shop />} />
             <Route path="/edit-store" element={<EditShop />} />
+            <Route path="/women" element={<Women />} />
+            <Route path="/men" element={<Men />} />
+            <Route path="/kids" element={<Kids />} />
 
 
           </Routes>

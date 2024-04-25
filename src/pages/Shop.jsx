@@ -25,6 +25,9 @@ const Shop = () => {
         <div className="flex justify-center">
           <Hero />
         </div>
+        <div>
+          <h2 className="pt-20 font-medium text-2xl">All Products</h2>
+        </div>
 
         <div>
           <Productss />
