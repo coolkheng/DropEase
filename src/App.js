@@ -16,7 +16,14 @@ import Login from "./components/login.jsx";
 import Pw from "./components/forgotpw.jsx";
 import Products from "./pages/Products.jsx";
 import Shop from "./pages/Shop.jsx";
+import Suppliers from "./pages/Supplier.jsx";
 import './App.css'
+import FoodBeverages from "./pages/SupplierCategory/FoodBeverages.jsx";
+import HomeKitchen from "./pages/SupplierCategory/HomeKitchen.jsx";
+import OfficeStationaries from "./pages/SupplierCategory/OfficeStationaries.jsx";
+import HouseholdCleaning from "./pages/SupplierCategory/HouseholdCleaning.jsx";
+import SportsGames from "./pages/SupplierCategory/SportsGames.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -35,8 +42,14 @@ function App() {
             <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
             <Route path="/products" element={<Products />} />
             <Route path="/home" element={<Shop />} />
+            <Route path="/suppliers" element={<Suppliers />}/>
+            <Route path="/foodbeverages" element={<FoodBeverages />}/>
+            <Route path="/homekitchen" element={<HomeKitchen />}/>
+            <Route path="/officestationaries" element={<OfficeStationaries />}/>
+            <Route path="/householdcleaning" element={<HouseholdCleaning />}/>
+            <Route path="/sportsgames" element={<SportsGames />}/>
+            <Route path="/paymentpage" element={<PaymentPage />}/>
 
-            
           </Routes>
         </div>
       </div>
