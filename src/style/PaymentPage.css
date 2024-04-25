@@ -6,7 +6,8 @@
 
 .payment-content {
   position: relative;
-  bottom: 610px;
+  margin-top: 110px;
+  bottom: 600px;
   left: 400px;
 }
 
@@ -30,11 +31,11 @@
   left: 100px;
   bottom: 110px;
 }
-.PaymentPage-firstProduct {
+.firstProduct {
   border: 1px solid #ccc;
   border-radius: 3px;
-  width: 400px;
-  height: 100px;
+  width: 500px;
+  height: 120px;
   padding: 16px;
   margin-bottom: 16px;
   margin-right: 16px; /* Add spacing between items */
@@ -49,6 +50,7 @@
   color: #0056b3;
   stroke: #0056b3;
   font-size: large;
+  padding-top: 15px;
 }
 .payment-form {
   background-color: #f9f9f9;
@@ -99,7 +101,7 @@ button:hover {
 }
 
 .footer {
-  position: relative;
-  top: 300px;
-  right: 2000px;
+  /* position: relative; */
+  /* top: 300px; */
+  /* right: 2000px; */
 }
