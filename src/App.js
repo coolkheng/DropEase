@@ -1,11 +1,11 @@
 import React from "react";
+import "./App.css";
 import Main from "./components/main.jsx";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
-  Outlet
 } from "react-router-dom";
 import OrderPage from "./pages/Order"; // Import your OrderPage component
 import OrderedItemPage from "./pages/OrderedItem";
@@ -17,6 +17,7 @@ import Pw from "./components/forgotpw.jsx";
 import Products from "./pages/Products.jsx";
 import Shop from "./pages/Shop.jsx";
 import './App.css'
+import EditShop from "./pages/EditShop.js";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -35,13 +36,14 @@ function App() {
             <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
             <Route path="/products" element={<Products />} />
             <Route path="/home" element={<Shop />} />
+            <Route path="/edit-store" element={<EditShop />} />
 
-            
+
           </Routes>
         </div>
       </div>
+      {/* </div> */}
     </Router>
   );
 }
-
 export default App;

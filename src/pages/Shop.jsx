@@ -7,24 +7,29 @@ import Header from "../components/Header";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Productss from "../components/Productss";
- 
+import Category from "../components/Category";
+
 const Shop = () => {
   return (
     <div className="min-h-[calc(100vh-90px)] md:flex hidden">
-      <aside className="min-h-full w-full max-w-full customShadow">
-        <div className="mt-5 flex justify-center flex-col">
-          <div className="flex items-center">
-            <Header/>
-          </div>
-          <Navbar/>
+      <aside className="w-[20%] customShadow">
+        <Navbar />
+      </aside>
+
+      <main className="w-[80%] mr-10">
+        <div className="mt-5 flex justify-between items-center">
+          <Header />
         </div>
+        <Category />
+
         <div className="flex justify-center">
           <Hero />
         </div>
+
         <div>
-          <Productss/>
+          <Productss />
         </div>
-      </aside>
+      </main>
     </div>
   );
 };
