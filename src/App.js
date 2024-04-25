@@ -56,10 +56,8 @@ function App() {
             <Route path="/householdcleaning" element={<HouseholdCleaning />} />
             <Route path="/sportsgames" element={<SportsGames />} />
             <Route path="/paymentpage" element={<PaymentPage />} />
-
             <Route path="/customerhome" element={<CustomerHome />} />
             <Route path="/customercart" element={<CustomerCart />} />
-            <Route path="/shopcategory" element={<ShopCategory />} />
             <Route path="/ProductDetails" element={<ProductDetails />} />
           </Routes>
         </div>

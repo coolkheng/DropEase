@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../style/Home(Customer).css";
 import { NavLink } from "react-router-dom";
+import FooterCustomer from "../components/Footer(Customer)";
+import HeaderCustomer from "../components/Header(Customer)";
 import SliderHome from "../components/homepage/SliderHome";
 import FlashDeals from "../components/homepage/TopStore";
 import TopCate from "../components/homepage/TopCate";
@@ -11,6 +13,7 @@ const Home = () => {
     <div className="Home">
       <>
         <section className="home">
+          <HeaderCustomer />
           <div className="container d_flex">
             <SliderHome />
             <FlashDeals />
@@ -20,6 +23,7 @@ const Home = () => {
           </div>
         </section>
       </>
+      <FooterCustomer />
     </div>
   );
 };

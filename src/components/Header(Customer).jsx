@@ -57,7 +57,11 @@ export const Header = () => {
             }}
             className={menu === "cart" ? "active" : ""}
           >
-            <NavLink className="nav-link" to="/cart" style={{ color: "black" }}>
+            <NavLink
+              className="nav-link"
+              to="/customercart"
+              style={{ color: "black" }}
+            >
               Shopping Cart
             </NavLink>
           </button>
@@ -114,3 +118,5 @@ export const Header = () => {
     </div>
   );
 };
+
+export default Header;
