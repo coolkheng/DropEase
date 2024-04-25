@@ -39,7 +39,7 @@ function Products() {
               description="This is a sample product description."
               imageUrl="https://via.placeholder.com/150"
             />
-            <Link to="/suppliers">
+            <Link to="/foodbeverages">
               <AddProductButton
                 image={require("../asset/add-button.png")}
                 description="Add Products"

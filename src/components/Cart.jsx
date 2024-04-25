@@ -9,63 +9,61 @@ import StepProgressBar from "../components/progressbar";
 const Cart = () => {
   return (
     <div className="CartContainer">
-      <div className="Header">
+      <div className="Cart-Header">
         <h3 className="Heading">Order Details</h3>
       </div>
-      <div className="Progress Bar">
-        <div />
-        <h4> Delivery Status </h4>
+      <h4 className="DeliveryStatus"> Delivery Status </h4>
+      <div className="Progress-Bar">
         <StepProgressBar />
+      </div>
+      <div className="Progress-Bar1"></div>
 
-        <div className="Header">
-          <h3 className="Heading">Order Items:</h3>
+      <div className="Cart-Header">
+        <h3 className="Heading">Order Items:</h3>
+      </div>
+      <div className="Cart-Items">
+        <div className="Cart-image-box">
+          <img
+            src={nikebagImage}
+            style={{ height: "120px" }}
+            alt="Apple Juice"
+          />
         </div>
-        <div className="Cart-Items">
-          <div className="image-box">
-            <img
-              src={nikebagImage}
-              style={{ height: "120px" }}
-              alt="Apple Juice"
-            />
-          </div>
-          <div className="about">
-            <h1 className="title">Nike bag</h1>
-            <h3 className="subtitle">Quantity :2</h3>
-          </div>
-          <div className="prices">
-            <div className="amount">$2.99</div>
-          </div>
+        <div className="Cart-about">
+          <h1 className="Cart-title">Nike bag</h1>
+          <h3 className="Cart-subtitle">Quantity :2</h3>
         </div>
+        <div className="Cart-prices">
+          <div className="Cart-amount">$2.99</div>
+        </div>
+      </div>
 
-        <div className="Cart-Items">
-          <div className="image-box">
-            <img
-              src={nikeshoesImage}
-              style={{ height: "120px" }}
-              alt="Grapes Juice"
-            />
-          </div>
-          <div className="about">
-            <h1 className="title">Nike Shoes</h1>
-            <h3 className="subtitle">Quantity:1</h3>
-          </div>
-          <div className="prices">
-            <div className="amount">$3.19</div>
-          </div>
+      <div className="Cart-Items">
+        <div className="Cart-image-box">
+          <img
+            src={nikeshoesImage}
+            style={{ height: "120px" }}
+            alt="Grapes Juice"
+          />
         </div>
-
-        <hr />
-
-        <div className="checkout">
-          <div className="total">
-            <div>
-              <div className="Subtotal">Sub-Total</div>
-              <div className="items">2 items</div>
-            </div>
-            <div className="total-amount">$6.18</div>
-          </div>
-          <button className="button">Checkout</button>
+        <div className="Cart-about">
+          <h1 className="Cart-title">Nike Shoes</h1>
+          <h3 className="Cart-subtitle">Quantity:1</h3>
         </div>
+        <div className="Cart-prices">
+          <div className="Cart-amount">$3.19</div>
+        </div>
+      </div>
+
+      <div className="Cart-checkout">
+        <div className="Cart-total">
+          <div>
+            <div className="Cart-Subtotal">Sub-Total</div>
+            <div className="Cart-items">2 items</div>
+          </div>
+          <div className="Cart-total-amount">$6.18</div>
+        </div>
+        <button className="Cart-button">Checkout</button>
       </div>
     </div>
   );
