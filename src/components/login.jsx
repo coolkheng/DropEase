@@ -23,7 +23,7 @@ const Login = () => {
     }
 
     // Determine the link destination based on the selected user type
-    const linkDestination = userType === "customer" ? "/link1" : "/home";
+    const linkDestination = userType === "customer" ? "/customerhome" : "/home";
     // Navigate to the appropriate link
     navigate(linkDestination);
   };
@@ -98,7 +98,8 @@ const Login = () => {
               </button>
             </form>
             <div className={styles.or_text}>
-              -------------------------------------- OR ---------------------------------------
+              -------------------------------------- OR
+              ---------------------------------------
             </div>
             <button
               type="button"
