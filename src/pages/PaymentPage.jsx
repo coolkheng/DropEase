@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "../style/PaymentPage.css";
 import Header from '../components/Header';
-import SideNav from '../components/SideNav';
+import SideNav from '../components/SideNavSupplier';
 import DropdownMenu from '../components/UsernameDropDown';
 import ProductItem from '../components/ProductItem';
 import Products from './Products';
@@ -33,15 +33,14 @@ const PaymentPage = () => {
   return (
     <div className='PaymentPage'>
       <Header>
-        <DropdownMenu 
-        /> 
+        <DropdownMenu /> 
       </Header>
       <SideNav />
-        <section>
-          <div className='container'>
-      <div className='item1'>
-      <h2>Order Summary</h2>
-      <div className='firstProduct'>
+      <section>
+        <div className='container'>
+          <div className='item1'>
+            <h2>Order Summary</h2>
+            <div className='firstProduct'>
         <div className='firstItem'>
           <img src='https://www.borong.com/product-images/597c759b557c3f32f391cafe26974b370b90d8d0.jpeg' className='firstImage'/>  
         </div>
@@ -70,102 +69,97 @@ const PaymentPage = () => {
             <p>RM13.00</p>
         </div>
       </div>
-      <div>
-        <h3>Product Total:</h3>
-      </div>
-      <p className='price'>RM120</p>
-      
-      </div>
-     
-      </div>
-      </section>
-    <div className='payment-content'>
-    <div className="payment-container">
-      <h2>Item Payment</h2>
-      <div className="payment-form">
-        <div className="payment-method">
-          <h3>Select Payment Method:</h3>
-          <div className="payment-options">
-            <label>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="creditCard"
-                checked={paymentMethod === 'creditCard'}
-                onChange={() => handlePaymentMethodChange('creditCard')}
-              />
-              Credit Card
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="E-wallet"
-                checked={paymentMethod === 'E-wallet'}
-                onChange={() => handlePaymentMethodChange('E-wallet')}
-              />
-              E-wallet
-            </label>
+            <div>
+              <h3>Product Total: <p className='price'>RM120</p></h3>
+            </div>
           </div>
         </div>
-        {paymentMethod === 'creditCard' && (
-          <form onSubmit={handleSubmit}>
-            <div className="card-details">
-              <h3>Enter Card Details:</h3>
-              <div className="form-group">
-                <label>Card Number:</label>
-                <input
-                  type="text"
-                  name="cardNumber"
-                  value={cardDetails.cardNumber}
-                  onChange={handleCardDetailsChange}
-                />
+        <div className='payment-content'>
+          <div className="payment-container">
+            <h2>Item Payment</h2>
+            <div className="payment-form">
+              <div className="payment-method">
+                <h3>Select Payment Method:</h3>
+                <div className="payment-options">
+                  <label>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="creditCard"
+                      checked={paymentMethod === 'creditCard'}
+                      onChange={() => handlePaymentMethodChange('creditCard')}
+                    />
+                    Credit Card
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="E-wallet"
+                      checked={paymentMethod === 'E-wallet'}
+                      onChange={() => handlePaymentMethodChange('E-wallet')}
+                    />
+                    E-wallet
+                  </label>
+                </div>
               </div>
-              <div className="form-group">
-                <label>Card Holder:</label>
-                <input
-                  type="text"
-                  name="cardHolder"
-                  value={cardDetails.cardHolder}
-                  onChange={handleCardDetailsChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Expiry Date:</label>
-                <input
-                  type="text"
-                  name="expiryDate"
-                  value={cardDetails.expiryDate}
-                  onChange={handleCardDetailsChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>CVV:</label>
-                <input
-                  type="text"
-                  name="cvv"
-                  value={cardDetails.cvv}
-                  onChange={handleCardDetailsChange}
-                />
-              </div>
+              {paymentMethod === 'creditCard' && (
+                <form onSubmit={handleSubmit}>
+                  <div className="card-details">
+                    <h3>Enter Card Details:</h3>
+                    <div className="form-group">
+                      <label>Card Number:</label>
+                      <input
+                        type="text"
+                        name="cardNumber"
+                        value={cardDetails.cardNumber}
+                        onChange={handleCardDetailsChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Card Holder:</label>
+                      <input
+                        type="text"
+                        name="cardHolder"
+                        value={cardDetails.cardHolder}
+                        onChange={handleCardDetailsChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Expiry Date:</label>
+                      <input
+                        type="text"
+                        name="expiryDate"
+                        value={cardDetails.expiryDate}
+                        onChange={handleCardDetailsChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>CVV:</label>
+                      <input
+                        type="text"
+                        name="cvv"
+                        value={cardDetails.cvv}
+                        onChange={handleCardDetailsChange}
+                      />
+                    </div>
+                  </div>
+                  <button type="submit">Pay Now</button>
+                </form>
+              )}
+              {paymentMethod === 'E-wallet' && (
+                <div className="paypal-payment">
+                  <p>Please proceed to E-wallet to complete your payment.</p>
+                  <button onClick={handleSubmit}>Proceed to E-wallet</button>
+                </div>
+              )}
             </div>
-            <button type="submit">Pay Now</button>
-          </form>
-        )}
-        {paymentMethod === 'E-wallet' && (
-          <div className="paypal-payment">
-            <p>Please proceed to E-wallet to complete your payment.</p>
-            <button onClick={handleSubmit}>Proceed to E-wallet</button>
           </div>
-        )}
-      </div>
-    </div>
-   
-    </div>
-    <footer className='footer'>
+        </div>
+      </section>
+      <footer className='footer'>
         <p>&copy; 2024 My App</p>
       </footer>
-   
     </div>
   );
 };

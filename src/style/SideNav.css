@@ -21,6 +21,20 @@
   border-right: 1px solid #f0f0f0;
 }
 
+.divider{
+  height: 1px;
+  display: flex;
+  border: 1px solid black;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.category {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
 /* Style for the links */
 .sidenav a {
   padding: 8px 12px; /* Adjust padding */

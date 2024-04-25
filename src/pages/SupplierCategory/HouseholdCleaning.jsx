@@ -4,7 +4,7 @@ import SideNavSupplier from '../../components/SideNavSupplier';
 import "../../style/Header.css";
 import "../../style/SideNav.css";
 import "../../style/Products.css";
-import ProductItem from '../../components/ProductItem';
+import SupplierProductItem from '../../components/SupplierProductItem';
 import DropdownMenu from '../../components/UsernameDropDown'; // Check if the path is correct
 
 function HouseholdCleaning() {
@@ -21,47 +21,47 @@ function HouseholdCleaning() {
         </div>
         <div className="product-content">
         <div className="product-list">
-            <ProductItem
+            <SupplierProductItem
                 title="Dettol Liquid Hand Wash 250g"
                 description="RM10.70  /unit"
                 imageUrl="https://www.borong.com/product-images/766d90b2efdc95d1b108d4c1fb89370436cfd113.jpg"
             />
-            <ProductItem
+            <SupplierProductItem
                 title="Kuat Harimau WHITE TEC Detergent 750 gm*
                 "
                 description="RM7.20       /unit"
                 imageUrl="https://www.borong.com/product-images/a18a7422e8060912722ce34b0a0ce44068c0fe92.jpg"
             />
-            <ProductItem
+            <SupplierProductItem
                 title="Labour Apple Dishwashing Liquid 900ml
                 "
                 description="RM4.80       /unit"
                 imageUrl="https://www.borong.com/product-images/d880d11aac82e755f855d1c095a2ed7569ae14ca.jpg"
             />
-            <ProductItem
+            <SupplierProductItem
                 title="Softlan SPRING FRESH 3 litre Softener"
                 description="RM19.10       /unit"
                 imageUrl="https://www.borong.com/product-images/7d4182e446059ecb94222808a1f5985a930dc74f.jpg"
             />
-            <ProductItem
+            <SupplierProductItem
                 title="Sunlight Extra GENTLE GRAPEFRUIT & ROSE HIP Dishwashing 1000ml
                 "
                 description="RM8.20      /unit"
                 imageUrl="https://www.borong.com/product-images/b0b4393595b14c6a59607d61096c9b3cb9547102.jpeg"
             />
-            <ProductItem
+            <SupplierProductItem
                 title="Top SUPER WHITE Anti Malodour Powder Detergent 2.3kg
                 "
                 description="RM20.40      /unit"
                 imageUrl="https://www.borong.com/product-images/ec9179c6710980b03a4610866817fa2e988eadf7.jpg"
             />
-            <ProductItem
+            <SupplierProductItem
                 title="Vinda Deluxe Box Pack Facial Tissue 100s x 4
                 "
                 description="RM16.20       /unit"
                 imageUrl="https://www.borong.com/product-images/65b671fee13cc69a3d4210cd627bbaef6f2c5e3e.jpg"
             />
-            <ProductItem
+            <SupplierProductItem
                 title="[BEST SELLER] (MR.DIY) Anti-Rust Lubricant Spray (333ml)
                 "
                 description="RM145.65       /carton"

@@ -14,7 +14,7 @@
 .dropdown {
   display: flex;
   justify-content: flex-end;
-  align-items: center; /* Adjusted to center the dropdown vertically */
+  align-items: end; /* Adjusted to center the dropdown vertically */
 }
 
 .nav_menu{
