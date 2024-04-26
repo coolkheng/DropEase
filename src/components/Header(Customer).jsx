@@ -35,9 +35,12 @@ export const Header = () => {
           <button>Search</button>
         </div>
         <div className="header-login">
-          <img src={user_icon} alt="" />
-          <p className="login-button">Sign In/ Sign Up</p>
-          <p> | </p>
+          <NavLink to="/login">
+            <img src={user_icon} alt="" />
+          </NavLink>
+          <NavLink to="/login">
+            <p className="login-button">Sign In/ Sign Up</p>
+          </NavLink>
           <NavLink to="/customercart">
             <img
               onClick={() => {
