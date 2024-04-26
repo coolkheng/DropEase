@@ -36,9 +36,9 @@ export const Header = () => {
         </div>
         <div className="header-login">
           <img src={user_icon} alt="" />
-          <button className="login-button">Sign In/ Sign Up</button>
+          <p className="login-button">Sign In/ Sign Up</p>
           <p> | </p>
-          <NavLink to="/cart">
+          <NavLink to="/customercart">
             <img
               onClick={() => {
                 setMenu("cart");
@@ -75,7 +75,7 @@ export const Header = () => {
             }}
             className={menu === "home" ? "active" : ""}
           >
-            <NavLink className="nav-link" to="/">
+            <NavLink className="nav-link" to="/customerhome">
               Home
             </NavLink>
             {menu === "home" && <hr />}

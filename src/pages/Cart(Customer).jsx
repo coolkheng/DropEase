@@ -3,6 +3,7 @@ import "../style/Cart(Customer).css";
 import shoes from "../asset/nikeShoes.png";
 import { FaXmark } from "react-icons/fa6";
 import { FaPlus, FaMinus } from "react-icons/fa";
+import HeaderCustomer from "../components/Header(Customer)";
 
 const Cart = ({ addToCart, decreaseQty }) => {
   const sampleCartItems = [
@@ -38,6 +39,7 @@ const Cart = ({ addToCart, decreaseQty }) => {
   // Render cart items
   return (
     <>
+      <HeaderCustomer />
       <section className="cart-items">
         <div className="container-cart">
           <div className="cart-details">

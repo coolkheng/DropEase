@@ -68,8 +68,18 @@ function App() {
             <Route path="/women" element={<Women />} />
             <Route path="/men" element={<Men />} />
             <Route path="/kids" element={<Kids />} />
-
-
+            <Route
+              path="/apparel"
+              element={<ShopCategory category="apparel" />}
+            />
+            <Route
+              path="/sports"
+              element={<ShopCategory category="sports" />}
+            />
+            <Route
+              path="/electronics"
+              element={<ShopCategory category="electronics" />}
+            />
           </Routes>
         </div>
       </div>

@@ -10,6 +10,7 @@ import skechers from "../asset/skechers logo.png";
 import panasonic from "../asset/panasonic logo.png";
 import canon from "../asset/Canon-Company-Logo.jpg";
 import lg from "../asset/LG-Logo-2014-present.png";
+import HeaderCustomer from "../components/Header(Customer)";
 
 const ShopCategory = ({ category }) => {
   // Define shop items based on the category
@@ -84,6 +85,7 @@ const ShopCategory = ({ category }) => {
 
   return (
     <div className="ShopCategory">
+      <HeaderCustomer />
       <h2 className="categoryNames">{categoryNames}</h2>
       {/* Map over the array and render each shop item */}
       {placeholderShopItems.map((shop) => (
