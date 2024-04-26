@@ -33,6 +33,7 @@ import EditShop from "./pages/EditShop.js";
 import Women from "./pages/Women.jsx";
 import Men from "./pages/Men.jsx";
 import Kids from "./pages/Kids.jsx";
+import Profile from "./pages/Profile.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -80,6 +81,7 @@ function App() {
               path="/electronics"
               element={<ShopCategory category="electronics" />}
             />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </div>
