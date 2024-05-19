@@ -12,7 +12,7 @@ const TopCate = () => {
               style={{ margin: "auto" }}
               className="heading-left row  f_flex"
             >
-              <h2 style={{ textAlign: "center" }}>Top Categories</h2>
+              <h2 style={{fontSize:"30px", fontWeight:"600",textAlign: "center" }}>Top Categories</h2>
             </div>
           </div>
           <TopCat />
