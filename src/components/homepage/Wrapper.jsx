@@ -34,14 +34,14 @@ const Wrapper = () => {
 
   return (
     <>
-      <section style={{ justifyContent: "center" }} className="box">
+      <section style={{ marginTop: "80px",justifyContent: "center" }} className="box">
         <div className="container grid2">
           {data.map((val, index) => (
             <div className="product" key={index}>
               <div className="img icon-circle">
                 <FontAwesomeIcon icon={val.cover} />
               </div>
-              <h3>{val.title}</h3>
+              <h3 style={{fontWeight:"bold",marginTop:"20px"}}>{val.title}</h3>
               <p>{val.decs}</p>
             </div>
           ))}
