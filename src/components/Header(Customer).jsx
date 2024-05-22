@@ -1,18 +1,38 @@
-import React, { useState } from "react";
-import "../style/Header(Customer).css";
+import React, { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import logo from "../asset/DropEase logo.png";
 import search_icon from "../asset/search icon.png";
 import user_icon from "../asset/user icon.png";
 import cart_icon from "../asset/cart icon.png";
-import { NavLink } from "react-router-dom";
+import "../style/Header(Customer).css";
 
 export const Header = () => {
-  const [menu, setMenu] = useState("home");
+  const location = useLocation();
+  const [menu, setMenu] = useState("");
 
-  // State to hold the search query
+  useEffect(() => {
+    console.log("Location changed:", location.pathname);
+
+    let newMenu = "home";
+    if (location.pathname.includes("/apparel")) {
+      newMenu = "apparels";
+    } else if (location.pathname.includes("/sports")) {
+      newMenu = "sports";
+    } else if (location.pathname.includes("/electronics")) {
+      newMenu = "electronics";
+    } else if (location.pathname.includes("/customercart")) {
+      newMenu = "cart";
+    }
+
+    // Only update the state if the menu is different
+    if (menu !== newMenu) {
+      setMenu(newMenu);
+      console.log("Menu state updated:", newMenu);
+    }
+  }, [location.pathname, menu]);
+
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Function to handle changes in the search input
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -21,11 +41,11 @@ export const Header = () => {
     <div className="header-container">
       <div className="header">
         <div className="header-logo">
-          <img src={logo} alt="" />
+          <img src={logo} alt="DropEase Logo" />
           <p>DropEase</p>
         </div>
         <div className="search-container">
-          <img src={search_icon} alt="" />
+          <img src={search_icon} alt="Search Icon" />
           <input
             type="text"
             placeholder="Search..."
@@ -36,28 +56,23 @@ export const Header = () => {
         </div>
         <div className="header-login">
           <NavLink to="/login">
-            <img src={user_icon} alt="" />
+            <img src={user_icon} alt="User Icon" />
           </NavLink>
           <NavLink to="/login">
             <p className="login-button">Sign In/ Sign Up</p>
           </NavLink>
           <NavLink to="/customercart">
             <img
-              onClick={() => {
-                setMenu("cart");
-              }}
+              onClick={() => setMenu("cart")}
               className={menu === "cart" ? "active" : ""}
               src={cart_icon}
-              alt=""
+              alt="Cart Icon"
               style={{ width: "25px", height: "auto" }}
             />
           </NavLink>
-
           <div className="header-cart-count">0</div>
           <button
-            onClick={() => {
-              setMenu("cart");
-            }}
+            onClick={() => setMenu("cart")}
             className={menu === "cart" ? "active" : ""}
           >
             <NavLink
@@ -73,9 +88,7 @@ export const Header = () => {
       <div className="navbar">
         <ul className="nav-menu">
           <li
-            onClick={() => {
-              setMenu("home");
-            }}
+            onClick={() => setMenu("home")}
             className={menu === "home" ? "active" : ""}
           >
             <NavLink className="nav-link" to="/customerhome">
@@ -84,9 +97,7 @@ export const Header = () => {
             {menu === "home" && <hr />}
           </li>
           <li
-            onClick={() => {
-              setMenu("apparels");
-            }}
+            onClick={() => setMenu("apparels")}
             className={menu === "apparels" ? "active" : ""}
           >
             <NavLink className="nav-link" to="/apparel">
@@ -95,9 +106,7 @@ export const Header = () => {
             {menu === "apparels" && <hr />}
           </li>
           <li
-            onClick={() => {
-              setMenu("sports");
-            }}
+            onClick={() => setMenu("sports")}
             className={menu === "sports" ? "active" : ""}
           >
             <NavLink className="nav-link" to="/sports">
@@ -106,9 +115,7 @@ export const Header = () => {
             {menu === "sports" && <hr />}
           </li>
           <li
-            onClick={() => {
-              setMenu("electronics");
-            }}
+            onClick={() => setMenu("electronics")}
             className={menu === "electronics" ? "active" : ""}
           >
             <NavLink className="nav-link" to="/electronics">

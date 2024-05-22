@@ -27,7 +27,7 @@ const SlideCard = () => {
             <div className="banner-container">
               <div className="detail">
                 <h3>{value.desc1}</h3>
-                <h1 style={{ fontSize: "50px" }}>{value.title}</h1>
+                <h1 style={{ fontWeight:"bold", fontSize: "50px" }}>{value.title}</h1>
                 <h3>{value.desc2}</h3>
                 <h5>{value.available}</h5>
                 <button className="btn-primary">Shop Now</button>
