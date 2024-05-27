@@ -1,9 +1,9 @@
 import React from "react";
 import "../style/Header.css";
+import { FaRegCircleUser } from "react-icons/fa6";
 import DropdownMenu from "./UsernameDropDown";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaRegCircleUser } from "react-icons/fa6";
+
 
 const Header = ({ children }) => {
   const [menu, setMenu] = useState("Home");

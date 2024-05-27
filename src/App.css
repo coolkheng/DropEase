@@ -2,7 +2,6 @@
 @tailwind component;
 @tailwind utilities;
 
-
 .App {
   text-align: center;
 }
@@ -33,6 +32,38 @@
   color: #61dafb;
 }
 
+.sidenav {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  overflow: hidden;
+}
+
+.topbar a:hover {
+  color: #fc521a;
+  transition-delay: 0.2s;
+}
+
+.topbar a.active {
+  color: #fc521a;
+}
+
+.fixed-top-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+  margin-top: 60px;
+}
+
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -42,9 +73,170 @@
   }
 }
 
-
-
 .content {
   margin:0%;
   margin-top: -1.5%;
 }
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+textarea {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical; /* Allows vertical resizing only */
+}
+
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.preview-item {
+  position: relative;
+}
+
+.original-image {
+  max-width: 100%;
+  max-height: 300px; /* Adjust as needed */
+  margin-bottom: 10px;
+}
+
+.preview-item button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.images-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-item {
+  width: 200px; /* Thumbnail size */
+  height: 200px; /* Thumbnail size */
+  position: relative;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px; /* optional, for rounded corners */
+  cursor: pointer;
+}
+
+.image-item button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.hint {
+  font-style: italic;
+  color: #666;
+}
+
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.collections-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.collections-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.collections-container::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  width: 190px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 5px;
+}
+
+/* components/Modal.css */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+  transition: display 0.5s;
+}
+
+.modal-show {
+  display: block;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; 
+  max-width: 1000px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dropdown-content li:hover {
+  color: #fc521a;
+}
+
