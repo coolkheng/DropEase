@@ -34,14 +34,12 @@ import Women from "./pages/Women.jsx";
 import Men from "./pages/Men.jsx";
 import Kids from "./pages/Kids.jsx";
 import Profile from "./pages/Profile.jsx";
-import { CartProvider } from "./pages/cartContext";
 
 function App() {
   const user = localStorage.getItem("token");
 
   return (
     <Router>
-      <CartProvider>
       <div className="app-container">
         <div className="content">
           <Routes>
@@ -66,7 +64,7 @@ function App() {
             <Route path="/paymentpage" element={<PaymentPage />} />
             <Route path="/customerhome" element={<CustomerHome />} />
             <Route path="/customercart" element={<CustomerCart />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/ProductDetails" element={<ProductDetails />} />
             <Route path="/edit-store" element={<EditShop />} />
             <Route path="/women" element={<Women />} />
             <Route path="/men" element={<Men />} />
@@ -88,7 +86,6 @@ function App() {
         </div>
       </div>
       {/* </div> */}
-    </CartProvider>
     </Router>
   );
 }

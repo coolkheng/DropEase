@@ -1,15 +1,37 @@
-import React, { useContext } from "react";
+import React from "react";
 import "../style/Cart(Customer).css";
+import shoes from "../asset/nikeShoes.png";
 import { FaXmark } from "react-icons/fa6";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import HeaderCustomer from "../components/Header(Customer)";
-import { CartContext } from "./cartContext"; // Ensure the correct path to your CartContext
 
-const Cart = () => {
-  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
+const Cart = ({ addToCart, decreaseQty }) => {
+  const sampleCartItems = [
+    {
+      id: 1,
+      name: "Product 1",
+      price: 20,
+      qty: 2,
+      cover: shoes,
+    },
+    {
+      id: 2,
+      name: "Product 2",
+      price: 25,
+      qty: 1,
+      cover: shoes,
+    },
+    {
+      id: 3,
+      name: "Product 3",
+      price: 30,
+      qty: 3,
+      cover: shoes,
+    },
+  ];
 
   // Calculate total price of items
-  const totalPrice = cartItems.reduce(
+  const totalPrice = sampleCartItems.reduce(
     (price, item) => price + item.qty * item.price,
     0
   );
@@ -21,15 +43,15 @@ const Cart = () => {
       <section className="cart-items">
         <div className="container-cart">
           <div className="cart-details">
-            {cartItems.length === 0 && (
+            {sampleCartItems.length === 0 && (
               <h1 className="no-items product">No Items are add in Cart</h1>
             )}
-            {cartItems.map((item) => {
+            {sampleCartItems.map((item) => {
               const productQty = item.price * item.qty;
               return (
                 <div className="cart-list" key={item.id}>
                   <div className="img">
-                    <img src={item.img} alt="" />
+                    <img src={item.cover} alt="" />
                   </div>
                   <div className="cart-details">
                     <h3>{item.name}</h3>
@@ -40,10 +62,7 @@ const Cart = () => {
                   </div>
                   <div className="cart-items-function">
                     <div className="removeCart">
-                      <button
-                        className="removeCartButton"
-                        onClick={() => removeFromCart(item.id)}
-                      >
+                      <button className="removeCartButton">
                         <FaXmark />
                       </button>
                     </div>

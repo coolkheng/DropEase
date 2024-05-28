@@ -1,15 +1,13 @@
-import React, { useState, useEffect , useContext} from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../asset/DropEase logo.png";
 import search_icon from "../asset/search icon.png";
 import user_icon from "../asset/user icon.png";
 import cart_icon from "../asset/cart icon.png";
 import "../style/Header(Customer).css";
-import { CartContext } from "../pages/cartContext";
 
 export const Header = () => {
   const location = useLocation();
-  const {cartItems} = useContext(CartContext);
   const [menu, setMenu] = useState("");
 
   useEffect(() => {
@@ -38,8 +36,6 @@ export const Header = () => {
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
-
-  const totalQuantity = cartItems.reduce((total, item) => total + item.qty, 0);
 
   return (
     <div className="header-container">
@@ -74,7 +70,7 @@ export const Header = () => {
               style={{ width: "25px", height: "auto" }}
             />
           </NavLink>
-          <div className="header-cart-count">{totalQuantity}</div>
+          <div className="header-cart-count">0</div>
           <button
             onClick={() => setMenu("cart")}
             className={menu === "cart" ? "active" : ""}
