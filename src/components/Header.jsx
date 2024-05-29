@@ -3,16 +3,17 @@ import "../style/Header.css";
 import DropdownMenu from "./UsernameDropDown";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaRegCircleUser } from "react-icons/fa6";
 
 const Header = ({ children }) => {
   const [menu, setMenu] = useState("Home");
   return (
     <div className="header">
-      <ul className="nav_menu">
-        <div className="dropdown">
-          <DropdownMenu />
-        </div>
-      </ul>
+      <div className="text-5xl cursor-pointer relative flex justify-start">
+        <FaRegCircleUser />
+      </div>
+      <p className="capitalize text-lg font-semibold ml-2">Username</p>
+      <DropdownMenu className="dropdown"></DropdownMenu>
     </div>
   );
 };

@@ -8,13 +8,6 @@
   --black: #222222;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
 body {
   /* display: flex;
   align-items: center;
@@ -23,17 +16,20 @@ body {
   background-color: var(--primary);
 }
 
-.wrapper {
+.progressbar_wrapper {
   display: flex;
   align-items: center;
   flex-direction: column;
+  justify-content: center;
   width: 1000px;
   background-color: var(--primary);
+  font-family: "Poppins", sans-serif;
 }
 
 .progress-container {
   position: relative;
   margin-left: 160px;
+  justify-content: center;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -90,7 +86,7 @@ body {
   transition: border 0.2s, color 0.2s;
 }
 
-.btn-container {
+.progressbar-btn-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,7 +94,7 @@ body {
   margin-bottom: 3rem;
 }
 
-.btn-container .progress_btn {
+.progressbar-btn-container .progress_btn {
   padding: 0.5rem 1.5rem;
   margin: 0 1rem;
   border-radius: 50px;
@@ -113,45 +109,45 @@ body {
   color: #767db8;
 }
 
-.btn.disabled {
+.progressbar-btn.disabled {
   background-color: var(--grey);
   color: var(--white);
   cursor: not-allowed;
 }
 
-.modal {
+.progressbar-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); 
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.modal-content {
+.progressbar-modal-content {
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-.modal h2 {
+.progressbar-modal h2 {
   margin-top: 0;
 }
 
-.modal p {
+.progressbar-modal p {
   margin-bottom: 20px;
 }
 
-.modal-buttons {
+.progressbar-modal-buttons {
   display: flex;
   justify-content: center;
 }
 
-.modal-buttons button {
+.progressbar-modal-buttons button {
   margin: 0 10px;
   padding: 10px 20px;
   border: none;

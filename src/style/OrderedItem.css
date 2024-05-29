@@ -3,13 +3,21 @@
   margin-top: 50px;
   margin-right: 50px;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  height: 100vh; 
+  height: 100vh;
 }
 
+.Ordered-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
 .CartContainer {
-  margin-top: 20px; 
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
   margin-right: 20px;
   width: 110%;
   height: 150%;
@@ -18,7 +26,7 @@
   box-shadow: 0px 10px 20px #1687d933;
 }
 
-.Header {
+.Cart-Header {
   margin: auto;
   width: 90%;
   height: 15%;
@@ -32,7 +40,7 @@
   font-family: "Poppins";
   font-weight: 700;
   color: #2f3841;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 
 .Cart-Items {
@@ -43,25 +51,25 @@
   justify-content: space-between;
   align-items: center;
 }
-.image-box {
-  width: 15%;
+
+.Cart-image-box {
   text-align: left;
 }
-.about {
+.Cart-about {
   height: 70%;
   width: 75%;
   text-align: start;
 }
-.title {
+.Cart-title {
   font-size: 25px;
   font-family: "Poppins", sans-serif;
   font-weight: 800;
   color: #202020;
   text-align: start;
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
 }
 
-.subtitle {
+.Cart-subtitle {
   font-size: 15px;
   font-family: "Poppins", sans-serif;
   text-align: start;
@@ -69,39 +77,11 @@
   color: #909090;
 }
 
-.counter {
-  width: 15%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.btn {
-  width: 70px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #d9d9d9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  font-family: "Poppins";
-  font-weight: 900;
-  color: #202020;
-  cursor: pointer;
-}
-.count {
-  font-size: 20px;
-  font-family: "Poppins";
-  font-weight: 600;
-  color: #202020;
-}
-
-.prices {
+.Cart-prices {
   height: 70%;
   text-align: right;
 }
-.amount {
+.Cart-amount {
   padding-top: 20px;
   font-size: 26px;
   font-family: "Poppins";
@@ -118,36 +98,36 @@ hr {
   float: right;
   margin-right: 5%;
 }
-.checkout {
+.Cart-checkout {
   float: right;
   margin-right: 5%;
   width: 28%;
 }
-.total {
+.Cart-total {
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.Subtotal {
+.Cart-Subtotal {
   font-size: 22px;
   font-family: "Poppins";
   font-weight: 700;
   color: #424669;
 }
-.items {
+.Cart-items {
   font-size: 16px;
   font-family: "Poppins";
   font-weight: 500;
   color: #909090;
   line-height: 10px;
 }
-.total-amount {
+.Cart-total-amount {
   font-size: 36px;
   font-family: "Poppins";
   font-weight: 900;
   color: #424669;
 }
-.button {
+.Cart-button {
   margin-top: 10px;
   width: 100%;
   height: 40px;
@@ -169,14 +149,22 @@ hr {
   bottom: -20px;
 }
 
-.content > * {
+.ordereditem.content > * {
   margin-top: 20px;
 }
 
-h4 {
-  text-align: center; 
-  position: relative; 
+.DeliveryStatus {
+  font-weight: 700;
+  color: #2f3841;
+  text-align: center;
+  position: relative;
   margin-bottom: 20px;
   margin-right: 25px;
   font-size: 25px;
+}
+
+.Progress-Bar {
+  display: flex;
+  justify-content: center;
+  padding-right: 100px;
 }

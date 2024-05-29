@@ -63,7 +63,7 @@ const StepProgressBar = () => {
   };
 
   return (
-    <div className="wrapper">
+    <div className="progressbar_wrapper">
       <div className="progress-container">
         <div className="progress" id="progress"></div>
         <div className="progress-step">
@@ -88,7 +88,7 @@ const StepProgressBar = () => {
         </div>
       </div>
 
-      <div className="btn-container">
+      <div className="progressbar-btn-container">
         <div className="progress_btn" id="prev" onClick={prev}>
           Undo
         </div>
@@ -99,14 +99,14 @@ const StepProgressBar = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="progressbar-modal">
+          <div className="progressbar-modal-content">
             <h2>Confirm Delivery Status Update</h2>
             <p>
               Are you sure you want to proceed to the next step of delivery
               status?
             </p>
-            <div className="modal-buttons">
+            <div className="progressbar-modal-buttons">
               <button onClick={handleConfirm}>Yes</button>
               <button onClick={handleCancel}>No</button>
             </div>

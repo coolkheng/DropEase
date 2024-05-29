@@ -23,13 +23,9 @@ const Login = () => {
     }
 
     // Determine the link destination based on the selected user type
-    const linkDestination = userType === "customer" ? "/link1" : "/home";
+    const linkDestination = userType === "customer" ? "/customerhome" : "/home";
     // Navigate to the appropriate link
     navigate(linkDestination);
-  };
-
-  const handleCloseError = () => {
-    setErrorMessage("");
   };
 
   return (
@@ -59,21 +55,6 @@ const Login = () => {
                 className={styles.input_even}
                 onChange={handlePasswordChange}
               />
-              {errorMessage && (
-                <div className={styles.error_container}>
-                  <p className={styles.error_msg}>{errorMessage}</p>
-                  <button
-                    className={styles.close_button}
-                    onClick={handleCloseError}
-                  >
-                    <img
-                      src={require("../asset/close-icon.png")}
-                      alt="Close"
-                      className={styles.close_icon}
-                    />
-                  </button>
-                </div>
-              )}
               <div className={styles.remember_me}>
                 <input type="checkbox" id="remember_me" name="remember_me" />
                 <label htmlFor="remember_me">Remember me</label>
@@ -98,7 +79,8 @@ const Login = () => {
               </button>
             </form>
             <div className={styles.or_text}>
-              -------------------------------------- OR ---------------------------------------
+              -------------------------------------- OR
+              ---------------------------------------
             </div>
             <button
               type="button"
