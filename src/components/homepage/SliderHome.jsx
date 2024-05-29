@@ -1,7 +1,7 @@
 import React from "react"
 import SlideCard from "./SlideCard"
 
-const SliderHome = () => {
+const BannerShop = () => {
   return (
     <>
       <section className='homeSlide contentWidth'>
@@ -13,4 +13,4 @@ const SliderHome = () => {
   )
 }
 
-export default SliderHome
+export default BannerShop

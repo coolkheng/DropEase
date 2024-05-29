@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from "react";
-import Logo from "../asset/logo.png";
+import React, { useState } from 'react';
+import Logo from '../asset/logo.png';
 import { Link, useLocation } from 'react-router-dom';
 
-const SideNav = () => {
+const TopBar = () => {
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
-
-  useEffect(() => {
-    setActiveLink(location.pathname);
-  }, [location.pathname]);
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
   };
 
   return (
-    <div className="sidenav">
-      <div className="h-screen left-0 top-0 sticky p-5 flex flex-col gap-8 shadow-2xl max-lg:hidden">
-        <div className="logo mb-2">
-          <img src={Logo} alt="Logo" className="w-full" style={{ maxWidth: "150px" }}/>
-        </div>
-        <ul className="sidenav-menu flex flex-col gap-4">
-          <li className="sidenav-item">
+    <div className="topbar flex justify-between items-center mt-5 h-12 shadow-xl lg:hidden">
+      <div className="logo">
+        <img src={Logo} alt="Logo" className="w-full" />
+      </div>
+      <div className="menu-container flex-1 flex justify-center">
+        <ul className="topbar-menu flex gap-8">
+          <li className="topbar-item">
             <Link 
               to="/home" 
               className={activeLink === '/home' ? 'active' : ''} 
@@ -30,7 +26,7 @@ const SideNav = () => {
               Store
             </Link>
           </li>
-          <li className="sidenav-item">
+          <li className="topbar-item">
             <Link 
               to="/edit-store" 
               className={activeLink === '/edit-store' ? 'active' : ''} 
@@ -39,7 +35,7 @@ const SideNav = () => {
               Edit Store
             </Link>
           </li>
-          <li className="sidenav-item">
+          <li className="topbar-item">
             <Link 
               to="/orders" 
               className={activeLink === '/orders' ? 'active' : ''} 
@@ -48,7 +44,7 @@ const SideNav = () => {
               Orders
             </Link>
           </li>
-          <li className="sidenav-item">
+          <li className="topbar-item">
             <Link 
               to="/products" 
               className={activeLink === '/products' ? 'active' : ''} 
@@ -59,8 +55,9 @@ const SideNav = () => {
           </li>
         </ul>
       </div>
+      <div className="placeholder" />
     </div>
   );
 };
 
-export default SideNav;
+export default TopBar;

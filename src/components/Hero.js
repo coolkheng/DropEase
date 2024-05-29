@@ -28,7 +28,7 @@ const Hero = () => {
     },
   ];
   return (
-    <div className="mt-2 w-[80%] max-height-[100px] container pt-6 lg:pt-0">
+    <div className="w-[80%] max-height-[100px]">
       <Slider {...settings}>
         {slideData.map((item) => (
           <Slide key={item.id} img={item.img} />
