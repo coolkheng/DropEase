@@ -34,8 +34,8 @@ const Cart = () => {
                   <div className="cart-details">
                     <h3>{item.name}</h3>
                     <h4>
-                      RM {item.price}.00 * {item.qty}
-                      <span>RM {productQty}.00</span>
+                      RM {item.price} * {item.qty}
+                      <span>RM {productQty}</span>
                     </h4>
                   </div>
                   <div className="cart-items-function">
