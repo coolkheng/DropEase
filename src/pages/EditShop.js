@@ -88,10 +88,10 @@ const EditShop = () => {
               onClick={toggleCreateCollectionModal}
               style={{ marginRight: "10px" }}
               sx={{
-                backgroundColor: "#ff7600",
+                backgroundColor: "#424669",
                 color: "white",
                 "&:hover": {
-                  backgroundColor: "#d16002",
+                  backgroundColor: "#767DB8",
                 },
               }}
             >
