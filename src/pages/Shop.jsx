@@ -56,10 +56,10 @@ const Shop = () => {
           <Collections />
         </div>
         <div>
-          <h2 className="pt-10 font-medium text-2xl">All Products</h2>
+          <h2 className="flex justify-center pt-10 text-3xl font-bold">All Products</h2>
         </div>
 
-        <div>
+        <div className="mb-20">
           <Productss />
         </div>
       </main>

@@ -10,7 +10,7 @@ const ProductDetails = () => {
   const { product } = location.state || {};
   const {addToCart} = useContext(CartContext);
 
-  const [mainImage, setMainImage] = useState(product.mainImage);
+  const [mainImage, setMainImage] = useState(product?.mainImages);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
 
@@ -54,18 +54,18 @@ const ProductDetails = () => {
           ))}
         </div>
         <div className="productdisplay-img">
-          <img className="productdisplay-main-img" src={mainImage} alt={product.title} />
+          <img className="productdisplay-main-img" src={mainImage} alt={product.name} />
         </div>
       </div>
       <div className="productdisplay-right">
-        <h1 className="productName">{product.title}</h1>
+        <h1 className="productName">{product.name}</h1>
         
         <div className="productdisplay-right-decs">
           <p>{product.desc}</p>
         </div>
 
         <div className="productdisplay-right-prices">
-          <h2 className="priceDetails">RM {product.price}</h2>
+          <h2 className="priceDetails">RM {product.price}.00</h2>
         </div>
 
         {product.longDesc && product.longDesc.length > 0 && (
@@ -74,11 +74,11 @@ const ProductDetails = () => {
             </div>
           )}
 
-        {product.sizes && product.sizes.length > 0 && (
+        {product.size && product.size.length > 0 && (
             <div className="productdisplay-right-size">
               <h3>Select Size</h3>
               <div className="productdisplay-right-sizes">
-                {product.sizes.map((size) => (
+                {product.size.map((size) => (
                   <button 
                     style={{ 
                       color: selectedSize === size ? "black" : "black",

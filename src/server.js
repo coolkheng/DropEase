@@ -58,8 +58,8 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  images: {
-    type: String,
+  images:{
+    type:[String],
     required: false,
   },
   mainImages: {
@@ -82,12 +82,12 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  size: {
-    type: String,
+  size:{
+    type:[String],
     required: false,
   },
-  color: {
-    type: String,
+  color:{
+    type:[String],
     required: false,
   },
   price: {
@@ -193,6 +193,68 @@ app.get("/retailerBanner", async (req, res) => {
   console.log("Retailer Banners Fetched");
   res.send(banners);
 });
+// Creating API for getting all products
+app.get('/allproduct',async(req,res)=>{
+  let products = await Product.find({});
+  console.log("All Products Fetched");
+  res.send(products);
+})
+
+//Shema craeting for User model
+const Users = mongoose.model('Users',{
+  name:{
+    type:String,
+  },
+  email:{
+    type:String,
+    required:[true,"Your email address is required"],
+    unique:true,
+  },
+  password: {
+    type: String,
+    required: [true, "Your password is required"],
+  },
+  role: {
+    type: String,
+    required: [true, "Your role is required"],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+//Creating Endpoint for registring user
+app.post("/signup",async(req,res)=>{
+  let check = await Users.findOne({email:req.body.email}); // check if the user has been register before
+  if(check){
+    return res.status(400).json({success:false,errors:"existing user found with same email address"})
+  }
+  let cart={};
+  for(let i=0;i<300;i++){
+    cart[i]=0;
+  }
+
+  const user = new Users({
+    name:req.body.username,
+    email:req.body.email,
+    password:req.body.password,
+    role:req.body.password,
+    cartData:cart,
+  })
+
+  await user.save(); //save in db
+
+  //create token
+  const data={
+    user:{
+      id:user.id
+    }
+  }
+
+  const token = jwt.sign(data,'secrect_token');
+  res.json({success:true,token})
+})
 
 // Start the Express server
 app.listen(port, (error) => {
