@@ -8,7 +8,7 @@ const Hero = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const response = await fetch("http://localhost:4000/retailerBanner"); // Assuming this route fetches banners from MongoDB
+        const response = await fetch("http://localhost:4000/retailerBanner");
         if (response.ok) {
           const banners = await response.json();
           setSlideData(banners);

@@ -3,6 +3,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
+
 
 const app = express();
 const port = 4000;
@@ -198,6 +200,84 @@ app.get('/allproduct',async(req,res)=>{
   let products = await Product.find({});
   console.log("All Products Fetched");
   res.send(products);
+})
+
+//Shema craeting for User model
+const Users = mongoose.model('Users',{
+  name:{
+    type:String,
+  },
+  email:{
+    type:String,
+    required:[true,"Your email address is required"],
+    unique:true,
+  },
+  password: {
+    type: String,
+    required: [true, "Your password is required"],
+  },
+  role: {
+    type: String,
+    required: [true, "Your role is required"],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+//Creating Endpoint for registring user
+app.post("/signup",async(req,res)=>{
+  let check = await Users.findOne({email:req.body.email}); // check if the user has been register before
+  if(check){
+    return res.status(400).json({success:false,errors:"Existing user found with same email address"})
+  }
+  let cart={};
+  for(let i=0;i<300;i++){
+    cart[i]=0;
+  }
+
+  const user = new Users({
+    email:req.body.email,
+    password:req.body.password,
+    role:req.body.password,
+    cartData:cart,
+  })
+
+  await user.save(); //save in db
+
+  //create token
+  const data={
+    user:{
+      id:user.id
+    }
+  }
+
+  const token = jwt.sign(data,'secrect_token');
+  res.json({success:true,token})
+})
+
+// Creating endpoint for user log in
+app.post('/login',async(req,res)=>{
+  let user = await Users.findOne({email:req.body.email});
+  if(user){
+    const passCompare = req.body.password === user.password; // compare password
+    if(passCompare){
+      const data = {
+        user:{
+          id:user.id
+        }
+      }
+      const token = jwt.sign(data,'secrect_token');
+      res.json({success:true,token});
+    }
+    else{
+      res.json({success:false,errors:"Wrong Password"});
+    }
+  }
+  else{
+    res.json({success:false,errors:"User not exsit"});
+  }
 })
 
 // Start the Express server
