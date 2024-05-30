@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const UploadBanner = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
-  const [uploaded, setUploaded] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false); // Define hasChanges state variable
 
   useEffect(() => {
     setHasChanges(selectedImages.length > 0);
@@ -18,16 +21,36 @@ const UploadBanner = () => {
       setPreviewImages([...previewImages, ...imageUrls]);
       setSelectedImages([...selectedImages, ...imageFiles]);
     } else {
-      alert("You can upload maximum of 5 images.");
+      alert("You can upload a maximum of 5 images.");
     }
   };
 
-  const addImages = () => {
-    setUploaded(true);
-    setHasChanges(false);
+  const addImages = async () => {
+    setUploading(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      selectedImages.forEach((image) => {
+        formData.append("banners", image);
+      });
 
-    // Reset the input field to allow selecting the same file again
-    document.getElementById("imageInput").value = "";
+      const response = await axios.post("http://localhost:4000/upload-banners", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response.data);
+      setSuccess(true);
+
+      // Clear selected images and reset component state
+      setSelectedImages([]);
+      setPreviewImages([]);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      setError("An error occurred while uploading images.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const deleteHandler = (index) => {
@@ -39,8 +62,6 @@ const UploadBanner = () => {
     const updatedSelectedImages = [...selectedImages];
     updatedSelectedImages.splice(index, 1);
     setSelectedImages(updatedSelectedImages);
-    setUploaded(false);
-    setHasChanges(updatedSelectedImages.length > 0);
   };
 
   return (
@@ -60,6 +81,13 @@ const UploadBanner = () => {
       </label>
       <br />
 
+      {/* Display error message if there's an error */}
+      {error && <div className="error">{error}</div>}
+
+      {/* Display success message if upload is successful */}
+      {success && <div className="success">Images uploaded successfully!</div>}
+
+      {/* Display preview of selected images */}
       {previewImages.map((previewImage, index) => (
         <div className="preview-container" key={index}>
           <div className="preview-item">
@@ -69,9 +97,12 @@ const UploadBanner = () => {
         </div>
       ))}
 
+      {/* Button to initiate upload */}
       {hasChanges && (
         <div className="preview-container">
-          <button onClick={addImages}>Update Images</button>
+          <button disabled={uploading} onClick={addImages}>
+            {uploading ? "Uploading..." : "Update Images"}
+          </button>
         </div>
       )}
     </section>
