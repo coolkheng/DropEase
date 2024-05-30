@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Productss from "../components/Productss";
 import Category from "../components/Category";
 
+//delete
 const Kids = () => {
   return (
     <div className="min-h-[calc(100vh-90px)] md:flex hidden">
