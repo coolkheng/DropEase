@@ -58,8 +58,8 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  images: {
-    type: String,
+  images:{
+    type:[String],
     required: false,
   },
   mainImages: {
@@ -82,12 +82,12 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  size: {
-    type: String,
+  size:{
+    type:[String],
     required: false,
   },
-  color: {
-    type: String,
+  color:{
+    type:[String],
     required: false,
   },
   price: {
@@ -193,6 +193,12 @@ app.get("/retailerBanner", async (req, res) => {
   console.log("Retailer Banners Fetched");
   res.send(banners);
 });
+// Creating API for getting all products
+app.get('/allproduct',async(req,res)=>{
+  let products = await Product.find({});
+  console.log("All Products Fetched");
+  res.send(products);
+})
 
 // Start the Express server
 app.listen(port, (error) => {
