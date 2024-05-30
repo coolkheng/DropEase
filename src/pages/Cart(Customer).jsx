@@ -1,37 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import "../style/Cart(Customer).css";
-import shoes from "../asset/nikeShoes.png";
 import { FaXmark } from "react-icons/fa6";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import HeaderCustomer from "../components/Header(Customer)";
+import { CartContext } from "./cartContext"; // Ensure the correct path to your CartContext
 
-const Cart = ({ addToCart, decreaseQty }) => {
-  const sampleCartItems = [
-    {
-      id: 1,
-      name: "Product 1",
-      price: 20,
-      qty: 2,
-      cover: shoes,
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 25,
-      qty: 1,
-      cover: shoes,
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      price: 30,
-      qty: 3,
-      cover: shoes,
-    },
-  ];
+const Cart = () => {
+  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
 
   // Calculate total price of items
-  const totalPrice = sampleCartItems.reduce(
+  const totalPrice = cartItems.reduce(
     (price, item) => price + item.qty * item.price,
     0
   );
@@ -43,26 +21,29 @@ const Cart = ({ addToCart, decreaseQty }) => {
       <section className="cart-items">
         <div className="container-cart">
           <div className="cart-details">
-            {sampleCartItems.length === 0 && (
+            {cartItems.length === 0 && (
               <h1 className="no-items product">No Items are add in Cart</h1>
             )}
-            {sampleCartItems.map((item) => {
+            {cartItems.map((item) => {
               const productQty = item.price * item.qty;
               return (
                 <div className="cart-list" key={item.id}>
                   <div className="img">
-                    <img src={item.cover} alt="" />
+                    <img src={item.mainImages} alt="" />
                   </div>
                   <div className="cart-details">
                     <h3>{item.name}</h3>
                     <h4>
-                      RM {item.price}.00 * {item.qty}
-                      <span>RM {productQty}.00</span>
+                      RM {item.price} * {item.qty}
+                      <span>RM {productQty}</span>
                     </h4>
                   </div>
                   <div className="cart-items-function">
                     <div className="removeCart">
-                      <button className="removeCartButton">
+                      <button
+                        className="removeCartButton"
+                        onClick={() => removeFromCart(item.id)}
+                      >
                         <FaXmark />
                       </button>
                     </div>

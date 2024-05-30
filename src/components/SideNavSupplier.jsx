@@ -14,7 +14,10 @@ const SideNavSupplier = () => {
       </div>
       <ul className="sidenav-menu">
       <li className="sidenav-item">
-          <Link to="/home">Home</Link>
+          <Link to="/home">Store</Link>
+        </li>
+        <li className="sidenav-item">
+          <Link to="/edit-store">Edit Store</Link>
         </li>
         <li className="sidenav-item">
           <Link to="/orders">Orders</Link>

@@ -1,58 +1,49 @@
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
-import axios from "axios";
+import axios from 'axios';
 
 const Login = () => {
-  const navigate = useNavigate(); // Use useNavigate hook
+  const navigate = useNavigate(); 
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userType, setUserType] = useState(""); // State to manage selected user type
 
-  const [inputValue, setInputValue] = useState({
-    email: "",
+  const [formData, setFormData] = useState({
     password: "",
+    email: "",
+    role: ""
   });
-  const { email, password } = inputValue;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputValue({
-      ...inputValue,
-      [name]: value,
-    });
+  const changeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await axios.post(
-        "http://localhost:4000/login",
-        {
-          ...inputValue,
-        },
-        { withCredentials: true }
-      );
-      const { success, message, role } = data;
-      if (success) {
-        // Determine the link destination based on the selected user type
-        const linkDestination = role === "customer" ? "/customerhome" : "/home";
-        // Navigate to the appropriate link
-        navigate(linkDestination);
-        console.log(message);
-      } else {
-        console.log(message); 
-      }
-    } catch (error) {
-      if (error.response && error.response.data) {
-        alert(error.response.data.message);
-      } else {
-        alert("An unexpected error occurred."); 
-      }
+  const login = async () => {
+    console.log("Log in function executed", formData);
+    let responseData;
+    await fetch('http://localhost:4000/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/form-data',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    }).then((response) => response.json()).then((data) => responseData = data);
+
+    if (responseData.success) {
+      localStorage.setItem('auth-token', responseData.token);
+      const linkDestination = formData.role === "customer" ? "/customerhome" : "/home";
+      navigate(linkDestination);
+    } else {
+      alert(responseData.errors);
     }
-    setInputValue({
-      email: "",
-      password: "",
-    });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login();
+  };
 
   return (
     <div className={styles.login_container}>
@@ -72,17 +63,17 @@ const Login = () => {
                 name="email"
                 required
                 className={styles.input_odd}
-                onChange={handleChange}
-                value={email}
+                value={formData.email}
+                onChange={changeHandler}
               />
               <input
-                type="password"
+                type={passwordVisible ? "text" : "password"}
                 placeholder="Password"
                 name="password"
                 required
                 className={styles.input_even}
-                onChange={handleChange}
-                value={password}
+                value={formData.password}
+                onChange={changeHandler}
               />
               <div className={styles.remember_me}>
                 <input type="checkbox" id="remember_me" name="remember_me" />
@@ -91,6 +82,8 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
+              
+
               <button type="submit" className={styles.orange_btn}>
                 Sign In
               </button>

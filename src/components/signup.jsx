@@ -1,83 +1,70 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/signup.module.css";
 import React, { useState } from "react";
-import axios from "axios";
-
-const validatePassword = (password) => {
-  const minLength = 12;
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumbers = /[0-9]/.test(password);
-  const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  return (
-    password.length >= minLength &&
-    hasUpperCase &&
-    hasLowerCase &&
-    hasNumbers &&
-    hasSymbols
-  );
-};
 
 const Signup = () => {
-  const navigate = useNavigate();
-  const [inputValue, setInputValue] = useState({
-    email: "",
+  const navigate = useNavigate(); // Correctly place the useNavigate hook here
+
+  const [passwordVisible, setPasswordVisible] = useState(false); // State to manage password visibility
+  const [formData, setFormData] = useState({
     password: "",
-    role: "",
+    email: "",
+    role: ""
   });
-  
-  const { email, password, role } = inputValue;
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputValue({
-      ...inputValue,
-      [name]: value,
-    });
+  const [error, setError] = useState(""); // State to manage error messages
+
+  const changeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validatePassword(password)) {
-      alert(
-        "Password must be at least 12 characters long and include uppercase letters, lowercase letters, numbers, and symbols."
-      );
-      setInputValue({
-        email: "",
-        password: "",
-        role: "",
-      });
+  const validatePassword = (password) => {
+    const minLength = 12;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return (
+      password.length >= minLength &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumbers &&
+      hasSymbols
+    );
+  };
+
+  const signup = async () => {
+    console.log("Sign Up function executed", formData);
+    if (!validatePassword(formData.password)) {
+      alert("Password must be at least 12 characters long and include uppercase, lowercase, numbers, and symbols.");
       return;
     }
-    try {
-      const { data } = await axios.post(
-        "http://localhost:4000/signup",
-        {
-          ...inputValue,
-        },
-        { withCredentials: true }
-      );
-      const { success, message } = data;
-      if (success) {
-        console.log(message); // Log success message
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      } else {
-        alert(message); // Log error message
-      }
-    } catch (error) {
-      if (error.response && error.response.data) {
-        alert(error.response.data.message); // Display server error message
-      } else {
-        alert("An unexpected error occurred."); // Handle other types of errors
-      }
+
+    let responseData;
+    await fetch('http://localhost:4000/signup', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/form-data',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    }).then((response) => response.json()).then((data) => responseData = data);
+
+    if (responseData.success) {
+      localStorage.setItem('auth-token', responseData.token);
+      navigate("/");
+    } else {
+      alert(responseData.errors);
     }
-    setInputValue({
-      ...inputValue,
-      email: "",
-      password: "",
-      role: "",
-    });
+  };
+
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    signup();
   };
 
   return (
@@ -123,29 +110,24 @@ const Signup = () => {
                 placeholder="Email"
                 name="email"
                 className={styles.input_odd}
-                onChange={handleChange}
-                value={email}
-                required
+                value={formData.email}
+                onChange={changeHandler}
               />
               <input
-                type="password"
+                type={passwordVisible ? "text" : "password"} // Conditional rendering based on passwordVisible state
                 placeholder="Password"
                 name="password"
-                className={styles.input_even}
-                onChange={handleChange}
-                value={password}
                 required
+                className={styles.input_even}
+                value={formData.password}
+                onChange={changeHandler}
               />
-              <select
-                className={styles.input_select}
-                name="role"
-                value={role}
-                onChange={handleChange}
-              >
+              <select className={styles.input_select} name="role" value={formData.role} onChange={changeHandler}>
                 <option value="">Select Role</option>
                 <option value="retailer">Retailer</option>
                 <option value="customer">Customer</option>
               </select>
+              {error && <div className={styles.error_msg}>{error}</div>} {/* Display error message */}
               <button type="submit" className={styles.orange_btn}>
                 Sign Up
               </button>

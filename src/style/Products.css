@@ -24,21 +24,18 @@
 .product-content {
     flex: 1;
     justify-content: start;
-    padding-left: 60px;
 }
 
 .productpage-title{
-    padding-left: 80px;
-    padding-top: 30px;
+    padding-top: 10px;
     text-align: left;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 
 .product-main-content {
     padding-bottom: 20px;
-    padding-left: 180px;
     background-color: rgb(255, 255, 255);
     min-height: 100vh;
 }
