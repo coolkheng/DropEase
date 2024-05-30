@@ -200,13 +200,6 @@ app.get('/allproduct',async(req,res)=>{
   res.send(products);
 })
 
-// Creating API for getting all products
-app.get('/allproduct',async(req,res)=>{
-  let products = await Product.find({});
-  console.log("All Products Fetched");
-  res.send(products);
-})
-
 // Start the Express server
 app.listen(port, (error) => {
   if (!error) {
