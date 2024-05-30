@@ -19,6 +19,18 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  store: {
+    type: String,
+  },
+  phoneno: {
+    type: String,
+  },
+  logo: {
+    type: String,
+  },
+  category: {
+    type: String,
+  }
 });
 
 userSchema.pre("save", async function (next) {

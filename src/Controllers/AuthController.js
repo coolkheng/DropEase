@@ -96,3 +96,33 @@ module.exports.Login = async (req, res, next) => {
     res.status(500).json({ message: "Server error", success: false });
   }
 };
+
+// Update user profile
+module.exports.UpdateProfile = async (req, res, next) => {
+  try {
+      console.log("Update profile request received:", req.body); // Debugging line
+      const userId = req.body.userId; // Get user ID from the request body
+      const { store, phoneno, category } = req.body;
+
+      const user = await User.findByIdAndUpdate(
+          userId,
+          { store, phoneno, category },
+          { new: true }
+      );
+
+      if (!user) {
+          return res.status(404).json({ message: "User not found", success: false });
+      }
+
+      res.status(200).json({
+          message: "Profile updated successfully",
+          success: true,
+          user,
+      });
+  } catch (error) {
+      console.error("Update profile error:", error);
+      res.status(500).json({ message: "Server error", success: false });
+  }
+};
+
+

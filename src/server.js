@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/AuthRoute");
+const User = require("./models/user");
 
 const app = express();
 const PORT = 4000;
@@ -32,6 +33,22 @@ async function connect() {
 }
 
 connect();
+
+app.get('/currentuser', async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error('Error retrieving current user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 app.use("/", authRoute);
 

@@ -25,6 +25,7 @@ const Signup = () => {
     password: "",
     role: "",
   });
+  
   const { email, password, role } = inputValue;
   const handleChange = (e) => {
     const { name, value } = e.target;
