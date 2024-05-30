@@ -1,31 +1,48 @@
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
+import axios from 'axios';
 
 const Login = () => {
+  const navigate = useNavigate(); 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userType, setUserType] = useState(""); // State to manage selected user type
 
-  const handlePasswordChange = () => {
-    setErrorMessage("");
+  const [formData, setFormData] = useState({
+    password: "",
+    email: "",
+    role: ""
+  });
+
+  const changeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const navigate = useNavigate(); // Use useNavigate hook
+  const login = async () => {
+    console.log("Log in function executed", formData);
+    let responseData;
+    await fetch('http://localhost:4000/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/form-data',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    }).then((response) => response.json()).then((data) => responseData = data);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    // Perform any necessary validation
-    if (!userType) {
-      setErrorMessage("Please select a user type.");
-      return;
+    if (responseData.success) {
+      localStorage.setItem('auth-token', responseData.token);
+      const linkDestination = formData.role === "customer" ? "/customerhome" : "/home";
+      navigate(linkDestination);
+    } else {
+      alert(responseData.errors);
     }
+  };
 
-    // Determine the link destination based on the selected user type
-    const linkDestination = userType === "customer" ? "/customerhome" : "/home";
-    // Navigate to the appropriate link
-    navigate(linkDestination);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login();
   };
 
   return (
@@ -46,6 +63,8 @@ const Login = () => {
                 name="email"
                 required
                 className={styles.input_odd}
+                value={formData.email}
+                onChange={changeHandler}
               />
               <input
                 type={passwordVisible ? "text" : "password"}
@@ -53,7 +72,8 @@ const Login = () => {
                 name="password"
                 required
                 className={styles.input_even}
-                onChange={handlePasswordChange}
+                value={formData.password}
+                onChange={changeHandler}
               />
               <div className={styles.remember_me}>
                 <input type="checkbox" id="remember_me" name="remember_me" />
@@ -62,17 +82,7 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-              <select
-                className={styles.dropdown}
-                id="user_type"
-                name="user_type"
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)} // Update selected user type
-              >
-                <option value="">Select User</option>
-                <option value="retailer">Retailer</option>
-                <option value="customer">Customer</option>
-              </select>
+              
 
               <button type="submit" className={styles.orange_btn}>
                 Sign In
