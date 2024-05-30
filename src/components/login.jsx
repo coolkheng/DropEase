@@ -1,32 +1,58 @@
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userType, setUserType] = useState(""); // State to manage selected user type
-
-  const handlePasswordChange = () => {
-    setErrorMessage("");
-  };
-
   const navigate = useNavigate(); // Use useNavigate hook
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const [inputValue, setInputValue] = useState({
+    email: "",
+    password: "",
+  });
+  const { email, password } = inputValue;
 
-    // Perform any necessary validation
-    if (!userType) {
-      setErrorMessage("Please select a user type.");
-      return;
-    }
-
-    // Determine the link destination based on the selected user type
-    const linkDestination = userType === "customer" ? "/customerhome" : "/home";
-    // Navigate to the appropriate link
-    navigate(linkDestination);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        "http://localhost:4000/login",
+        {
+          ...inputValue,
+        },
+        { withCredentials: true }
+      );
+      const { success, message, role } = data;
+      if (success) {
+        // Determine the link destination based on the selected user type
+        const linkDestination = role === "customer" ? "/customerhome" : "/home";
+        // Navigate to the appropriate link
+        navigate(linkDestination);
+        console.log(message);
+      } else {
+        console.log(message); 
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+        alert("An unexpected error occurred."); 
+      }
+    }
+    setInputValue({
+      email: "",
+      password: "",
+    });
+  };
+
 
   return (
     <div className={styles.login_container}>
@@ -46,14 +72,17 @@ const Login = () => {
                 name="email"
                 required
                 className={styles.input_odd}
+                onChange={handleChange}
+                value={email}
               />
               <input
-                type={passwordVisible ? "text" : "password"}
+                type="password"
                 placeholder="Password"
                 name="password"
                 required
                 className={styles.input_even}
-                onChange={handlePasswordChange}
+                onChange={handleChange}
+                value={password}
               />
               <div className={styles.remember_me}>
                 <input type="checkbox" id="remember_me" name="remember_me" />
@@ -62,18 +91,6 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-              <select
-                className={styles.dropdown}
-                id="user_type"
-                name="user_type"
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)} // Update selected user type
-              >
-                <option value="">Select User</option>
-                <option value="retailer">Retailer</option>
-                <option value="customer">Customer</option>
-              </select>
-
               <button type="submit" className={styles.orange_btn}>
                 Sign In
               </button>
