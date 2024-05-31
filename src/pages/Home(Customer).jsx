@@ -18,7 +18,6 @@ const Home = () => {
             <SliderHome />
             <FlashDeals />
             <TopCate />
-            <Annocuments />
             <Wrapper />
           </div>
         </section>

@@ -86,7 +86,7 @@ const ShopCategory = ({ category }) => {
   return (
     <div className="ShopCategory">
       <HeaderCustomer />
-      <h2 className="categoryNames">{categoryNames}</h2>
+      <h2 className="categoryNames" style={{fontWeight:"bolder",fontSize:"30px"}}>{categoryNames}</h2>
       {/* Map over the array and render each shop item */}
       {placeholderShopItems.map((shop) => (
         <div key={shop.id} className="shopCatbox">

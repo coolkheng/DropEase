@@ -2,21 +2,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
 
 .logo img {
-  width: 180px; /* Adjust the width of the logo as needed */
-  margin-bottom: 20px; /* Add margin below the logo */
+  width: 180px;
+  margin-bottom: 20px;
 }
 
-/* Main container */
 .sidenav {
   height: 100%;
-  width: 225px; /* Adjust the width as needed */
+  width: 225px;
   position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #fff; /* Adjust background color */
+  background-color: #fff;
   overflow-x: hidden;
-  padding: 10px; /* Adjust padding */
+  padding: 10px;
   font-family: "Raleway", sans-serif;
   border-right: 1px solid #f0f0f0;
 }
@@ -35,24 +34,20 @@
   font-weight: bold;
 }
 
-/* Style for the links */
 .sidenav a {
-  padding: 8px 12px; /* Adjust padding */
+  padding: 8px 12px;
   text-decoration: none;
-  font-size: 16px; /* Adjust font size */
+  font-size: 16px;
   font-weight: 500;
-  color: #171616; /* Adjust text color */
+  color: #171616;
   display: block;
 }
 
-/* Change color on hover */
 .sidenav a:hover {
-  color: #fc521a; /* Adjust hover color */
-  transition-delay: 0.3s; /* Adjust transition delay */
+  color: #fc521a;
+  transition-delay: 0.2s;
 }
 
-/* Active link style */
 .sidenav a.active {
-  color: #ffffff; /* Adjust active link color */
-  background-color: #4caf50; /* Adjust active link background color */
+  color: #fc521a;
 }

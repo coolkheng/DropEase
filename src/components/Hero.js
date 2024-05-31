@@ -1,10 +1,28 @@
-"use client";
-
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import Slide from "./Slide";
 
 const Hero = () => {
+  const [slideData, setSlideData] = useState([]);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/retailerBanner");
+        if (response.ok) {
+          const banners = await response.json();
+          setSlideData(banners);
+        } else {
+          console.error("Failed to fetch banners");
+        }
+      } catch (error) {
+        console.error("Error fetching banners:", error);
+      }
+    };
+
+    fetchBanners();
+  }, []);
+
   var settings = {
     dots: true,
     infinite: true,
@@ -13,25 +31,11 @@ const Hero = () => {
     pauseOnHover: false,
   };
 
-  const slideData = [
-    {
-      id: 0,
-      img: "/Banners/banner-1.jpg",
-    },
-    {
-      id: 1,
-      img: "/Banners/banner-2.jpg",
-    },
-    {
-      id: 2,
-      img: "/Banners/banner-3.jpg",
-    },
-  ];
   return (
-    <div className="mt-2 w-[80%] max-height-[100px] container pt-6 lg:pt-0">
+    <div className="w-[80%] max-height-[100px]">
       <Slider {...settings}>
         {slideData.map((item) => (
-          <Slide key={item.id} img={item.img} />
+          <Slide key={item._id} img={`/banners/${item.filename}`} />
         ))}
       </Slider>
     </div>
