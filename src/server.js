@@ -3,7 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
-
+const Order = require("./modal/ordermodal");
 const app = express();
 const port = 4000;
 
@@ -58,8 +58,8 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  images:{
-    type:[String],
+  images: {
+    type: [String],
     required: false,
   },
   mainImages: {
@@ -82,12 +82,12 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  size:{
-    type:[String],
+  size: {
+    type: [String],
     required: false,
   },
-  color:{
-    type:[String],
+  color: {
+    type: [String],
     required: false,
   },
   price: {
@@ -194,11 +194,21 @@ app.get("/retailerBanner", async (req, res) => {
   res.send(banners);
 });
 // Creating API for getting all products
-app.get('/allproduct',async(req,res)=>{
+app.get("/allproduct", async (req, res) => {
   let products = await Product.find({});
   console.log("All Products Fetched");
   res.send(products);
-})
+});
+
+app.get("/api/orders", async (req, res) => {
+  try {
+    const orders = await Order.find(); // Fetch all orders
+    console.log("All orders fetched");
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
 
 // Start the Express server
 app.listen(port, (error) => {

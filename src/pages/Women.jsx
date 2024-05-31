@@ -19,7 +19,7 @@ const Women = () => {
         </div>
         <Category />
         <div>
-        <h2 className="pt-5 font-medium text-md">Store > Women's</h2>
+          <h2 className="pt-5 font-medium text-md">Store Women's</h2>
         </div>
         <div>
           <Productss />
