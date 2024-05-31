@@ -4,7 +4,7 @@ import {CartContext} from "./cartContext";
 import "../style/ProductDetails.css";
 
 
-const ProductDetails = () => {
+const SupplierProductDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { product } = location.state || {};
@@ -28,7 +28,7 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
       addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor });
-      navigate('/customercart');
+      navigate('/suppliercart');
   };
 
   if (!product) {
@@ -116,4 +116,4 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails;
+export default SupplierProductDetails;
