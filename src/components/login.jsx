@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
-import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate(); 
@@ -11,8 +10,7 @@ const Login = () => {
 
   const [formData, setFormData] = useState({
     password: "",
-    email: "",
-    role: ""
+    email: ""
   });
 
   const changeHandler = (e) => {
@@ -29,11 +27,13 @@ const Login = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    }).then((response) => response.json()).then((data) => responseData = data);
+    })
+    .then((response) => response.json())
+    .then((data) => responseData = data);
 
     if (responseData.success) {
       localStorage.setItem('auth-token', responseData.token);
-      const linkDestination = formData.role === "customer" ? "/customerhome" : "/home";
+      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home";
       navigate(linkDestination);
     } else {
       alert(responseData.errors);
