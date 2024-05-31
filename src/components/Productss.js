@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 
-const Productss = ({ category }) => {
+const Productss = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,8 +16,7 @@ const Productss = ({ category }) => {
           throw new Error('Failed to fetch products');
         }
         const data = await response.json();
-        const filteredData = data.filter(product => product.category === category);
-        setProducts(filteredData);
+        setProducts(data);
       } catch (err) {
         console.error('Error:', err.message);
         setError(err.message);
@@ -27,7 +26,7 @@ const Productss = ({ category }) => {
     };
 
     fetchProducts();
-  }, [category]);
+  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
