@@ -1,31 +1,8 @@
-/* Search container */
-.search-container {
-    position: relative;
-    margin: 0 ;
-    max-width: 400px;
-  }
-  
-  /* Search input */
-  .search-input {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    font-size: 16px;
-    outline: none;
-  }
-  
-  /* Search icon */
-  .search-icon {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    color: #555;
-  }
-  
-  /* Search input focus style */
-  .search-input:focus {
-    border-color: #007bff;
-  }
-  
+
+.searchbar[type="text"] {
+  width: 280px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}

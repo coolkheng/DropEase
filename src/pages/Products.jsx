@@ -5,6 +5,7 @@ import TopBar from "../components/TopBar"; // Assuming TopBar is your top bar co
 import "../style/Header.css";
 import "../style/SideNav.css";
 import "../style/Products.css";
+import '../style/SearchBar.css'; 
 import ProductItem from "../components/ProductItem";
 import AddProductButton from "../components/AddProductButton";
 import DropdownMenu from "../components/UsernameDropDown"; // Assuming UsernameDropDown is your dropdown menu component
@@ -13,8 +14,10 @@ import { Link } from "react-router-dom";
 
 const Products = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [showCreateCollectionModal, setShowCreateCollectionModal] =
-    useState(false);
+  const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
+  const [products, setProducts] = useState([]); // State for all products
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,10 +32,41 @@ const Products = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/allproduct');
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          console.error('Failed to fetch products:', response.status, errorMessage);
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        setProducts(data);
+        setFilteredProducts(data); // Initialize filtered products
+      } catch (err) {
+        console.error('Error:', err.message);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const filtered = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [searchTerm, products]);
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const toggleCreateCollectionModal = () => {
     setShowCreateCollectionModal(!showCreateCollectionModal);
   };
-  
+
   return (
     <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
       {!isSmallScreen && (
@@ -66,26 +100,14 @@ const Products = () => {
               <div className="productpage-title">
                 <p>Store Products</p>
                 <div className="pt-2">
-                  <SearchBar />
+                  <SearchBar searchTerm={searchTerm} handleSearch={handleSearch} />
                 </div>
               </div>
               <div className="product-content">
                 <div className="product-list">
-                  <ProductItem
-                    title="Sample Product"
-                    description="This is a sample product description."
-                    imageUrl="https://via.placeholder.com/150"
-                  />
-                  <ProductItem
-                    title="Sample Product"
-                    description="This is a sample product description."
-                    imageUrl="https://via.placeholder.com/150"
-                  />
-                  <ProductItem
-                    title="Sample Product"
-                    description="This is a sample product description."
-                    imageUrl="https://via.placeholder.com/150"
-                  />
+                  {filteredProducts.map((product) => (
+                    <ProductItem key={product._id} product={product} />
+                  ))}
                   <Link to="/foodbeverages">
                     <AddProductButton
                       image={require("../asset/add-button.png")}
