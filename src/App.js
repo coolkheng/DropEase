@@ -13,9 +13,13 @@ function App() {
       {/* Include the Header component */}
       
       <Routes>
-       
+        <Route path='/' element={<Home/>}/>
+        <Route path='/Product' element={<Product/>}>
+          <Route path='/ProductId' element={<Product/>}/>
+        </Route>
+        <Route path="/payment" element={<PaymentPage />} />
         <Route path="/retailercart" element={<Cartr />} />
-        <Route path="/products/:id" element={<SupplierProductDetails />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
       </Routes>
       </BrowserRouter>
       <main>
