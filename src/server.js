@@ -5,17 +5,11 @@ const multer = require("multer");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
 
-
 const app = express();
 const port = 4000;
 
 const uri =
   "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?retryWrites=true&w=majority&appName=dropease";
-
-// Serve the React frontend as static files
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.json());
-app.use(cors());
 
 // Connect to MongoDB
 async function connect() {
@@ -26,7 +20,13 @@ async function connect() {
     console.error(error);
   }
 }
+
 connect();
+
+// Serve the React frontend as static files
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+app.use(cors());
 
 // Image Storage Engine using Multer
 const storage = multer.diskStorage({
@@ -226,59 +226,125 @@ const Users = mongoose.model('Users',{
   },
 });
 
-//Creating Endpoint for registring user
-app.post("/signup",async(req,res)=>{
-  let check = await Users.findOne({email:req.body.email}); // check if the user has been register before
-  if(check){
-    return res.status(400).json({success:false,errors:"Existing user found with same email address"})
-  }
-  let cart={};
-  for(let i=0;i<300;i++){
-    cart[i]=0;
-  }
-
-  const user = new Users({
-    email:req.body.email,
-    password:req.body.password,
-    role:req.body.password,
-    cartData:cart,
-  })
-
-  await user.save(); //save in db
-
-  //create token
-  const data={
-    user:{
-      id:user.id
+// Creating Endpoint for registering user
+app.post("/signup", async (req, res) => {
+  try {
+    let check = await Users.findOne({ email: req.body.email }); // Check if the user has been registered before
+    if (check) {
+      return res.status(400).json({ success: false, errors: "Existing user found with the same email address" });
     }
-  }
 
-  const token = jwt.sign(data,'secrect_token');
-  res.json({success:true,token})
-})
+    const user = new Users({
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role,
+    });
+
+    await user.save(); // Save user in the database
+
+    // Create token
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    const token = jwt.sign(data, 'secret_token');
+    res.json({ success: true, token });
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({ success: false, errors: "Server error. Please try again later." });
+  }
+});
+
 
 // Creating endpoint for user log in
-app.post('/login',async(req,res)=>{
-  let user = await Users.findOne({email:req.body.email});
-  if(user){
-    const passCompare = req.body.password === user.password; // compare password
-    if(passCompare){
-      const data = {
-        user:{
-          id:user.id
-        }
+app.post('/login', async (req, res) => {
+  try {
+    let user = await Users.findOne({ email: req.body.email });
+    if (user) {
+      const passCompare = req.body.password === user.password; // compare password
+      if (passCompare) {
+        const data = {
+          user: {
+            id: user.id,
+            role: user.role
+          }
+        };
+        const token = jwt.sign(data, 'secret_token');
+        res.json({ success: true, token, role: user.role }); // Include role in the response
+      } else {
+        res.json({ success: false, errors: "Wrong Password" });
       }
-      const token = jwt.sign(data,'secrect_token');
-      res.json({success:true,token});
+    } else {
+      res.json({ success: false, errors: "User not exist" });
     }
-    else{
-      res.json({success:false,errors:"Wrong Password"});
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
+
+// Creating middleware to fetch user
+const fetchUser = async (req, res, next) => {
+  const token = req.header('auth-token');
+  if(!token){
+    res.status(401).send({eorrors:"Please authenticate using valid authentication"});
+  }else{
+    try {
+      const data=jwt.verify(token,'secret_token');
+      req.user = data.user;
+      next();
+    } catch (error) {
+      res.status(401).send({errors:"Please authenticate using a valid token"});
     }
   }
-  else{
-    res.json({success:false,errors:"User not exsit"});
+};
+
+const CartCustomerSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users',
+    required: true
+  },
+  cartData: {
+    type: Map,
+    of: Number,
+    default: {}
   }
-})
+});
+
+const CartCustomer = mongoose.model('CartCustomer', CartCustomerSchema);
+
+app.post('/addtocart', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId } = req.body;
+
+    // Find cart data for the user
+    let cart = await CartCustomer.findOne({ userId });
+    
+    if (!cart) {
+      // Create new cart if not exists
+      cart = new CartCustomer({ userId, cartData: { [productId]: 1 } });
+    } else {
+      // Update existing cart
+      if (cart.cartData.has(productId)) {
+        cart.cartData.set(productId, cart.cartData.get(productId) + 1);
+      } else {
+        cart.cartData.set(productId, 1);
+      }
+    }
+
+    await cart.save();
+    res.send("Added to cart");
+  } catch (error) {
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
 
 // Start the Express server
 app.listen(port, (error) => {
