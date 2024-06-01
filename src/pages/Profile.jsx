@@ -78,20 +78,24 @@ const Profile = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleSave = () => {
-    uploadImage();
-    if (localStorage.getItem('auth-token')) {
-        fetch('http://localhost:4000/updateprofile', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/form-data',
-                'Content-Type': 'application/json',
-                'auth-token': localStorage.getItem('auth-token'),
-            },
-            body: JSON.stringify(userData)
-        })
-        .then((response) => response.json())
-        .then((data) => console.log(data));
+  const handleSave = async () => {
+    try {
+        const imageUrl = await uploadImage(); // Wait for image upload to complete
+        if (localStorage.getItem('auth-token')) {
+            const response = await fetch('http://localhost:4000/updateprofile', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/form-data',
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify({ ...userData, imageUrl }) // Include imageUrl in the request body
+            });
+            const data = await response.json();
+            console.log(data);
+        }
+    } catch (error) {
+        console.error('Error saving profile:', error);
     }
 };
 
@@ -110,7 +114,7 @@ const Profile = () => {
       <Header />
       <SideNav />
       <div className={styles.profileHeader}>
-          <img src={imageUrl} alt="" className={styles.profileImage} />
+          <img src={imageUrl} alt="Uploaded" className={styles.profileImage} />
         </div>
       <div className={styles.login_container}>
         <div className={styles.login_form_container}>
