@@ -294,10 +294,10 @@ app.post('/updateprofile', fetchUser, async (req, res) => {
 });
 
 app.post('/forgot-password', async (req, res) => {
-  const { email } = req.body.email;
+  const { email } = req.body;
   try{
     console.log("email: " , req.body.email);
-    const oldUser = await Users.findOne(email);
+    const oldUser = await Users.findOne({email});
     if(!oldUser) {
       return res.json({ status: "User not exist"});
     }
@@ -336,6 +336,7 @@ app.get('/reset-password/:id/:token', async (req, res) => {
   const { id, token } = req.params;
   console.log(req.params);
   const oldUser = await Users.findOne({ _id: id });
+  console.log(oldUser.email);
   if(!oldUser) {
     return res.json({ status: "User not exist"});
   }
