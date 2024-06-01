@@ -5,7 +5,6 @@ import React, { useState } from "react";
 const Signup = () => {
   const navigate = useNavigate(); // Correctly place the useNavigate hook here
 
-  const [passwordVisible, setPasswordVisible] = useState(false); // State to manage password visibility
   const [formData, setFormData] = useState({
     password: "",
     email: "",
@@ -57,10 +56,6 @@ const Signup = () => {
     }
   };
 
-  // Function to toggle password visibility
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -114,7 +109,7 @@ const Signup = () => {
                 onChange={changeHandler}
               />
               <input
-                type={passwordVisible ? "text" : "password"} // Conditional rendering based on passwordVisible state
+                type="password"
                 placeholder="Password"
                 name="password"
                 required

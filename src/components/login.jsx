@@ -32,8 +32,9 @@ const Login = () => {
     }).then((response) => response.json()).then((data) => responseData = data);
 
     if (responseData.success) {
+      console.log("Login Successful:", responseData);
       localStorage.setItem('auth-token', responseData.token);
-      const linkDestination = formData.role === "customer" ? "/customerhome" : "/home";
+      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home";
       navigate(linkDestination);
     } else {
       alert(responseData.errors);

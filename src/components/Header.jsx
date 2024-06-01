@@ -2,7 +2,7 @@ import React from "react";
 import "../style/Header.css";
 import { FaRegCircleUser } from "react-icons/fa6";
 import DropdownMenu from "./UsernameDropDown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 const Header = ({ children }) => {

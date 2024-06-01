@@ -148,3 +148,10 @@
   opacity: 0.6;
   font-weight: bold;
 }
+
+.uploadedImage {
+  width: 100px;
+  height: auto;
+  display: block; 
+  margin-top: 10px;
+}

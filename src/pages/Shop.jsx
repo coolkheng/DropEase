@@ -12,6 +12,7 @@ const Shop = () => {
   // Handling different size of screen
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
+
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 1024);
