@@ -73,15 +73,15 @@ function App() {
             <Route path="/kids" element={<Kids />} />
             <Route
               path="/apparel"
-              element={<ShopCategory category="apparel" />}
+              element={<ShopCategory category="Apparel" />}
             />
             <Route
               path="/sports"
-              element={<ShopCategory category="sports" />}
+              element={<ShopCategory category="Sports" />}
             />
             <Route
               path="/electronics"
-              element={<ShopCategory category="electronics" />}
+              element={<ShopCategory category="Electronic" />}
             />
             <Route path="/profile" element={<Profile />} />
           </Routes>

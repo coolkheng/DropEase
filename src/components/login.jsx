@@ -12,7 +12,7 @@ const Login = () => {
   const [formData, setFormData] = useState({
     password: "",
     email: "",
-    role: ""
+    role:""
   });
 
   const changeHandler = (e) => {
@@ -29,11 +29,13 @@ const Login = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    }).then((response) => response.json()).then((data) => responseData = data);
+    })
+    .then((response) => response.json())
+    .then((data) => responseData = data);
 
     if (responseData.success) {
       localStorage.setItem('auth-token', responseData.token);
-      const linkDestination = formData.role === "customer" ? "/customerhome" : "/home";
+      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home";
       navigate(linkDestination);
     } else {
       alert(responseData.errors);

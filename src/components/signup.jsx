@@ -31,31 +31,38 @@ const Signup = () => {
       hasSymbols
     );
   };
-
+  
   const signup = async () => {
     console.log("Sign Up function executed", formData);
+  
     if (!validatePassword(formData.password)) {
       alert("Password must be at least 12 characters long and include uppercase, lowercase, numbers, and symbols.");
       return;
     }
-
-    let responseData;
-    await fetch('http://localhost:4000/signup', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/form-data',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    }).then((response) => response.json()).then((data) => responseData = data);
-
-    if (responseData.success) {
-      localStorage.setItem('auth-token', responseData.token);
-      navigate("/");
-    } else {
-      alert(responseData.errors);
+  
+    try {
+      const response = await fetch('http://localhost:4000/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const responseData = await response.json();
+  
+      if (responseData.success) {
+        localStorage.setItem('auth-token', responseData.token);
+        navigate("/");
+      } else {
+        alert(responseData.errors);
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      alert('Signup failed. Please try again later.');
     }
   };
+  
 
   // Function to toggle password visibility
   const togglePasswordVisibility = () => {
