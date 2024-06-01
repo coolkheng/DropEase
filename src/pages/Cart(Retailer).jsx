@@ -6,8 +6,9 @@ import Header from "../components/Header";
 import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
 import { CartContext } from "./cartContext"; // Ensure the correct path to your CartContext
+import axios from 'axios';
 
-const Cartr = () => {
+const RetailerCart = () => {
   const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
 
   // Calculate total price of items
@@ -15,6 +16,22 @@ const Cartr = () => {
     (price, item) => price + item.qty * item.price,
     0
   );
+
+  const handleCheckout = async () => {
+    const userID = "yourUserID"; // Replace with actual user ID
+    const cartItems = [
+      // Replace with actual cart items from your state
+    ];
+  
+    try {
+      const response = await axios.post('/api/cartretailer', { userID, cartItems });
+      console.log('Cart items saved:', response.data);
+      // Handle successful checkout, e.g., navigate to a success page, clear the cart, etc.
+    } catch (error) {
+      console.error('Error saving cart items:', error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
 
   // Render cart items
   return (
@@ -80,7 +97,7 @@ const Cartr = () => {
                 <h4>Total Price :</h4>
                 <h3>RM {totalPrice}.00</h3>
               </div>
-              <button className="checkout-button">Proceed to Checkout</button>
+              <button className="checkout-button" onClick={handleCheckout}>Proceed to Checkout</button>
             </div>
           </div>
         </div>
@@ -89,4 +106,4 @@ const Cartr = () => {
   );
 };
 
-export default Cartr;
+export default RetailerCart;

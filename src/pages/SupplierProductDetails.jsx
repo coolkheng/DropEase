@@ -28,7 +28,7 @@ const SupplierProductDetails = () => {
 
   const handleAddToCart = () => {
       addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor });
-      navigate('/suppliercart');
+      navigate('/retailercart');
   };
 
   if (!product) {

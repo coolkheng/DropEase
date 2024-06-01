@@ -6,7 +6,7 @@ const cors = require("cors");
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = 4000;
+const port = 3000;
 
 const uri =
   "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?retryWrites=true&w=majority&appName=dropease";
@@ -344,6 +344,97 @@ app.post('/addtocart', fetchUser, async (req, res) => {
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
+
+// Define the schema for cart items
+const CartRetailerSchema = new mongoose.Schema({
+  userID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  cartID: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  items: [{
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true,
+    },
+    name: String,
+    mainImage: String,
+    desc: String,
+    rating: Number,
+    category: String,
+    size: [String],
+    color: [String],
+    price: Number,
+    qty: Number,
+    available: Boolean,
+  }],
+}, { timestamps: true });
+
+const CartRetailer = mongoose.model('CartRetailer', CartRetailerSchema);
+
+app.post('/cartretailer', fetchUser, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const { productId, name, mainImage, desc, rating, category, size, color, price, qty } = req.body;
+
+    // Check if retailer cart already exists
+    let cartRetailer = await CartRetailer.findOne({ userID });
+
+    if (!cartRetailer) {
+      // Create a new cart if not exists
+      cartRetailer = new CartRetailer({
+        userID,
+        cartID: new mongoose.Types.ObjectId().toString(),
+        items: [{ productId, name, mainImage, desc, rating, category, size, color, price, qty, available: true }]
+      });
+    } else {
+      // Update existing cart
+      const itemIndex = cartRetailer.items.findIndex(item => item.productId.toString() === productId);
+      if (itemIndex > -1) {
+        cartRetailer.items[itemIndex].qty += qty;
+      } else {
+        cartRetailer.items.push({ productId, name, mainImage, desc, rating, category, size, color, price, qty, available: true });
+      }
+    }
+
+    await cartRetailer.save();
+    res.json({ success: true, message: "Item added to retailer cart" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
+  try {
+    const userID = req.user.id;
+
+    // Find retailer cart for the user
+    const cartRetailer = await CartRetailer.findOne({ userID });
+
+    if (!cartRetailer || cartRetailer.items.length === 0) {
+      return res.status(400).json({ success: false, errors: "No items in retailer cart" });
+    }
+
+    // Process the order (this part can include order creation, payment processing, etc.)
+    // For this example, we'll simply clear the cart
+
+    cartRetailer.items = [];
+    await cartRetailer.save();
+
+    res.json({ success: true, message: "Checkout successful" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
 
 
 // Start the Express server
