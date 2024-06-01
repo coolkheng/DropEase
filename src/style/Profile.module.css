@@ -1,7 +1,23 @@
+.profileHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e5ea;;
+}
+
+.profileImage {
+  width: 150px;
+  height: 150px;
+  margin-top: 2%;
+  margin-left: 22%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffa500; /* Orange border */
+}
+
 .login_container {
   width: 100vw;
   height: 100vh;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,8 +87,7 @@
 .profileText {
   color: rgba(66, 70, 105, 1);
   margin-left: 20%;
-  margin-top: 5%;
-  margin-bottom: 5%;
+  margin-bottom: 1%;
   font-size: 180%;
   font-weight: 700;
 }

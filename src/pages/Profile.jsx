@@ -109,6 +109,9 @@ const Profile = () => {
     <div>
       <Header />
       <SideNav />
+      <div className={styles.profileHeader}>
+          <img src={imageUrl} alt="" className={styles.profileImage} />
+        </div>
       <div className={styles.login_container}>
         <div className={styles.login_form_container}>
           <div className={styles.left}>
@@ -123,10 +126,8 @@ const Profile = () => {
                   readOnly={!isEditing}
                   accept="image/*"
                   className={styles.input_odd}
-                />
-                {imageUrl && (
-                  <img src={imageUrl} alt="Uploaded" className={styles.uploadedImage} />
-                )}
+                  />
+
                 <input
                   type="text"
                   name="store"
@@ -143,7 +144,7 @@ const Profile = () => {
                   placeholder="Email"
                   value={userData.email}
                   onChange={handleFieldChange}
-                  readOnly={!isEditing}
+                  disabled
                   required
                   className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
                 />
