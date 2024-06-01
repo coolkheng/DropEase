@@ -195,12 +195,19 @@ app.get("/retailerBanner", async (req, res) => {
   console.log("Retailer Banners Fetched");
   res.send(banners);
 });
+
 // Creating API for getting all products
-app.get('/allproduct',async(req,res)=>{
-  let products = await Product.find({});
-  console.log("All Products Fetched");
-  res.send(products);
-})
+app.get('/allproduct', async (req, res) => {
+  try {
+    const products = await Product.find({});
+    console.log("All Products Fetched");
+    res.json(products); // Use res.json to explicitly send JSON data
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 //Shema craeting for User model
 const Users = mongoose.model('Users',{
@@ -318,32 +325,135 @@ const CartCustomerSchema = new mongoose.Schema({
 
 const CartCustomer = mongoose.model('CartCustomer', CartCustomerSchema);
 
+//TODO: Change productId based on Eugene's product-id
 app.post('/addtocart', fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId } = req.body;
 
+    console.log('User ID:', userId);
+    console.log('Product ID:', productId);
+
+    // Convert productId to string
+    const productIdStr = String(productId);
+
     // Find cart data for the user
     let cart = await CartCustomer.findOne({ userId });
-    
+
     if (!cart) {
       // Create new cart if not exists
-      cart = new CartCustomer({ userId, cartData: { [productId]: 1 } });
+      cart = new CartCustomer({ userId, cartData: new Map([[productIdStr, 1]]) });
     } else {
       // Update existing cart
-      if (cart.cartData.has(productId)) {
-        cart.cartData.set(productId, cart.cartData.get(productId) + 1);
+      if (cart.cartData.has(productIdStr)) {
+        cart.cartData.set(productIdStr, cart.cartData.get(productIdStr) + 1);
       } else {
-        cart.cartData.set(productId, 1);
+        cart.cartData.set(productIdStr, 1);
       }
     }
 
     await cart.save();
-    res.send("Added to cart");
+    res.json({ message: "Added to cart" });
   } catch (error) {
-    res.status(500).send({ errors: "Internal Server Error" });
+    console.error("Error adding to cart:", error);
+    res.status(500).json({ errors: "Internal Server Error" });
   }
 });
+
+//TODO: Change productId based on Eugene's product-id
+app.post('/removefromcart', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId } = req.body;
+
+    console.log('User ID:', userId);
+    console.log('Product ID:', productId);
+
+    // Convert productId to string
+    const productIdStr = String(productId);
+
+    // Find cart data for the user
+    let cart = await CartCustomer.findOne({ userId });
+
+    if (!cart || !cart.cartData.has(productIdStr)) {
+      return res.status(404).json({ errors: "Product not found in cart" });
+    }
+
+    // Remove product from cart
+    cart.cartData.delete(productIdStr);
+
+    await cart.save();
+    res.json({ message: "Removed from cart" });
+  } catch (error) {
+    console.error("Error removing from cart:", error);
+    res.status(500).json({ errors: "Internal Server Error" });
+  }
+});
+//TODO: Change productId based on Eugene's product-id
+app.post('/decreasequantity', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId } = req.body;
+
+    console.log('User ID:', userId);
+    console.log('Product ID:', productId);
+
+    // Convert productId to string
+    const productIdStr = String(productId);
+
+    // Find cart data for the user
+    let cart = await CartCustomer.findOne({ userId });
+
+    if (!cart || !cart.cartData.has(productIdStr)) {
+      return res.status(404).json({ errors: "Product not found in cart" });
+    }
+
+    const productQuantity = cart.cartData.get(productIdStr);
+
+    if (productQuantity > 1) {
+      // Decrease quantity if more than 1
+      cart.cartData.set(productIdStr, productQuantity - 1);
+    } else {
+      // Remove product from cart if quantity is 1
+      cart.cartData.delete(productIdStr);
+    }
+
+    await cart.save();
+    res.json({ message: "Quantity decreased" });
+  } catch (error) {
+    console.error("Error decreasing quantity:", error);
+    res.status(500).json({ errors: "Internal Server Error" });
+  }
+});
+
+app.post('/getcart', fetchUser, async (req, res) => {
+  try {
+    console.log("GetCart");
+    let userCart = await CartCustomer.findOne({ userId: req.user.id });
+
+    if (!userCart) {
+      return res.status(404).json({ errors: "Cart Not Found" });
+    }
+
+    let cartItems = [];
+
+    for (let [productId, quantity] of userCart.cartData) {
+      let product = await Product.findOne({ id: productId });
+      if (product) {
+        cartItems.push({
+          product: product,
+          quantity: quantity
+        });
+      }
+    }
+    console.log(cartItems);
+    res.json(cartItems);
+  } catch (error) {
+    console.error("Error fetching cart data:", error);
+    res.status(500).json({ errors: "Internal Server Error" });
+  }
+});
+
 
 
 // Start the Express server

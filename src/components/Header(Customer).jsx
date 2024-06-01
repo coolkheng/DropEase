@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../asset/DropEase logo.png";
 import search_icon from "../asset/search icon.png";
@@ -7,10 +7,11 @@ import cart_icon from "../asset/cart icon.png";
 import "../style/Header(Customer).css";
 import { CartContext } from "../pages/cartContext";
 
-export const Header = () => {
+export const HeaderCustomer = () => {
   const location = useLocation();
-  const {cartItems} = useContext(CartContext);
+  const { cartItems } = useContext(CartContext);
   const [menu, setMenu] = useState("");
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   useEffect(() => {
     console.log("Location changed:", location.pathname);
@@ -33,13 +34,20 @@ export const Header = () => {
     }
   }, [location.pathname, menu]);
 
+  useEffect(() => {
+    // Calculate total quantity from cart items
+    const quantity = Object.values(cartItems).reduce(
+      (acc, item) => acc + item.qty,
+      0
+    );
+    setTotalQuantity(quantity);
+  }, [cartItems]);
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
-
-  const totalQuantity = cartItems.reduce((total, item) => total + item.qty, 0);
 
   return (
     <div className="header-container">
@@ -133,4 +141,4 @@ export const Header = () => {
   );
 };
 
-export default Header;
+export default HeaderCustomer;

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "../style/Cart(Customer).css";
 import { FaXmark } from "react-icons/fa6";
 import { FaPlus, FaMinus } from "react-icons/fa";
@@ -7,6 +7,8 @@ import { CartContext } from "./cartContext"; // Ensure the correct path to your 
 
 const Cart = () => {
   const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
+  const authToken = localStorage.getItem('auth-token');
+
 
   // Calculate total price of items
   const totalPrice = cartItems.reduce(
@@ -42,7 +44,7 @@ const Cart = () => {
                     <div className="removeCart">
                       <button
                         className="removeCartButton"
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item.id, authToken)}
                       >
                         <FaXmark />
                       </button>
@@ -50,13 +52,13 @@ const Cart = () => {
                     <div className="cartControl">
                       <button
                         className="incCart"
-                        onClick={() => addToCart(item)}
+                        onClick={() => addToCart(item, authToken)}
                       >
                         <FaPlus />
                       </button>
                       <button
                         className="desCart"
-                        onClick={() => decreaseQty(item)}
+                        onClick={() => decreaseQty(item, authToken)}
                       >
                         <FaMinus />
                       </button>
