@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
+import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate(); 
@@ -10,7 +11,8 @@ const Login = () => {
 
   const [formData, setFormData] = useState({
     password: "",
-    email: ""
+    email: "",
+    role:""
   });
 
   const changeHandler = (e) => {

@@ -81,7 +81,7 @@ function App() {
             />
             <Route
               path="/electronics"
-              element={<ShopCategory category="electronics" />}
+              element={<ShopCategory category="electronic" />}
             />
             <Route path="/profile" element={<Profile />} />
           </Routes>

@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const app = express();
 const port = 4000;
@@ -209,29 +210,20 @@ app.get('/allproduct', async (req, res) => {
 });
 
 
-//Shema craeting for User model
-const Users = mongoose.model('Users',{
-  name:{
-    type:String,
-  },
-  email:{
-    type:String,
-    required:[true,"Your email address is required"],
-    unique:true,
-  },
-  password: {
-    type: String,
-    required: [true, "Your password is required"],
-  },
-  role: {
-    type: String,
-    required: [true, "Your role is required"],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+// Define the Users schema and model
+const UsersSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  imageUrl: { type: String },
+  store: { type: String },
+  phoneno: { type: String },
+  category: { type: String },
+  storeId: { type: Number, unique: true }, // Correct usage of unique option
 });
+UsersSchema.plugin(AutoIncrement, { inc_field: 'storeId' });
+const Users = mongoose.model('Users', UsersSchema);
 
 // Creating Endpoint for registering user
 app.post("/signup", async (req, res) => {
@@ -245,7 +237,12 @@ app.post("/signup", async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       role: req.body.role,
+      imageUrl: "",
+      store: "",
+      phoneno: "",
+      category: "",
     });
+
 
     await user.save(); // Save user in the database
 
@@ -264,7 +261,6 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-
 // Creating endpoint for user log in
 app.post('/login', async (req, res) => {
   try {
@@ -275,11 +271,12 @@ app.post('/login', async (req, res) => {
         const data = {
           user: {
             id: user.id,
+            email: user.email,
             role: user.role
           }
         };
         const token = jwt.sign(data, 'secret_token');
-        res.json({ success: true, token, role: user.role }); // Include role in the response
+        res.json({ success: true, token, role: user.role, userData: user });
       } else {
         res.json({ success: false, errors: "Wrong Password" });
       }
@@ -292,13 +289,23 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
+// Get all store
+app.get('/allstore', async (req, res) => {
+  try {
+    const store = await Users.find({role: "retailer"});
+    console.log("All Store Fetched");
+    res.json(store); 
+  } catch (error) {
+    console.error("Error fetching store:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 // Creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
   const token = req.header('auth-token');
   if(!token){
-    res.status(401).send({eorrors:"Please authenticate using valid authentication"});
+    res.status(401).send({errors:"Please authenticate using valid authentication"});
   }else{
     try {
       const data=jwt.verify(token,'secret_token');
@@ -309,6 +316,71 @@ const fetchUser = async (req, res, next) => {
     }
   }
 };
+
+// Multer configuration for profile image upload
+const profileStorage = multer.diskStorage({
+  destination: './uploads/profiles',
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+
+const uploadProfile = multer({ storage: profileStorage });
+
+// Profile image upload endpoint
+app.post('/upload-profile', uploadProfile.single('image'), (req, res) => {
+  try {
+    const filePath = req.file.path;
+    // Save the file path or URL to the user's profile
+    const imageUrl = `http://localhost:${port}/${filePath}`;
+    res.json({ imageUrl });
+  } catch (error) {
+    console.error('Error uploading profile image:', error);
+    res.status(500).json({ errors: 'Internal Server Error' });
+  }
+});
+
+// Creating user data endpoint
+app.post("/userData", fetchUser, async (req, res) => {
+  try {
+    const user = await Users.findById(req.user.id).select("-password"); // Exclude password
+    if (!user) {
+      return res.status(404).json({ success: false, errors: "User not found" });
+    }
+    res.json({ success: true, data: user });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ success: false, errors: "Internal Server Error" });
+  }
+});
+
+// POST endpoint to update user profile
+app.post('/updateprofile', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log(`Updating profile for user ID: ${userId}`);
+
+    // Find the user by their ID
+    let user = await Users.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the user's profile fields
+    user.imageUrl = req.body.imageUrl || user.imageUrl; // Use the provided imageUrl if available, otherwise keep the existing one
+    user.store = req.body.store || user.store; // Use the provided store if available, otherwise keep the existing one
+    user.phoneno = req.body.phoneno || user.phoneno; // Use the provided phoneno if available, otherwise keep the existing one
+    user.category = req.body.category || user.category; // Use the provided category if available, otherwise keep the existing one
+
+    // Save the updated user profile
+    await user.save();
+    res.json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ errors: "Internal Server Error" });
+  }
+});
 
 const CartCustomerSchema = new mongoose.Schema({
   userId: {
