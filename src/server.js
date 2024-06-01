@@ -14,6 +14,12 @@ const uri = "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+var nodemailer = require('nodemailer');
+
+
+app.set('views', path.join(__dirname, 'views'));
+app.set("view engine", "ejs");
 
 // Connect to MongoDB
 async function connect() {
@@ -287,11 +293,88 @@ app.post('/updateprofile', fetchUser, async (req, res) => {
   }
 });
 
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body.email;
+  try{
+    console.log("email: " , req.body.email);
+    const oldUser = await Users.findOne(email);
+    if(!oldUser) {
+      return res.json({ status: "User not exist"});
+    }
+    const token = jwt.sign({email: oldUser.email, id:oldUser._id}, 'secret_token', {
+      // expiresIn: "5m"
+    });
+    const link = `http://localhost:4000/reset-password/${oldUser._id}/${token}`;
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'rachelteoh14@gmail.com',
+        pass: 'amdatqkdipshbqdv'
+      }
+    });
+    
+    var mailOptions = {
+      from: 'youremail@gmail.com',
+      to: req.body.email,
+      subject: 'Password Reset',
+      text: link,
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        return res.json({ status: "Email sent successfully" });
+      }
+    });
+    console.log(link);
+  } catch (error) {}
+});
 
+app.get('/reset-password/:id/:token', async (req, res) => {
+  const { id, token } = req.params;
+  console.log(req.params);
+  const oldUser = await Users.findOne({ _id: id });
+  if(!oldUser) {
+    return res.json({ status: "User not exist"});
+  }
+  try{
+    const verify = jwt.verify(token, 'secret_token');
+    res.render("index", {email: verify.email, status: "Not Verified"})
+  } catch (error) {
+    res.send("Not Verified");
+  }
+});
 
+app.post('/reset-password/:id/:token', async (req, res) => {
+  const { id, token } = req.params;
+  const password = req.body.password;
+  console.log("password", password);
+  const oldUser = await Users.findOne({ _id: id });
+  if(!oldUser) {
+    return res.json({ status: "User not exist"});
+  }
+  try{
+    const verify = jwt.verify(token, 'secret_token');
+    //const encryptedPassword = await bcrypt.hash(password, 10);
+    await Users.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          password: password,
+        },
+      }
+    );
 
-
-
+    res.render("index", { email: verify.email, status: "verified" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "Something Went Wrong" });
+  }
+});
 
 const CartCustomerSchema = new mongoose.Schema({
   userId: {

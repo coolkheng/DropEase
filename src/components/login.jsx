@@ -29,7 +29,8 @@ const Login = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    }).then((response) => response.json()).then((data) => responseData = data);
+    }).then((response) => response.json())
+    .then((data) => responseData = data);
 
     if (responseData.success) {
       console.log("Login Successful:", responseData);
