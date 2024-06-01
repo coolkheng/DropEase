@@ -34,15 +34,15 @@ const ShopCategory = ({ category }) => {
   if (error) return <div>Error: {error}</div>;
 
   // Filter stores based on the category prop
-  const filteredStores = stores.filter(store => store.category.toLowerCase() === category.toLowerCase());
+  const filteredStores = stores.filter(store => store.category === category);
 
   // Determine the category name for display
   let categoryNames = "";
-  if (category.toLowerCase() === "apparel") {
+  if (category.toLowerCase() === "Apparel") {
     categoryNames = "Apparel & Accessories";
-  } else if (category.toLowerCase() === "sports") {
+  } else if (category.toLowerCase() === "Sports") {
     categoryNames = "Sports & Entertainment";
-  } else if (category.toLowerCase() === "electronic") {
+  } else if (category.toLowerCase() === "Electronic") {
     categoryNames = "Electronics";
   }
 
