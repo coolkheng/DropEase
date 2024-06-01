@@ -47,6 +47,28 @@ const Profile = () => {
     setImage(e.target.files[0]);
   };
 
+  const uploadImage = async () => {
+    if (!image) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('image', image);
+
+      const response = await axios.post('http://localhost:4000/upload-profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log('Image uploaded:', response.data.imageUrl);
+      setImageUrl(response.data.imageUrl); // Update the imageUrl state
+      return response.data.imageUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setErrorMessage('Failed to upload image.');
+    }
+  };
+
 
   const handleFieldChange = (event) => {
     setUserData({ ...userData, [event.target.name]: event.target.value });
@@ -57,6 +79,7 @@ const Profile = () => {
   };
 
   const handleSave = () => {
+    uploadImage();
     if (localStorage.getItem('auth-token')) {
         fetch('http://localhost:4000/updateprofile', {
             method: 'POST',

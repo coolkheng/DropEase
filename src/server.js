@@ -222,6 +222,29 @@ const fetchUser = async (req, res, next) => {
   }
 };
 
+// Multer configuration for profile image upload
+const profileStorage = multer.diskStorage({
+  destination: './uploads/profiles',
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+
+const uploadProfile = multer({ storage: profileStorage });
+
+// Profile image upload endpoint
+app.post('/upload-profile', uploadProfile.single('image'), (req, res) => {
+  try {
+    const filePath = req.file.path;
+    // Save the file path or URL to the user's profile
+    const imageUrl = `http://localhost:${port}/${filePath}`;
+    res.json({ imageUrl });
+  } catch (error) {
+    console.error('Error uploading profile image:', error);
+    res.status(500).json({ errors: 'Internal Server Error' });
+  }
+});
+
 // Creating user data endpoint
 app.post("/userData", fetchUser, async (req, res) => {
   try {
@@ -267,28 +290,6 @@ app.post('/updateprofile', fetchUser, async (req, res) => {
 
 
 
-// Multer configuration for profile image upload
-const profileStorage = multer.diskStorage({
-  destination: './uploads/profiles',
-  filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
-
-const uploadProfile = multer({ storage: profileStorage });
-
-// Profile image upload endpoint
-app.post('/upload-profile', uploadProfile.single('image'), (req, res) => {
-  try {
-    const filePath = req.file.path;
-    // Save the file path or URL to the user's profile
-    const imageUrl = `http://localhost:${port}/${filePath}`;
-    res.json({ imageUrl });
-  } catch (error) {
-    console.error('Error uploading profile image:', error);
-    res.status(500).json({ errors: 'Internal Server Error' });
-  }
-});
 
 
 
