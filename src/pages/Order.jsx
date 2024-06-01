@@ -153,7 +153,7 @@ const OrderPage = ({ data }) => {
     selectableRows: false,
     filterType: "checkbox",
     onRowClick: (rowData, rowMeta) => {
-      const orderId = orders[rowMeta.dataIndex].Order;
+      const orderId = retrieved_orders[rowMeta.dataIndex]._id;
       navigate(`/ordered-item/${orderId}`);
     },
   };

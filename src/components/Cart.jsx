@@ -6,7 +6,13 @@ import nikebagImage from "../asset/nike-bag.jpeg";
 import nikeshoesImage from "../asset/nike-shoe.png";
 import StepProgressBar from "../components/progressbar";
 
-const Cart = () => {
+const Cart = ({ orderDetails }) => {
+  console.log(orderDetails);
+
+  if (!orderDetails) {
+    return <div>Loading order details...</div>; // Show a loading message while data is being fetched
+  }
+
   return (
     <div className="CartContainer">
       <div className="Cart-Header">
@@ -21,39 +27,25 @@ const Cart = () => {
       <div className="Cart-Header">
         <h3 className="Heading">Order Items:</h3>
       </div>
-      <div className="Cart-Items">
-        <div className="Cart-image-box">
-          <img
-            src={nikebagImage}
-            style={{ height: "120px" }}
-            alt="Apple Juice"
-          />
-        </div>
-        <div className="Cart-about">
-          <h1 className="Cart-title">Nike bag</h1>
-          <h3 className="Cart-subtitle">Quantity :2</h3>
-        </div>
-        <div className="Cart-prices">
-          <div className="Cart-amount">$2.99</div>
-        </div>
-      </div>
 
-      <div className="Cart-Items">
-        <div className="Cart-image-box">
-          <img
-            src={nikeshoesImage}
-            style={{ height: "120px" }}
-            alt="Grapes Juice"
-          />
+      {orderDetails.products.map((product, index) => (
+        <div className="Cart-Items" key={index}>
+          <div className="Cart-image-box">
+            <img
+              src={product.productImage} // Assuming productImage is the URL of the image
+              style={{ height: "120px" }}
+              alt={product.productName}
+            />
+          </div>
+          <div className="Cart-about">
+            <h1 className="Cart-title">{product.productName}</h1>
+            <h3 className="Cart-subtitle">Quantity: {product.quantity}</h3>
+          </div>
+          <div className="Cart-prices">
+            <div className="Cart-amount">${product.price}</div>
+          </div>
         </div>
-        <div className="Cart-about">
-          <h1 className="Cart-title">Nike Shoes</h1>
-          <h3 className="Cart-subtitle">Quantity:1</h3>
-        </div>
-        <div className="Cart-prices">
-          <div className="Cart-amount">$3.19</div>
-        </div>
-      </div>
+      ))}
 
       <div className="Cart-checkout">
         <div className="Cart-total">

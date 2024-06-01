@@ -210,6 +210,22 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
+// Define route to fetch order details by ID
+app.get("/api/orders/:id", async (req, res) => {
+  const orderId = req.params.id;
+
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Start the Express server
 app.listen(port, (error) => {
   if (!error) {
