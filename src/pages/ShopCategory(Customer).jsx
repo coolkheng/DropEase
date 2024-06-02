@@ -1,102 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../style/ShopCategory(Customer).css";
-import adlv from "../asset/adlv.png";
-import nike from "../asset/Nike-Logo.jpg";
-import chanel from "../asset/channel logo.jpeg";
-import adidas from "../asset/Adidas-Logo.png";
-import padini from "../asset/Padini-logo.png";
-import brandsOutlet from "../asset/logo-brandsoutlet.jpg";
-import skechers from "../asset/skechers logo.png";
-import panasonic from "../asset/panasonic logo.png";
-import canon from "../asset/Canon-Company-Logo.jpg";
-import lg from "../asset/LG-Logo-2014-present.png";
 import HeaderCustomer from "../components/Header(Customer)";
 
 const ShopCategory = ({ category }) => {
-  // Define shop items based on the category
-  let placeholderShopItems = [];
+  const [stores, setStores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/allstore');
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          console.error('Failed to fetch stores:', response.status, errorMessage);
+          throw new Error('Failed to fetch stores');
+        }
+        const data = await response.json();
+        setStores(data);
+        console.log(data);
+      } catch (err) {
+        console.error('Error:', err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStores();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  // Filter stores based on the category prop
+  const filteredStores = stores.filter(store => store.category === category);
+
+  // Determine the category name for display
   let categoryNames = "";
-
-  // Determine the category image based on the category
-  if (category === "apparel") {
-    placeholderShopItems = [
-      {
-        id: 1,
-        name: "Acmé de la vie",
-        cover: adlv,
-      },
-
-      {
-        id: 2,
-        name: "Padini",
-        cover: padini,
-      },
-      {
-        id: 3,
-        name: "Brands Outlet",
-        cover: brandsOutlet,
-      },
-      {
-        id: 4,
-        name: "Chanel",
-        cover: chanel,
-      },
-    ];
+  if (category.toLowerCase() === "Apparel") {
     categoryNames = "Apparel & Accessories";
-  } else if (category === "sports") {
-    placeholderShopItems = [
-      {
-        id: 1,
-        name: "NIKE",
-        cover: nike,
-      },
-      {
-        id: 2,
-        name: "ADIDAS",
-        cover: adidas,
-      },
-      {
-        id: 3,
-        name: "SKECHERS",
-        cover: skechers,
-      },
-    ];
+  } else if (category.toLowerCase() === "Sports") {
     categoryNames = "Sports & Entertainment";
-  } else if (category === "electronics") {
-    placeholderShopItems = [
-      {
-        id: 1,
-        name: "LG",
-        cover: lg,
-      },
-      {
-        id: 2,
-        name: "Canon",
-        cover: canon,
-      },
-      {
-        id: 3,
-        name: "Panasonic",
-        cover: panasonic,
-      },
-    ];
+  } else if (category.toLowerCase() === "Electronic") {
     categoryNames = "Electronics";
   }
 
   return (
     <div className="ShopCategory">
       <HeaderCustomer />
-      <h2 className="categoryNames">{categoryNames}</h2>
-      {/* Map over the array and render each shop item */}
-      {placeholderShopItems.map((shop) => (
-        <div key={shop.id} className="shopCatbox">
-          <div className="shopCat-con">
-            <div className="img-con">
-              <img className="shopCat-img" src={shop.cover} alt="" />
-              <p className="shopCat-name">{shop.name}</p>
+      <h2 className="categoryNames" style={{ fontWeight: "bolder", fontSize: "30px" }}>{categoryNames}</h2>
+      {/* Map over the filtered stores and render each store item */}
+      {filteredStores.map((store) => (
+        <Link key={store.storeId} to={`/store/${store.storeId}`} className="shop-link">
+          <div className="shopCatbox">
+            <div className="shopCat-con">
+              <div className="img-con">
+                <img className="shopCat-img" src={store.imageUrl} alt={store.store} />
+                <p className="shopCat-name">{store.store}</p>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

@@ -4,7 +4,7 @@ import {
   faTruckFast,
   faIdCard,
   faShield,
-  faHeadset,
+  faStore,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../style/Wrapper.css";
 
@@ -13,12 +13,12 @@ const Wrapper = () => {
     {
       cover: faTruckFast,
       title: "Worldwide Delivery",
-      decs: "We offer competitive prices on our 100 million plus product any range.",
+      decs: "We provide worldwide delivery for your convenience.",
     },
     {
       cover: faIdCard,
       title: "Safe Payment",
-      decs: "We offer competitive prices on our 100 million plus product any range.",
+      decs: "We ensure secure payment options for your peace of mind.",
     },
     {
       cover: faShield,
@@ -26,22 +26,22 @@ const Wrapper = () => {
       decs: "We offer competitive prices on our 100 million plus product any range.",
     },
     {
-      cover: faHeadset,
-      title: "24/7 Support",
-      decs: "We offer competitive prices on our 100 million plus product any range.",
+      cover: faStore,
+      title: "Unified Shopping Hub",
+      decs: "A single platform offering diverse stores, each with a unique range of products.",
     },
   ];
 
   return (
     <>
-      <section style={{ justifyContent: "center" }} className="box">
+      <section style={{ marginTop: "80px",justifyContent: "center" }} className="box">
         <div className="container grid2">
           {data.map((val, index) => (
             <div className="product" key={index}>
               <div className="img icon-circle">
                 <FontAwesomeIcon icon={val.cover} />
               </div>
-              <h3>{val.title}</h3>
+              <h3 style={{fontWeight:"bold",marginTop:"20px"}}>{val.title}</h3>
               <p>{val.decs}</p>
             </div>
           ))}
