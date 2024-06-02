@@ -27,15 +27,10 @@ const Cart = ({ orderDetails }) => {
       <div className="Cart-Header">
         <h3 className="Heading">Order Items:</h3>
       </div>
-
       {orderDetails.products.map((product, index) => (
         <div className="Cart-Items" key={index}>
           <div className="Cart-image-box">
-            <img
-              src={product.productImage} // Assuming productImage is the URL of the image
-              style={{ height: "120px" }}
-              alt={product.productName}
-            />
+            <img src={product.productImage} alt={product.productName} />
           </div>
           <div className="Cart-about">
             <h1 className="Cart-title">{product.productName}</h1>

@@ -45,7 +45,7 @@
 
 .Cart-Items {
   margin: auto;
-  width: 90%;
+  width: 80%;
   height: 30%;
   display: flex;
   justify-content: space-between;
@@ -53,8 +53,16 @@
 }
 
 .Cart-image-box {
-  text-align: left;
+  flex-shrink: 0;
+  width: 120px; /* Fixed width for the image */
+  height: 120px; /* Fixed height for the image */
+  margin-right: 20px; /* Adjust as needed */
+  overflow: hidden; /* Ensure the image does not overflow the box */
+  display: flex; /* Center the image within the box */
+  align-items: center;
+  justify-content: center;
 }
+
 .Cart-about {
   height: 70%;
   width: 75%;
