@@ -6,11 +6,14 @@ import user_icon from "../asset/user icon.png";
 import cart_icon from "../asset/cart icon.png";
 import "../style/Header(Customer).css";
 import { CartContext } from "../pages/cartContext"; // Corrected import
+import SearchResults from "./SearchResults"; // Import the new component
 
 export const HeaderCustomer = () => {
   const location = useLocation();
   const { cartItems } = useContext(CartContext); // Corrected context usage
   const [menu, setMenu] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     console.log("Location changed:", location.pathname);
@@ -39,10 +42,18 @@ export const HeaderCustomer = () => {
     return total + quantity;
   }, 0);
 
-  const [searchQuery, setSearchQuery] = useState("");
-
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
+  };
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/searchstore?q=${searchQuery}`);
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
   };
 
   return (
@@ -60,7 +71,7 @@ export const HeaderCustomer = () => {
             value={searchQuery}
             onChange={handleSearchInputChange}
           />
-          <button>Search</button>
+          <button onClick={handleSearch}>Search</button>
         </div>
         <div className="header-login">
           <NavLink to="/login">
@@ -133,6 +144,9 @@ export const HeaderCustomer = () => {
           </li>
         </ul>
       </div>
+      {searchResults.length > 0 && (
+        <SearchResults results={searchResults} />
+      )}
     </div>
   );
 };

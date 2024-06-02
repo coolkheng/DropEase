@@ -301,6 +301,23 @@ app.get('/allstore', async (req, res) => {
   }
 });
 
+app.get('/searchstore',async(req,res)=>{
+  const query = req.query.q;
+  try {
+    const stores = await Users.find({
+      role:"retailer",
+      $or:[
+        {store:{$regex:query,$options:'i'}},
+        {category:{$regex:query,$options:'i'}}
+      ]
+    });
+    res.json(stores);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({message:"Server Error"});
+  }
+});
+
 // Creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
   const token = req.header('auth-token');
