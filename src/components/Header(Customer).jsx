@@ -5,13 +5,12 @@ import search_icon from "../asset/search icon.png";
 import user_icon from "../asset/user icon.png";
 import cart_icon from "../asset/cart icon.png";
 import "../style/Header(Customer).css";
-import { CartContext } from "../pages/cartContext";
+import { CartContext } from "../pages/cartContext"; // Corrected import
 
 export const HeaderCustomer = () => {
   const location = useLocation();
-  const { cartItems } = useContext(CartContext);
+  const { cartItems } = useContext(CartContext); // Corrected context usage
   const [menu, setMenu] = useState("");
-  const [totalQuantity, setTotalQuantity] = useState(0);
 
   useEffect(() => {
     console.log("Location changed:", location.pathname);
@@ -34,14 +33,11 @@ export const HeaderCustomer = () => {
     }
   }, [location.pathname, menu]);
 
-  useEffect(() => {
-    // Calculate total quantity from cart items
-    const quantity = Object.values(cartItems).reduce(
-      (acc, item) => acc + item.qty,
-      0
-    );
-    setTotalQuantity(quantity);
-  }, [cartItems]);
+  // Calculate total quantity from cart items
+  const totalQuantity = cartItems.reduce((total, item) => {
+    const quantity = item.quantity || 0; // Ensure quantity is defined
+    return total + quantity;
+  }, 0);
 
   const [searchQuery, setSearchQuery] = useState("");
 
