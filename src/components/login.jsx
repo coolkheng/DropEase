@@ -1,18 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
-import React, { useState } from "react";
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate(); 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userType, setUserType] = useState(""); // State to manage selected user type
+  const [storeId, setStoreId] = useState(null);
 
   const [formData, setFormData] = useState({
     password: "",
     email: "",
-    role:""
+    role: ""
   });
 
   const changeHandler = (e) => {
@@ -35,10 +35,33 @@ const Login = () => {
 
     if (responseData.success) {
       localStorage.setItem('auth-token', responseData.token);
-      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home";
+      const userStoreId = await fetchUserStoreId(responseData.token);
+      const linkDestination = responseData.role === "customer" ? "/customerhome" : `/home/${userStoreId}`;
       navigate(linkDestination);
     } else {
       alert(responseData.errors);
+    }
+  };
+
+  const fetchUserStoreId = async (token) => {
+    try {
+      const response = await fetch("http://localhost:4000/userData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        return data.data.storeId;
+      } else {
+        setErrorMessage(data.errors);
+        return null;
+      }
+    } catch (error) {
+      setErrorMessage("Failed to fetch user data");
+      return null;
     }
   };
 
@@ -84,8 +107,6 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-              
-
               <button type="submit" className={styles.orange_btn}>
                 Sign In
               </button>
@@ -100,14 +121,12 @@ const Login = () => {
             >
               Continue with Google
             </button>
-
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_facebook}`}
             >
               Continue with Facebook
             </button>
-
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_apple}`}

@@ -53,7 +53,7 @@ function App() {
             <Route path="/orders" element={<OrderPage />} />
             <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/home" element={<Shop />} />
+            <Route path="/home/:storeId" element={<Shop />} />
             <Route path="/suppliers" element={<Suppliers />} />
             <Route path="/foodbeverages" element={<FoodBeverages />} />
             <Route path="/homekitchen" element={<HomeKitchen />} />

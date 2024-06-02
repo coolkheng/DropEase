@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../style/PaymentPage.css";
+import TopBar from "../components/TopBar";
 import Header from "../components/Header";
-import SideNav from "../components/SideNavSupplier";
+import SideNavSupplier from "../components/SideNavSupplier";
 import DropdownMenu from "../components/UsernameDropDown";
-import ProductItem from "../components/ProductItem";
-import Products from "./Products";
 
 const PaymentPage = () => {
+  // Handling different size of screen
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const [paymentMethod, setPaymentMethod] = useState("");
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
@@ -31,145 +46,157 @@ const PaymentPage = () => {
   };
 
   return (
-    <div className="PaymentPage">
-      <Header>
-        <DropdownMenu />
-      </Header>
-      <SideNav />
-      <section>
-        <div className="container">
-          <div className="item1">
-            <h2>Order Summary</h2>
-            <div className="firstProduct">
-              <div className="firstItem">
-                <img
-                  src="https://www.borong.com/product-images/597c759b557c3f32f391cafe26974b370b90d8d0.jpeg"
-                  className="firstImage"
-                />
-              </div>
-              <div className="firstName">
-                <h5>12 X 550ml Spritzer Mineral Water (12 in 1)</h5>
-                <p>RM11.92</p>
-              </div>
-            </div>
-            <div className="firstProduct">
-              <div className="firstItem">
-                <img
-                  src="https://www.borong.com/product-images/23d16be6e85287f3d94f0a12b6b85a043a0faf91.jpg"
-                  className="firstImage"
-                />
-              </div>
-              <div className="firstName">
-                <h5>IK Yellow A4 Paper 70Gsm (500 sheets reams)</h5>
-                <p>RM13.00</p>
-              </div>
-            </div>
+    <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
+      {!isSmallScreen && (
+        <aside className="w-full md:w-[20%]">
+          <SideNavSupplier />
+        </aside>
+      )}
 
-            <div className="firstProduct">
-              <div className="firstItem">
-                <img
-                  src="https://www.borong.com/product-images/23d16be6e85287f3d94f0a12b6b85a043a0faf91.jpg"
-                  className="firstImage"
-                />
-              </div>
-              <div className="firstName">
-                <h5>IK Yellow A4 Paper 70Gsm (500 sheets reams)</h5>
-                <p>RM13.00</p>
-              </div>
-            </div>
-            <div>
-              <h3>
-                Product Total: <p className="price">RM120</p>
-              </h3>
-            </div>
-          </div>
+      {isSmallScreen && (
+        <div className="fixed-top-bar">
+          <TopBar />
         </div>
-        <div className="payment-content">
-          <div className="payment-container">
-            <h2>Item Payment</h2>
-            <div className="payment-form">
-              <div className="payment-method">
-                <h3>Select Payment Method:</h3>
-                <div className="payment-options">
-                  <label>
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="creditCard"
-                      checked={paymentMethod === "creditCard"}
-                      onChange={() => handlePaymentMethodChange("creditCard")}
-                    />
-                    Credit Card
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="E-wallet"
-                      checked={paymentMethod === "E-wallet"}
-                      onChange={() => handlePaymentMethodChange("E-wallet")}
-                    />
-                    E-wallet
-                  </label>
+      )}
+
+      <main
+        className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
+      >
+        <div className="PaymentPage">
+          <Header>
+            <DropdownMenu />
+          </Header>
+
+          <div className="container flex">
+            <section className="mt-10">
+              <h2>Order Summary</h2>
+              <div className="firstProduct">
+                <div className="firstItem">
+                  <img
+                    src="https://www.borong.com/product-images/597c759b557c3f32f391cafe26974b370b90d8d0.jpeg"
+                    className="firstImage"
+                  />
+                </div>
+                <div className="firstName">
+                  <h5>12 X 550ml Spritzer Mineral Water (12 in 1)</h5>
+                  <p>RM11.92</p>
                 </div>
               </div>
-              {paymentMethod === "creditCard" && (
-                <form onSubmit={handleSubmit}>
-                  <div className="card-details">
-                    <h3>Enter Card Details:</h3>
-                    <div className="form-group">
-                      <label>Card Number:</label>
+              <div className="firstProduct">
+                <div className="firstItem">
+                  <img
+                    src="https://www.borong.com/product-images/23d16be6e85287f3d94f0a12b6b85a043a0faf91.jpg"
+                    className="firstImage"
+                  />
+                </div>
+                <div className="firstName">
+                  <h5>IK Yellow A4 Paper 70Gsm (500 sheets reams)</h5>
+                  <p>RM13.00</p>
+                </div>
+              </div>
+
+              <div className="firstProduct">
+                <div className="firstItem">
+                  <img
+                    src="https://www.borong.com/product-images/23d16be6e85287f3d94f0a12b6b85a043a0faf91.jpg"
+                    className="firstImage"
+                  />
+                </div>
+                <div className="firstName">
+                  <h5>IK Yellow A4 Paper 70Gsm (500 sheets reams)</h5>
+                  <p>RM13.00</p>
+                </div>
+              </div>
+              <div>
+                <h3>
+                  Product Total: <p className="price">RM120</p>
+                </h3>
+              </div>
+            </section>
+
+            <section className="mt-10 ml-40">
+              <h2>Item Payment</h2>
+              <div className="payment-form">
+                <div className="payment-method">
+                  <h3>Select Payment Method:</h3>
+                  <div className="payment-options">
+                    <label>
                       <input
-                        type="text"
-                        name="cardNumber"
-                        value={cardDetails.cardNumber}
-                        onChange={handleCardDetailsChange}
+                        type="radio"
+                        name="paymentMethod"
+                        value="creditCard"
+                        checked={paymentMethod === "creditCard"}
+                        onChange={() => handlePaymentMethodChange("creditCard")}
                       />
-                    </div>
-                    <div className="form-group">
-                      <label>Card Holder:</label>
+                      Credit Card
+                    </label>
+                    <label>
                       <input
-                        type="text"
-                        name="cardHolder"
-                        value={cardDetails.cardHolder}
-                        onChange={handleCardDetailsChange}
+                        type="radio"
+                        name="paymentMethod"
+                        value="E-wallet"
+                        checked={paymentMethod === "E-wallet"}
+                        onChange={() => handlePaymentMethodChange("E-wallet")}
                       />
-                    </div>
-                    <div className="form-group">
-                      <label>Expiry Date:</label>
-                      <input
-                        type="text"
-                        name="expiryDate"
-                        value={cardDetails.expiryDate}
-                        onChange={handleCardDetailsChange}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>CVV:</label>
-                      <input
-                        type="text"
-                        name="cvv"
-                        value={cardDetails.cvv}
-                        onChange={handleCardDetailsChange}
-                      />
-                    </div>
+                      E-wallet
+                    </label>
                   </div>
-                  <button type="submit">Pay Now</button>
-                </form>
-              )}
-              {paymentMethod === "E-wallet" && (
-                <div className="paypal-payment">
-                  <p>Please proceed to E-wallet to complete your payment.</p>
-                  <button onClick={handleSubmit}>Proceed to E-wallet</button>
                 </div>
-              )}
-            </div>
+                {paymentMethod === "creditCard" && (
+                  <form onSubmit={handleSubmit}>
+                    <div className="card-details">
+                      <h3>Enter Card Details:</h3>
+                      <div className="form-group">
+                        <label>Card Number:</label>
+                        <input
+                          type="text"
+                          name="cardNumber"
+                          value={cardDetails.cardNumber}
+                          onChange={handleCardDetailsChange}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Card Holder:</label>
+                        <input
+                          type="text"
+                          name="cardHolder"
+                          value={cardDetails.cardHolder}
+                          onChange={handleCardDetailsChange}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Expiry Date:</label>
+                        <input
+                          type="text"
+                          name="expiryDate"
+                          value={cardDetails.expiryDate}
+                          onChange={handleCardDetailsChange}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>CVV:</label>
+                        <input
+                          type="text"
+                          name="cvv"
+                          value={cardDetails.cvv}
+                          onChange={handleCardDetailsChange}
+                        />
+                      </div>
+                    </div>
+                    <button type="submit">Pay Now</button>
+                  </form>
+                )}
+                {paymentMethod === "E-wallet" && (
+                  <div className="paypal-payment">
+                    <p>Please proceed to E-wallet to complete your payment.</p>
+                    <button onClick={handleSubmit}>Proceed to E-wallet</button>
+                  </div>
+                )}
+              </div>
+            </section>
           </div>
         </div>
-      </section>
-      <footer className="footer">
-        <p>&copy; 2024 My App</p>
-      </footer>
+      </main>
     </div>
   );
 };

@@ -22,7 +22,7 @@ const Header = () => {
         });
         const data = await response.json();
         if (data.success) {
-          setUserRole(data.data.role); // Ensure storeId is set correctly
+          setUserRole(data.data.role);
         } else {
           setErrorMessage(data.errors);
         }
