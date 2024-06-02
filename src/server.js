@@ -6,7 +6,7 @@ const cors = require("cors");
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = 3000;
+const port = 4000;
 
 const uri =
   "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?retryWrites=true&w=majority&appName=dropease";
@@ -347,93 +347,81 @@ app.post('/addtocart', fetchUser, async (req, res) => {
 
 // Define the schema for cart items
 const CartRetailerSchema = new mongoose.Schema({
-  userID: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+    ref: 'Users',
+    required: true
   },
-  cartID: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  items: [{
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
-      required: true,
-    },
-    name: String,
-    mainImage: String,
-    desc: String,
-    rating: Number,
-    category: String,
-    size: [String],
-    color: [String],
-    price: Number,
-    qty: Number,
-    available: Boolean,
-  }],
+  cartData: {
+    type: Map,
+    of: Number,
+    default: {}
+  }
 }, { timestamps: true });
 
 const CartRetailer = mongoose.model('CartRetailer', CartRetailerSchema);
 
 app.post('/cartretailer', fetchUser, async (req, res) => {
   try {
-    const userID = req.user.id;
-    const { productId, name, mainImage, desc, rating, category, size, color, price, qty } = req.body;
+    const userId = req.user.id;
+    const { productId, quantity } = req.body;
 
-    // Check if retailer cart already exists
-    let cartRetailer = await CartRetailer.findOne({ userID });
-
-    if (!cartRetailer) {
-      // Create a new cart if not exists
-      cartRetailer = new CartRetailer({
-        userID,
-        cartID: new mongoose.Types.ObjectId().toString(),
-        items: [{ productId, name, mainImage, desc, rating, category, size, color, price, qty, available: true }]
-      });
+    // Find cart data for the user
+    let cart = await CartRetailer.findOne({ userId });
+    
+    if (!cart) {
+      // Create new cart if not exists
+      cart = new CartRetailer({ userId, cartData: { [productId]: quantity } });
     } else {
       // Update existing cart
-      const itemIndex = cartRetailer.items.findIndex(item => item.productId.toString() === productId);
-      if (itemIndex > -1) {
-        cartRetailer.items[itemIndex].qty += qty;
+      if (cart.cartData.has(productId)) {
+        cart.cartData.set(productId, cart.cartData.get(productId) + quantity);
       } else {
-        cartRetailer.items.push({ productId, name, mainImage, desc, rating, category, size, color, price, qty, available: true });
+        cart.cartData.set(productId, quantity);
       }
     }
 
-    await cartRetailer.save();
-    res.json({ success: true, message: "Item added to retailer cart" });
+    await cart.save();
+    console.log('Cart saved:', cart); // Log the cart object
+    res.send("Added to cart");
   } catch (error) {
-    console.error(error);
+    console.error('Error adding to cart:', error); // Log any errors
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
 
 app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
   try {
+    console.log('Checkout endpoint reached');
+    console.log('Request body:', req.body); // Log the request body to see the payload
+    
     const userID = req.user.id;
 
     // Find retailer cart for the user
-    const cartRetailer = await CartRetailer.findOne({ userID });
-
-    if (!cartRetailer || cartRetailer.items.length === 0) {
+    const cartRetailer = await CartRetailer.findOne({ userId: userID });
+    console.log('Retrieved cart:', cartRetailer); // Log the retrieved cart
+    
+    if (!cartRetailer || Object.keys(cartRetailer.cartData).length === 0) {
       return res.status(400).json({ success: false, errors: "No items in retailer cart" });
     }
 
     // Process the order (this part can include order creation, payment processing, etc.)
     // For this example, we'll simply clear the cart
 
-    cartRetailer.items = [];
+    console.log('Cart before clearing:', cartRetailer.cartData); // Log cart data before clearing
+
+    cartRetailer.cartData = {};
     await cartRetailer.save();
+
+    console.log('Cart after clearing:', cartRetailer.cartData); // Log cart data after clearing
 
     res.json({ success: true, message: "Checkout successful" });
   } catch (error) {
-    console.error(error);
+    console.error('Checkout error:', error); // Log any errors
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
+
 
 
 

@@ -18,27 +18,41 @@ const RetailerCart = () => {
   );
 
   const handleCheckout = async () => {
-    const userID = "yourUserID"; // Replace with actual user ID
-    const cartItems = [
-      // Replace with actual cart items from your state
-    ];
-  
     try {
-      const response = await axios.post('/api/cartretailer', { userID, cartItems });
-      console.log('Cart items saved:', response.data);
-      // Handle successful checkout, e.g., navigate to a success page, clear the cart, etc.
+      const token = localStorage.getItem("auth-token");
+      console.log("Cart Items:", cartItems); // Add this line for debugging
+      const cartItemsPayload = cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.qty
+      }));
+      const response = await axios.post("http://localhost:4000/cartretailer/checkout", {
+        items: cartItemsPayload,
+      }, {
+        headers: {
+          'auth-token': token,
+        }
+      });
+  
+      // Rest of the function remains the same...
+  
+  
+      if (response.data.success) {
+        alert("Checkout successful!");
+        // Optionally, clear the cart or redirect to a different page
+      } else {
+        alert("Checkout failed. Please try again.");
+      }
     } catch (error) {
-      console.error('Error saving cart items:', error);
-      // Handle error, e.g., show an error message to the user
+      console.error("Checkout error:", error);
+      alert("An error occurred during checkout. Please try again later.");
     }
   };
 
   // Render cart items
   return (
     <>
-         <Header>
-        <DropdownMenu 
-        /> 
+      <Header>
+        <DropdownMenu />
       </Header>
       <SideNavSupplier /> {/* Ensure the component is imported correctly */}
       <section className="cart-items">
