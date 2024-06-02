@@ -48,18 +48,31 @@
     </script>
 </head>
 
-    <body>
-        <h1>
+<body style="font-family: Arial, sans-serif; background-color: rgba(66, 70, 105, 1); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <div class="container" style="background-color: rgba(0, 0, 0, 0.3); padding: 5% 7%; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;">
+        <!-- <img src="../asset/DropEase logo.png" alt="Logo" style="width: 50px; height: 50px;" /> -->
+        <h1 style="font-size: 24px; margin-bottom: 20px; color: white;">
             <%= email %>
         </h1>
         <form action="" method="post" onsubmit="return validateForm(event)">
-            <h2>New password: </h2>
-            <input type="password" name="password" id="password" placeholder="Password" />
-            <br />
-            <h2>Confirm password: </h2>
-            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm password" />
-            <br />
-            <input type="submit" value="Submit" />
+            <h2 style="display: flex; font-size: 12px; color: white; margin-left: 0%; margin-bottom: 0%; margin-top: 8%;">New password: </h2>
+            <input type="password" name="password" id="password" placeholder="Password" style="outline: none; border: none; width: 100%; padding: 10px; background-color: rgba(237, 245, 243, 0.5); margin: 5% 0; font-size: 12px; border-radius: 4px;" />
+            <br/>
+            <h2 style="display: flex; font-size: 12px; color: white; margin-left: 0%; margin-bottom: 0%; margin-top: 8%;">Confirm password: </h2>
+            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm password" style="outline: none; border: none; width: 100%; padding: 10px; background-color: rgba(237, 245, 243, 0.5); margin: 5% 0; font-size: 12px; border-radius: 4px;" />
+            <br/>
+            <h2 style="display: flex; font-size: 12px; color: white; margin-left: 0%; margin-bottom: 0%; margin-top: 8%;"></h2>
+            <input type="submit" value="Submit" style="border: none; background-color: rgb(248, 177, 121); border-radius: 20px; width: 110%; padding: 10px; font-weight: bold; font-size: 14px; color: black; margin-top: 10%;" />
         </form>
-    </body>
+    </div>
+    <script>
+        document.querySelector('input[type="submit"]').addEventListener('mouseover', function() {
+            this.style.backgroundColor = '#4e37a8';
+        });
+        document.querySelector('input[type="submit"]').addEventListener('mouseout', function() {
+            this.style.backgroundColor = 'rgb(248, 177, 121)';
+        });
+    </script>
+</body>
+
 </html>

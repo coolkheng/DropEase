@@ -11,15 +11,16 @@ const port = 4000;
 const uri = "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?retryWrites=true&w=majority&appName=dropease";
 
 // Serve the React frontend as static files
-app.use(express.static(path.join(__dirname + "/public")));
+app.use(express.static(path.join(__dirname + "public")));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 var nodemailer = require('nodemailer');
 
 
-app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+
 
 
 // Connect to MongoDB
