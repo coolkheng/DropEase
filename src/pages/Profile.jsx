@@ -114,7 +114,7 @@ const Profile = () => {
       <Header />
       <SideNav />
       <div className={styles.profileHeader}>
-          <img src={require(imageUrl)} alt="Uploaded" className={styles.profileImage} />
+          <img src={imageUrl} alt="Uploaded" className={styles.profileImage} />
         </div>
       <div className={styles.login_container}>
         <div className={styles.login_form_container}>

@@ -11,7 +11,7 @@ const port = 4000;
 const uri = "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?retryWrites=true&w=majority&appName=dropease";
 
 // Serve the React frontend as static files
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname + "/public")));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +20,7 @@ var nodemailer = require('nodemailer');
 
 app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "ejs");
+
 
 // Connect to MongoDB
 async function connect() {
@@ -296,12 +297,13 @@ app.post('/updateprofile', fetchUser, async (req, res) => {
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   try{
-    console.log("email: " , req.body.email);
+    console.log("email: " , {email});
     const oldUser = await Users.findOne({email});
     if(!oldUser) {
       return res.json({ status: "User not exist"});
     }
-    const token = jwt.sign({email: oldUser.email, id:oldUser._id}, 'secret_token', {
+
+    const token = jwt.sign({email: oldUser.email, id: oldUser._id}, 'secret_token', {
       // expiresIn: "5m"
     });
     const link = `http://localhost:4000/reset-password/${oldUser._id}/${token}`;
@@ -336,7 +338,6 @@ app.get('/reset-password/:id/:token', async (req, res) => {
   const { id, token } = req.params;
   console.log(req.params);
   const oldUser = await Users.findOne({ _id: id });
-  console.log(oldUser.email);
   if(!oldUser) {
     return res.json({ status: "User not exist"});
   }
@@ -369,7 +370,6 @@ app.post('/reset-password/:id/:token', async (req, res) => {
         },
       }
     );
-
     res.render("index", { email: verify.email, status: "verified" });
   } catch (error) {
     console.log(error);

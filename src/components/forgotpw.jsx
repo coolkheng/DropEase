@@ -3,7 +3,7 @@ import styles from "../style/login.module.css";
 import React, { useState } from "react";
 
 const Pw = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
   });
