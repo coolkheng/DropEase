@@ -5,12 +5,13 @@ import Hero from "../components/Hero";
 import Collections from "../components/Collections";
 import Products from "../components/Productss";
 
+
 const Store = () => {
   const { storeId } = useParams(); // Get storeId from URL parameters
 
   return (
     <div>
-      <div className="flex justify-between items-center mt-5">
+      <div style={{marginLeft:"30px"}} className="flex justify-between items-center mt-5">
         <Header />
       </div>
 

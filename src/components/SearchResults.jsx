@@ -1,18 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import "../style/SearchResults.css"; // Make sure to create a CSS file for styling
+import { Link } from "react-router-dom";
 
 const SearchResults = ({ results }) => {
   return (
-    <div className="search-results-container">
-      <h2>Search Results:</h2>
-      <ul className="search-results-list">
-        {results.map((result) => (
-          <li key={result._id} className="search-result-item">
-            <p>{result.store} - {result.category}</p>
-          </li>
+    <div style={{marginTop:"50px"}}>
+      {results.map((result) => (
+          <Link key={result.storeId} to={`/store/${result.storeId}`} className="shop-link">
+          <div className="shopCatbox">
+            <div className="shopCat-con">
+              <div className="img-con">
+                <img className="shopCat-img" src={result.imageUrl} alt={result.store} />
+                <p className="shopCat-name">{result.store}</p>
+              </div>
+            </div>
+          </div>
+        </Link>
         ))}
-      </ul>
     </div>
   );
 };

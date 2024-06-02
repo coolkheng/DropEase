@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLongArrowAltLeft,
@@ -74,14 +75,14 @@ const TopStoreCard = () => {
   return (
     <Slider {...settings}>
       {stores.map((store) => (
-        <div key={store.storeId} className="box">
+        <Link key={store.storeId} to={`/store/${store.storeId}`} className="box">
           <div className="shop-container">
             <div className="img-container">
               <img className="shop-img" src={store.imageUrl} alt={store.store} />
             </div>
             <p className="shop-name">{store.store}</p>
           </div>
-        </div>
+        </Link>
       ))}
     </Slider>
   );

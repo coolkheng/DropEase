@@ -78,7 +78,7 @@ export const HeaderCustomer = () => {
             <img src={user_icon} alt="User Icon" />
           </NavLink>
           <NavLink to="/login">
-            <p className="login-button">Sign In/ Sign Up</p>
+            <p className="login-button">Sign Out</p>
           </NavLink>
           <NavLink to="/customercart">
             <img
