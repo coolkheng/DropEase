@@ -9,17 +9,16 @@
 }
 
 .Ordered-items {
-  display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
 }
+
 .CartContainer {
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-  margin-right: 20px;
-  width: 110%;
+  margin-top: 60px;
+  margin-right: 40px;
+  margin-left: 40px;
+  margin-bottom: 60px;
   height: 150%;
   background-color: #ffffff;
   border-radius: 20px;
@@ -37,7 +36,6 @@
 
 .Heading {
   font-size: 30px;
-  font-family: "Poppins";
   font-weight: 700;
   color: #2f3841;
   margin-bottom: 10px;
@@ -45,6 +43,7 @@
 
 .Cart-Items {
   margin: auto;
+  margin-bottom: 20px;
   width: 80%;
   height: 30%;
   display: flex;
@@ -68,6 +67,7 @@
   width: 75%;
   text-align: start;
 }
+
 .Cart-title {
   font-size: 25px;
   font-family: "Poppins", sans-serif;
@@ -107,14 +107,17 @@ hr {
   margin-right: 5%;
 }
 .Cart-checkout {
-  float: right;
+  justify-content: flex-end;
   margin-right: 5%;
-  width: 28%;
+  display: grid;
 }
 .Cart-total {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 3px;
+  margin-bottom: 50px;
 }
 .Cart-Subtotal {
   font-size: 22px;
@@ -134,6 +137,7 @@ hr {
   font-family: "Poppins";
   font-weight: 900;
   color: #424669;
+  margin-right: 52px;
 }
 .Cart-button {
   margin-top: 10px;
@@ -161,6 +165,10 @@ hr {
   margin-top: 20px;
 }
 
+.Price-Description {
+  margin-right: 20px;
+}
+
 .DeliveryStatus {
   font-weight: 700;
   color: #2f3841;
@@ -174,5 +182,8 @@ hr {
 .Progress-Bar {
   display: flex;
   justify-content: center;
-  padding-right: 100px;
+}
+
+.Delivery {
+  margin-top: 50px;
 }
