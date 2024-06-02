@@ -8,7 +8,7 @@ const TopStore = ({ placeholderShopItems }) => {
       <section className="flash">
         <div className="container">
           <div className="heading f_flex">
-            <h2 style={{fontSize:"30px", fontWeight:"600", marginTop:"50px"}}>Top Stores</h2>
+            <h2 style={{fontSize:"30px", fontWeight:"600", marginTop:"50px"}}>All Stores</h2>
           </div>
           <TopStoreCard placeholderShopItems={placeholderShopItems} />
         </div>
