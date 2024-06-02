@@ -92,7 +92,7 @@
 .Cart-amount {
   padding-top: 20px;
   font-size: 26px;
-  font-family: "Poppins";
+  font-family: "Poppins", sans-serif;
   font-weight: 800;
   color: #424669;
 }
@@ -114,6 +114,7 @@ hr {
 .Cart-total {
   width: 100%;
   display: flex;
+  font-family: "Poppins", sans-serif;
   justify-content: flex-end;
   align-items: center;
   margin-right: 3px;
@@ -121,20 +122,20 @@ hr {
 }
 .Cart-Subtotal {
   font-size: 22px;
-  font-family: "Poppins";
+  font-family: "Poppins", sans-serif;
   font-weight: 700;
   color: #424669;
 }
 .Cart-items {
   font-size: 16px;
-  font-family: "Poppins";
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   color: #909090;
   line-height: 10px;
 }
 .Cart-total-amount {
   font-size: 36px;
-  font-family: "Poppins";
+  font-family: "Poppins", sans-serif;
   font-weight: 900;
   color: #424669;
   margin-right: 52px;
@@ -170,13 +171,14 @@ hr {
 }
 
 .DeliveryStatus {
-  font-weight: 700;
+  font-weight: 900;
   color: #2f3841;
   text-align: center;
   position: relative;
-  margin-bottom: 20px;
-  margin-right: 25px;
-  font-size: 25px;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 40px;
+  margin-right: 20px;
+  font-size: 30px;
 }
 
 .Progress-Bar {
