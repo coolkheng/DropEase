@@ -1,51 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-import "../style/Cart(Customer).css";
+import React, { useContext, useEffect } from "react";
 import { FaXmark } from "react-icons/fa6";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import HeaderCustomer from "../components/Header(Customer)";
-import { CartContext } from "./cartContext"; 
+import { CartContext } from "./cartContext";
+import "../style/Cart(Customer).css";
 
 const Cart = () => {
-  const { addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
+  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
   const authToken = localStorage.getItem('auth-token');
-  const [cartItems, setCartItems] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/getcart", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": authToken,
-          },
-        });
-        const data = await response.json();
-        console.log("Fetched data:", data);
-        if (response.ok) {
-          setCartItems(data); // Assuming data is an array of cart items
-          setLoading(false);
-        } else {
-          setErrorMessage(data.errors || "Failed to fetch cart data");
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-        setErrorMessage("Failed to fetch cart data");
-        setLoading(false);
-      }
-    };
-  
-    fetchCart();
-  }, [authToken]);
-
-  if (loading) {
-    return <p>Loading cart...</p>;
-  }
-
-  console.log("Cart items state:", cartItems);
 
   // Calculate total price of items
   const totalPrice = cartItems.reduce(
@@ -64,6 +26,11 @@ const Cart = () => {
               <h1 className="no-items product">No Items in Cart</h1>
             )}
             {cartItems.map((item, index) => {
+              // Check if item and item.product exist
+              if (!item || !item.product) {
+                return null;
+              }
+
               const productQty = item.product.price * item.quantity;
               return (
                 <div className="cart-list" key={index}>
