@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../style/ShopCategory(Customer).css";
 import HeaderCustomer from "../components/Header(Customer)";
 
@@ -52,14 +53,16 @@ const ShopCategory = ({ category }) => {
       <h2 className="categoryNames" style={{ fontWeight: "bolder", fontSize: "30px" }}>{categoryNames}</h2>
       {/* Map over the filtered stores and render each store item */}
       {filteredStores.map((store) => (
-        <div key={store._id} className="shopCatbox">
-          <div className="shopCat-con">
-            <div className="img-con">
-              <img className="shopCat-img" src={store.imageUrl} alt={store.store} />
-              <p className="shopCat-name">{store.store}</p>
+        <Link key={store.storeId} to={`/store/${store.storeId}`} className="shop-link">
+          <div className="shopCatbox">
+            <div className="shopCat-con">
+              <div className="img-con">
+                <img className="shopCat-img" src={store.imageUrl} alt={store.store} />
+                <p className="shopCat-name">{store.store}</p>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

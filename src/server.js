@@ -3,8 +3,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
-const jwt = require('jsonwebtoken');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
+const jwt = require("jsonwebtoken");
+const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const app = express();
 const port = 4000;
@@ -61,8 +61,8 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  images:{
-    type:[String],
+  images: {
+    type: [String],
     required: false,
   },
   mainImages: {
@@ -85,12 +85,12 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  size:{
-    type:[String],
+  size: {
+    type: [String],
     required: false,
   },
-  color:{
-    type:[String],
+  color: {
+    type: [String],
     required: false,
   },
   price: {
@@ -138,6 +138,11 @@ app.post("/addproduct", async (req, res) => {
 
 // Define Banner Schema and Model
 const bannerSchema = new mongoose.Schema({
+  storeId: {
+    type: Number,
+    ref: "User", // Reference to the User model's storeId
+    required: true,
+  },
   filename: String,
   contentType: String,
   data: Buffer,
@@ -158,47 +163,60 @@ const bannerStorage = multer.diskStorage({
 
 const uploadBanners = multer({ storage: bannerStorage });
 
-// Image upload endpoint
+// Banners upload endpoint
+app.use("/banners", express.static("upload/banners"));
 app.post(
   "/upload-banners",
-  uploadBanners.array("banners", 5),
+  uploadBanners.single("banner"),
   async (req, res) => {
     try {
-      const files = req.files;
-      const bannerPromises = files.map((file) => {
-        const newBanner = new Banner({
-          filename: file.originalname,
-          contentType: file.mimetype,
-          data: file.buffer,
-        });
-        return newBanner.save();
-      });
-      await Promise.all(bannerPromises);
+      const { storeId } = req.body; // Extract storeId from the request body
+      const file = req.file;
 
-      // Construct image URLs for each uploaded banner
-      const imageUrls = files.map(
-        (file) => `http://localhost:${port}/banners/${file.filename}`
-      );
+      if (!storeId) {
+        return res.status(400).json({ error: "storeId is required" });
+      }
+
+      // Save the uploaded file as a banner document in MongoDB
+      const newBanner = new Banner({
+        storeId,
+        filename: file.originalname,
+        contentType: file.mimetype,
+        data: file.buffer,
+      });
+      await newBanner.save();
+
+      // Construct the image URL for the uploaded banner
+      const imageUrl = `http://localhost:${port}/banners/${file.originalname}`;
 
       res.status(201).json({
         success: 1,
-        image_urls: imageUrls,
+        image_url: imageUrl,
       });
     } catch (error) {
       res.status(500).send(error.message);
     }
   }
 );
-
 // Creating API for getting all banners
 app.get("/retailerBanner", async (req, res) => {
-  let banners = await Banner.find({});
-  console.log("Retailer Banners Fetched");
-  res.send(banners);
+  try {
+    const storeId = req.query.storeId;
+    if (!storeId) {
+      return res.status(400).send("Store ID is required.");
+    }
+
+    const banners = await Banner.find({ storeId });
+    console.log("Retailer Banners Fetched");
+    res.status(200).json(banners);
+  } catch (error) {
+    console.error("Error fetching banners:", error);
+    res.status(500).send("An error occurred while fetching banners.");
+  }
 });
 
 // Creating API for getting all products
-app.get('/allproduct', async (req, res) => {
+app.get("/allproduct", async (req, res) => {
   try {
     const products = await Product.find({});
     console.log("All Products Fetched");
@@ -208,7 +226,6 @@ app.get('/allproduct', async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 // Define the Users schema and model
 const UsersSchema = new mongoose.Schema({
@@ -222,15 +239,18 @@ const UsersSchema = new mongoose.Schema({
   category: { type: String },
   storeId: { type: Number, unique: true }, // Correct usage of unique option
 });
-UsersSchema.plugin(AutoIncrement, { inc_field: 'storeId' });
-const Users = mongoose.model('Users', UsersSchema);
+UsersSchema.plugin(AutoIncrement, { inc_field: "storeId" });
+const Users = mongoose.model("Users", UsersSchema);
 
 // Creating Endpoint for registering user
 app.post("/signup", async (req, res) => {
   try {
     let check = await Users.findOne({ email: req.body.email }); // Check if the user has been registered before
     if (check) {
-      return res.status(400).json({ success: false, errors: "Existing user found with the same email address" });
+      return res.status(400).json({
+        success: false,
+        errors: "Existing user found with the same email address",
+      });
     }
 
     const user = new Users({
@@ -243,7 +263,6 @@ app.post("/signup", async (req, res) => {
       category: "",
     });
 
-
     await user.save(); // Save user in the database
 
     // Create token
@@ -253,16 +272,19 @@ app.post("/signup", async (req, res) => {
       },
     };
 
-    const token = jwt.sign(data, 'secret_token');
+    const token = jwt.sign(data, "secret_token");
     res.json({ success: true, token });
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).json({ success: false, errors: "Server error. Please try again later." });
+    res.status(500).json({
+      success: false,
+      errors: "Server error. Please try again later.",
+    });
   }
 });
 
 // Creating endpoint for user log in
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
     let user = await Users.findOne({ email: req.body.email });
     if (user) {
@@ -272,10 +294,10 @@ app.post('/login', async (req, res) => {
           user: {
             id: user.id,
             email: user.email,
-            role: user.role
-          }
+            role: user.role,
+          },
         };
-        const token = jwt.sign(data, 'secret_token');
+        const token = jwt.sign(data, "secret_token");
         res.json({ success: true, token, role: user.role, userData: user });
       } else {
         res.json({ success: false, errors: "Wrong Password" });
@@ -285,16 +307,16 @@ app.post('/login', async (req, res) => {
     }
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
 
 // Get all store
-app.get('/allstore', async (req, res) => {
+app.get("/allstore", async (req, res) => {
   try {
-    const store = await Users.find({role: "retailer"});
+    const store = await Users.find({ role: "retailer" });
     console.log("All Store Fetched");
-    res.json(store); 
+    res.json(store);
   } catch (error) {
     console.error("Error fetching store:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -303,40 +325,47 @@ app.get('/allstore', async (req, res) => {
 
 // Creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
-  const token = req.header('auth-token');
-  if(!token){
-    res.status(401).send({errors:"Please authenticate using valid authentication"});
-  }else{
+  const token = req.header("auth-token");
+  if (!token) {
+    res
+      .status(401)
+      .send({ errors: "Please authenticate using valid authentication" });
+  } else {
     try {
-      const data=jwt.verify(token,'secret_token');
+      const data = jwt.verify(token, "secret_token");
       req.user = data.user;
       next();
     } catch (error) {
-      res.status(401).send({errors:"Please authenticate using a valid token"});
+      res
+        .status(401)
+        .send({ errors: "Please authenticate using a valid token" });
     }
   }
 };
 
 // Multer configuration for profile image upload
 const profileStorage = multer.diskStorage({
-  destination: './uploads/profiles',
+  destination: "./uploads/profiles",
   filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
+    cb(
+      null,
+      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
 });
 
 const uploadProfile = multer({ storage: profileStorage });
 
 // Profile image upload endpoint
-app.post('/upload-profile', uploadProfile.single('image'), (req, res) => {
+app.post("/upload-profile", uploadProfile.single("image"), (req, res) => {
   try {
     const filePath = req.file.path;
     // Save the file path or URL to the user's profile
     const imageUrl = `http://localhost:${port}/${filePath}`;
     res.json({ imageUrl });
   } catch (error) {
-    console.error('Error uploading profile image:', error);
-    res.status(500).json({ errors: 'Internal Server Error' });
+    console.error("Error uploading profile image:", error);
+    res.status(500).json({ errors: "Internal Server Error" });
   }
 });
 
@@ -355,7 +384,7 @@ app.post("/userData", fetchUser, async (req, res) => {
 });
 
 // POST endpoint to update user profile
-app.post('/updateprofile', fetchUser, async (req, res) => {
+app.post("/updateprofile", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
     console.log(`Updating profile for user ID: ${userId}`);
@@ -385,26 +414,26 @@ app.post('/updateprofile', fetchUser, async (req, res) => {
 const CartCustomerSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users',
-    required: true
+    ref: "Users",
+    required: true,
   },
   cartData: {
     type: Map,
     of: Number,
-    default: {}
-  }
+    default: {},
+  },
 });
 
-const CartCustomer = mongoose.model('CartCustomer', CartCustomerSchema);
+const CartCustomer = mongoose.model("CartCustomer", CartCustomerSchema);
 
 //TODO: Change productId based on Eugene's product-id
-app.post('/addtocart', fetchUser, async (req, res) => {
+app.post("/addtocart", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId } = req.body;
 
-    console.log('User ID:', userId);
-    console.log('Product ID:', productId);
+    console.log("User ID:", userId);
+    console.log("Product ID:", productId);
 
     // Convert productId to string
     const productIdStr = String(productId);
@@ -414,7 +443,10 @@ app.post('/addtocart', fetchUser, async (req, res) => {
 
     if (!cart) {
       // Create new cart if not exists
-      cart = new CartCustomer({ userId, cartData: new Map([[productIdStr, 1]]) });
+      cart = new CartCustomer({
+        userId,
+        cartData: new Map([[productIdStr, 1]]),
+      });
     } else {
       // Update existing cart
       if (cart.cartData.has(productIdStr)) {
@@ -433,13 +465,13 @@ app.post('/addtocart', fetchUser, async (req, res) => {
 });
 
 //TODO: Change productId based on Eugene's product-id
-app.post('/removefromcart', fetchUser, async (req, res) => {
+app.post("/removefromcart", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId } = req.body;
 
-    console.log('User ID:', userId);
-    console.log('Product ID:', productId);
+    console.log("User ID:", userId);
+    console.log("Product ID:", productId);
 
     // Convert productId to string
     const productIdStr = String(productId);
@@ -462,13 +494,13 @@ app.post('/removefromcart', fetchUser, async (req, res) => {
   }
 });
 //TODO: Change productId based on Eugene's product-id
-app.post('/decreasequantity', fetchUser, async (req, res) => {
+app.post("/decreasequantity", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId } = req.body;
 
-    console.log('User ID:', userId);
-    console.log('Product ID:', productId);
+    console.log("User ID:", userId);
+    console.log("Product ID:", productId);
 
     // Convert productId to string
     const productIdStr = String(productId);
@@ -498,7 +530,7 @@ app.post('/decreasequantity', fetchUser, async (req, res) => {
   }
 });
 
-app.post('/getcart', fetchUser, async (req, res) => {
+app.post("/getcart", fetchUser, async (req, res) => {
   try {
     console.log("GetCart");
     let userCart = await CartCustomer.findOne({ userId: req.user.id });
@@ -514,7 +546,7 @@ app.post('/getcart', fetchUser, async (req, res) => {
       if (product) {
         cartItems.push({
           product: product,
-          quantity: quantity
+          quantity: quantity,
         });
       }
     }
@@ -525,8 +557,6 @@ app.post('/getcart', fetchUser, async (req, res) => {
     res.status(500).json({ errors: "Internal Server Error" });
   }
 });
-
-
 
 // Start the Express server
 app.listen(port, (error) => {
