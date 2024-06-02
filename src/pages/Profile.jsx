@@ -1,111 +1,191 @@
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Header from "../components/Header";
 import SideNav from "../components/SideNav";
 import styles from "../style/Profile.module.css";
-import React, { useState } from "react";
 
 const Profile = () => {
-    const [errorMessage, setErrorMessage] = useState("");
     const [userData, setUserData] = useState({
-        name: 'John Doe',
-        email: 'john@example.com',
-        address: 'Penang, Malaysia.',
-        phoneno: '012-3456789',
-    });
+        email: "",
+        imageUrl: "",
+        store: "",
+        phoneno: "",
+        category: ""
+      });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [image, setImage] = useState(null);
 
-    // State variable for edit mode
-    const [isEditing, setIsEditing] = useState(false);
-
-    // State variable to keep track of the field being edited
-    const [editingField, setEditingField] = useState(null);
-
-    // Functions to handle editing
-    const handleFieldChange = (field, value) => {
-        setUserData({ ...userData, [field]: value });
-    };
-
-    // Function to toggle edit mode
-    const toggleEditMode = () => {
-        setIsEditing(!isEditing);
-    };
-
-    // Function to save edited information
-    const handleSave = () => {
-        setIsEditing(false);
-        // Here you can perform actions to save the edited information, e.g., make an API request
-        console.log("Saving edited information:", userData);
-    };
-
-    const navigate = useNavigate();
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // If not editing, toggle edit mode
-        if (!isEditing) {
-            toggleEditMode();
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token, // Send the token in the headers
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setUserData(data.data);
         } else {
-            // Perform any necessary validation
-            // Here you can add validation if needed
-            // Save the information
-            handleSave();
+          setErrorMessage(data.errors);
         }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
     };
+  
+    fetchUserData();
+  }, []);
+  
 
-    return (
-        <div>
-            <Header />
-            <SideNav />
-            <div className={styles.login_container}>
-                <div className={styles.login_form_container}>
-                    <div className={styles.left}>
-                        <h1 className={`${isEditing ? styles.editable : ''} ${styles.profileText}`}>
-                            {isEditing ? "Edit Profile" : "Profile"}
-                        </h1>                        
-                        <div className={styles.left_box}>
-                            <form className={styles.form_container} onSubmit={handleSubmit}>
-                                <input
-                                    type="text"
-                                    value={userData.name}
-                                    onChange={(e) => handleFieldChange('name', e.target.value)}
-                                    readOnly={!isEditing} // readOnly when not editing
-                                    required
-                                    className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
-                                />
-                                <input
-                                    type="text"
-                                    value={userData.email}
-                                    onChange={(e) => handleFieldChange('email', e.target.value)}
-                                    readOnly={!isEditing} // readOnly when not editing
-                                    required
-                                    className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
-                                />
-                                <input
-                                    type="text"
-                                    value={userData.address}
-                                    onChange={(e) => handleFieldChange('address', e.target.value)}
-                                    readOnly={!isEditing} // readOnly when not editing
-                                    required
-                                    className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
-                                />
-                                <input
-                                    type="text"
-                                    value={userData.phoneno}
-                                    onChange={(e) => handleFieldChange('phoneno', e.target.value)}
-                                    readOnly={!isEditing} // readOnly when not editing
-                                    required
-                                    className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
-                                />
-                                <button type="submit" className={styles.orange_btn}>
-                                    {isEditing ? "Save" : "Edit"}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const uploadImage = async () => {
+    if (!image) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('image', image);
+
+      const response = await axios.post('http://localhost:4000/upload-profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log('Image uploaded:', response.data.imageUrl);
+      setImageUrl(response.data.imageUrl); // Update the imageUrl state
+      return response.data.imageUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setErrorMessage('Failed to upload image.');
+    }
+  };
+
+
+  const handleFieldChange = (event) => {
+    setUserData({ ...userData, [event.target.name]: event.target.value });
+  };
+
+  const toggleEditMode = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleSave = async () => {
+    try {
+        const imageUrl = await uploadImage(); // Wait for image upload to complete
+        if (localStorage.getItem('auth-token')) {
+            const response = await fetch('http://localhost:4000/updateprofile', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/form-data',
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify({ ...userData, imageUrl }) // Include imageUrl in the request body
+            });
+            const data = await response.json();
+            console.log(data);
+        }
+    } catch (error) {
+        console.error('Error saving profile:', error);
+    }
+};
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!isEditing) {
+      toggleEditMode();
+    } else {
+      handleSave();
+      setIsEditing(false);
+    }
+  };
+
+  return (
+    <div>
+      <Header />
+      <SideNav />
+      <div className={styles.profileHeader}>
+          <img src={imageUrl} alt="Uploaded" className={styles.profileImage} />
         </div>
+      <div className={styles.login_container}>
+        <div className={styles.login_form_container}>
+          <div className={styles.left}>
+            <h1 className={`${isEditing ? styles.editable : ''} ${styles.profileText}`}>
+              {isEditing ? "Edit Profile" : "Profile"}
+            </h1>
+            <div className={styles.left_box}>
+              <form className={styles.form_container} onSubmit={handleSubmit}>
+                <input
+                  type="file"
+                  onChange={handleImageChange}
+                  readOnly={!isEditing}
+                  accept="image/*"
+                  className={styles.input_odd}
+                  />
 
-    );
+                <input
+                  type="text"
+                  name="store"
+                  placeholder="Store Name"
+                  value={userData.store}
+                  onChange={handleFieldChange}
+                  readOnly={!isEditing}
+                  required
+                  className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
+                />
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  value={userData.email}
+                  onChange={handleFieldChange}
+                  disabled
+                  required
+                  className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
+                />
+                <input
+                  type="text"
+                  name="phoneno"
+                  placeholder="Phone No"
+                  value={userData.phoneno}
+                  onChange={handleFieldChange}
+                  readOnly={!isEditing}
+                  required
+                  className={`${styles.input_odd} ${isEditing ? '' : styles.nonEditable}`}
+                />
+                <select
+                  name="category"
+                  className={styles.input_odd}
+                  value={userData.category}
+                  disabled={!isEditing}
+                  onChange={handleFieldChange}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  <option value="Apparel">Apparel & Accessories</option>
+                  <option value="Sports">Sports & Entertainment</option>
+                  <option value="Electronic">Electronics</option>
+                </select>
+                <button type="submit" className={styles.orange_btn}>
+                  {isEditing ? "Save" : "Edit"}
+                </button>
+              </form>
+              {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Profile;

@@ -5,6 +5,33 @@ import { Link, useLocation } from 'react-router-dom';
 const SideNav = () => {
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
+  const [storeId, setStoreId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setStoreId(data.data.storeId);
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -23,9 +50,9 @@ const SideNav = () => {
         <ul className="sidenav-menu flex flex-col gap-4">
           <li className="sidenav-item">
             <Link 
-              to="/home" 
-              className={activeLink === '/home' ? 'active' : ''} 
-              onClick={() => handleLinkClick('/home')}
+              to={`/home/${storeId}`}
+              className={activeLink === `/home/${storeId}` ? 'active' : ''} 
+              onClick={() => handleLinkClick(`/home/${storeId}`)}
             >
               Store
             </Link>

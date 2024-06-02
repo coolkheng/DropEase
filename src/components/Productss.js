@@ -42,7 +42,7 @@ const Productss = () => {
               img={product.mainImages}
               name={product.name}
               desc={product.desc}
-              longDesc={product.longDesc}
+              longDesc={product.longdesc}
               rating={product.rating}
               price={product.price}
               product={product}

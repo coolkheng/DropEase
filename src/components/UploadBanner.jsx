@@ -2,73 +2,95 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const UploadBanner = () => {
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [previewImages, setPreviewImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false); // Define hasChanges state variable
+  const [hasChanges, setHasChanges] = useState(false);
+  const [storeId, setStoreId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    setHasChanges(selectedImages.length > 0);
-  }, [selectedImages]);
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setStoreId(data.data.storeId); // Ensure storeId is set correctly
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    setHasChanges(!!selectedImage);
+  }, [selectedImage]);
 
   const onSelectFile = (event) => {
-    const files = event.target.files;
-    if (files.length + selectedImages.length <= 5) {
-      const imageFiles = Array.from(files);
-      const imageUrls = imageFiles.map((file) => URL.createObjectURL(file));
-      setPreviewImages([...previewImages, ...imageUrls]);
-      setSelectedImages([...selectedImages, ...imageFiles]);
-    } else {
-      alert("You can upload a maximum of 5 images.");
-    }
+    const file = event.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setPreviewImage(imageUrl);
+    setSelectedImage(file);
+    setSuccess(false);
   };
 
-  const addImages = async () => {
+  const addImage = async () => {
+    if (!storeId) {
+      setError("Store ID is missing. Please try again.");
+      return;
+    }
+
     setUploading(true);
     setError(null);
     try {
       const formData = new FormData();
-      selectedImages.forEach((image) => {
-        formData.append("banners", image);
-      });
+      formData.append("banner", selectedImage);
+      formData.append("storeId", storeId);
 
-      const response = await axios.post("http://localhost:4000/upload-banners", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      console.log("Form Data:", { banner: selectedImage, storeId }); // Log form data
+
+      const response = await axios.post(
+        "http://localhost:4000/upload-banners",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "auth-token": localStorage.getItem("auth-token"), // Include auth token in the headers
+          },
+        }
+      );
       console.log(response.data);
       setSuccess(true);
 
       // Clear selected images and reset component state
-      setSelectedImages([]);
-      setPreviewImages([]);
+      setSelectedImage(null);
+      setPreviewImage(null);
     } catch (error) {
-      console.error("Error uploading images:", error);
-      setError("An error occurred while uploading images.");
+      console.error("Error uploading image:", error);
+      setError("An error occurred while uploading image.");
     } finally {
       setUploading(false);
     }
   };
 
-  const deleteHandler = (index) => {
-    URL.revokeObjectURL(previewImages[index]);
-    const updatedPreviewImages = [...previewImages];
-    updatedPreviewImages.splice(index, 1);
-    setPreviewImages(updatedPreviewImages);
-
-    const updatedSelectedImages = [...selectedImages];
-    updatedSelectedImages.splice(index, 1);
-    setSelectedImages(updatedSelectedImages);
-  };
-
   return (
     <section>
       <label>
-        <p className="font-bold">Upload & Update Your Store Banner Here!</p>
-        <p className="hint">(You can upload a maximum of 5 images)</p>
+        <p className="font-bold">Upload & Update Your Store Banner Here!</p>{" "}
         <br />
         <input
           type="file"
@@ -76,7 +98,7 @@ const UploadBanner = () => {
           name="image"
           onChange={onSelectFile}
           accept="image/png, image/jpeg, image/webp"
-          multiple
+          single
         />
       </label>
       <br />
@@ -85,23 +107,24 @@ const UploadBanner = () => {
       {error && <div className="error">{error}</div>}
 
       {/* Display success message if upload is successful */}
-      {success && <div className="success">Images uploaded successfully!</div>}
+      {success && (
+        <div className="success-message">Image uploaded successfully!</div>
+      )}
 
-      {/* Display preview of selected images */}
-      {previewImages.map((previewImage, index) => (
-        <div className="preview-container" key={index}>
+      {/* Display preview of selected image */}
+      {previewImage && (
+        <div className="preview-container">
           <div className="preview-item">
             <img src={previewImage} alt="Preview" className="original-image" />
-            <button onClick={() => deleteHandler(index)}>Delete Image</button>
           </div>
         </div>
-      ))}
+      )}
 
       {/* Button to initiate upload */}
       {hasChanges && (
         <div className="preview-container">
-          <button disabled={uploading} onClick={addImages}>
-            {uploading ? "Uploading..." : "Update Images"}
+          <button disabled={uploading} onClick={addImage}>
+            {uploading ? "Uploading..." : "Update Image"}
           </button>
         </div>
       )}
