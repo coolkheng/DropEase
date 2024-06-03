@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../asset/logo.png";
 import "../style/SideNav.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const SideNavSupplier = () => {
   // Handling different size of screen
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const location = useLocation();
+  const [activeLink, setActiveLink] = useState(location.pathname);
+  const [storeId, setStoreId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -20,6 +24,39 @@ const SideNavSupplier = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setStoreId(data.data.storeId);
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, [location.pathname]);
+
+  const handleLinkClick = (path) => {
+    setActiveLink(path);
+  };
+
   return (
     <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
       {!isSmallScreen && (
@@ -31,7 +68,7 @@ const SideNavSupplier = () => {
             </div>
             <ul className="sidenav-menu">
               <li className="sidenav-item">
-                <Link to="/home">Store</Link>
+                <Link to={`/home/${storeId}`}>Store</Link>
               </li>
               <li className="sidenav-item">
                 <Link to="/edit-store">Edit Store</Link>
