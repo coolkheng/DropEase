@@ -226,6 +226,32 @@ app.get("/api/orders/:id", async (req, res) => {
   }
 });
 
+app.put("/api/orders/:orderId", async (req, res) => {
+  const orderId = req.params.orderId;
+  const { status } = req.body;
+  try {
+    // Update order status in the database
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { delivery_status: status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Return updated order
+    res.json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ error: "Failed to update order status" });
+  }
+});
+
 // Start the Express server
 app.listen(port, (error) => {
   if (!error) {

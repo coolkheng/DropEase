@@ -1,5 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { styled } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Stepper from "@mui/material/Stepper";
@@ -44,8 +46,8 @@ const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
   zIndex: 1,
   color: "#fff",
-  width: 70,
-  height: 70,
+  width: 50,
+  height: 50,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
@@ -89,12 +91,42 @@ ColorlibStepIcon.propTypes = {
 
 const steps = ["Ready to Ship", "Shipping", "Delivered"];
 
-export default function CustomizedSteppers() {
+export default function CustomizedSteppers({ orderDetails }) {
   const [activeStep, setActiveStep] = React.useState(0);
+  let status = orderDetails.delivery_status;
+  console.log(status);
+  console.log(orderDetails._id);
+  const handleNext = async () => {
+    try {
+      // Make an API call to update the order status in the database
+      const response = await axios.put(`/api/orders/${orderDetails._id}`, {
+        status: steps[activeStep + 1],
+      });
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      // If the API call is successful, update the activeStep state
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
   };
+
+  useEffect(() => {
+    // Determine the active step based on the delivery status
+    switch (status) {
+      case "Ready to Ship":
+        setActiveStep(0);
+        break;
+      case "Shipping":
+        setActiveStep(1);
+        break;
+      case "Delivered":
+        setActiveStep(2);
+        break;
+      default:
+        setActiveStep(0);
+        break;
+    }
+  }, [status]);
 
   return (
     <Stack sx={{ width: "100%" }} spacing={4}>

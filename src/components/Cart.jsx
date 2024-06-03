@@ -16,7 +16,7 @@ const Cart = ({ orderDetails }) => {
       <div className="Delivery">
         <h4 className="DeliveryStatus"> Delivery Status </h4>
         <div className="Progress-Bar">
-          <ProgressBar />
+          <ProgressBar orderDetails={orderDetails} />
         </div>
       </div>
 
