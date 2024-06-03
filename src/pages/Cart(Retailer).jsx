@@ -63,46 +63,70 @@ const RetailerCart = () => {
   );
 
   const handleCheckout = async () => {
+    console.log("Handle checkout function called!");
+    await clearCart();
+
     const stripe = await loadStripe("pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D");
-  
+
     const body = {
       products: cartItems.map(item => ({
         name: item.name,
         price: item.price,
         quantity: item.qty,
         image: item.mainImages
-      }))
+      })),
+      userId: localStorage.getItem("auth-token")
     };
-  
+
     const headers = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      'auth-token': localStorage.getItem("auth-token")
     };
-  
+
     try {
-      const response = await fetch("http://localhost:4000/create-checkout-session", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(body)
-      });
-  
-      if (!response.ok) {
+      const response = await axios.post("http://localhost:4000/create-checkout-session", body, { headers });
+
+      console.log("Response from backend:", response);
+
+      if (response.status !== 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
-      const { id: sessionId } = await response.json();  // Ensure complete JSON is parsed
-  
+
+      const { id: sessionId } = response.data;
+
       const result = await stripe.redirectToCheckout({
         sessionId: sessionId
       });
-  
+
       if (result.error) {
         console.log(result.error.message);
+      } else {
+        console.log("Redirect to checkout successful");
       }
     } catch (error) {
       console.error("Checkout error:", error);
     }
   };
-  
+
+  const clearCart = async () => {
+    console.log("Clear cart function called!");
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.post("http://localhost:4000/cartretailer/clear", {}, {
+        headers: {
+          'auth-token': token,
+        }
+      });
+
+      if (response.data.success) {
+        console.log("Cart cleared successfully");
+      } else {
+        console.log("Failed to clear cart");
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
+  };
 
   const handleRemoveCartItem = async (itemId) => {
     console.log("Attempting to remove item with ID:", itemId);
