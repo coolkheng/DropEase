@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import "../style/Header.css";
 import { FaRegCircleUser } from "react-icons/fa6";
 import DropdownMenu from "./UsernameDropDown";
-import { useState, useEffect } from "react";
 
 const Header = () => {
   const [userRole, setUserRole] = useState(null);
@@ -57,7 +56,9 @@ const Header = () => {
     <div className="header">
       <div className="text-5xl cursor-pointer relative flex justify-start items-center">
         {store && store.imageUrl ? (
-          <img src={store.imageUrl} alt="Store" className="w-12 h-12 rounded-full" />
+          <div className="img-container">
+          <img style={{marginTop:"40px"}} className="shop-img" src={store.imageUrl} alt={store.store} />
+        </div>
         ) : (
           <FaRegCircleUser />
         )}

@@ -5,6 +5,7 @@ import React, { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [errorMessage,setErrorMessage]=useState("");
 
   const [formData, setFormData] = useState({
     password: "",
@@ -32,7 +33,7 @@ const Login = () => {
     if (responseData.success) {
       console.log("Login Successful:", responseData);
       localStorage.setItem('auth-token', responseData.token);
-      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home";
+      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home/:storeId";
       navigate(linkDestination);
     } else {
       alert(responseData.errors);
