@@ -338,6 +338,23 @@ app.get("/store/:storeId", async (req, res) => {
 });
 
 
+app.get('/searchstore',async(req,res)=>{
+  const query = req.query.q;
+  try {
+    const stores = await Users.find({
+      role:"retailer",
+      $or:[
+        {store:{$regex:query,$options:'i'}},
+        {category:{$regex:query,$options:'i'}}
+      ]
+    });
+    res.json(stores);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({message:"Server Error"});
+  }
+});
+
 // Creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
   const token = req.header("auth-token");
@@ -479,6 +496,7 @@ app.post("/addtocart", fetchUser, async (req, res) => {
   }
 });
 
+
 //TODO: Change productId based on Eugene's product-id
 app.post("/removefromcart", fetchUser, async (req, res) => {
   try {
@@ -548,7 +566,8 @@ app.post("/decreasequantity", fetchUser, async (req, res) => {
 app.post("/getcart", fetchUser, async (req, res) => {
   try {
     console.log("GetCart");
-    let userCart = await CartCustomer.findOne({ userId: req.user.id });
+    const userId = req.user.id;
+    let userCart = await CartCustomer.findOne({ userId });
 
     if (!userCart) {
       return res.status(404).json({ errors: "Cart Not Found" });
@@ -556,8 +575,8 @@ app.post("/getcart", fetchUser, async (req, res) => {
 
     let cartItems = [];
 
-    for (let [productId, quantity] of userCart.cartData) {
-      let product = await Product.findOne({ id: productId });
+    for (let [productIdStr, quantity] of userCart.cartData) {
+      let product = await Product.findOne({ id: productIdStr }); // Use the correct field here
       if (product) {
         cartItems.push({
           product: product,
@@ -565,7 +584,6 @@ app.post("/getcart", fetchUser, async (req, res) => {
         });
       }
     }
-    console.log(cartItems);
     res.json(cartItems);
   } catch (error) {
     console.error("Error fetching cart data:", error);

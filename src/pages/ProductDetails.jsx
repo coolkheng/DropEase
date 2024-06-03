@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "./cartContext";
 import "../style/ProductDetails.css";
+import HeaderCustomer from "../components/Header(Customer)";
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -13,10 +14,6 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [userRole, setUserRole] = useState(null);
-
-//  useEffect(() => {
-//    checkUserRole();
-//  }, []);
 
   const handleImageClick = (image) => {
     setMainImage(image);
@@ -59,32 +56,34 @@ const ProductDetails = () => {
     navigate('/customercart'); // Redirect to customer cart after adding to cart
   };
 
- //TODO: Re-operate button function 
- // const checkUserRole = async () => {
- //   try {
- //     const authToken = localStorage.getItem('auth-token');
- //     if (authToken) {
- //       const response = await fetch('http://localhost:4000/login', {
- //         method: 'POST',
- //         headers: {
- //           'auth-token': authToken,
- //           'Content-Type': 'application/json',
- //         },
- //         body: JSON.stringify({}),
- //       });
-//
- //       const data = await response.json();
- //       if (data.success) {
- //         setUserRole(data.role);
- //       } else {
- //         setUserRole(null);
- //       }
- //     }
- //   } catch (error) {
- //     console.error("Error fetching user role:", error);
- //   }
- // };
-  
+ useEffect(()=>{
+  const checkUserRole = async () => {
+    try {
+      const authToken = localStorage.getItem('auth-token');
+      if (authToken) {
+        const response = await fetch('http://localhost:4000/userData', {
+          method: 'POST',
+          headers: {
+            'auth-token': authToken,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setUserRole(data.data.role);
+        } else {
+          setUserRole(null);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user role:", error);
+    }
+  };
+
+  checkUserRole();
+ },[]);
 
   if (!product) {
     return <div>Product not found</div>;
@@ -92,6 +91,7 @@ const ProductDetails = () => {
 
   return (
     <>
+    <HeaderCustomer/>
       <div className="productdisplay">
         <div className="productdisplay-left">
           <div className="productdisplay-img-list">
@@ -116,7 +116,7 @@ const ProductDetails = () => {
           </div>
 
           <div className="productdisplay-right-prices">
-            <h2 className="priceDetails">RM {product.price}.00</h2>
+            <h2 className="priceDetails">RM {product.price}</h2>
           </div>
 
           {product.longdesc && product.longdesc.length > 0 && (
@@ -162,12 +162,11 @@ const ProductDetails = () => {
               </div>
             </div>
           )}
+          
 
-          <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
-
-          {/*{userRole === 'customer' && (
+          {userRole === 'customer' && (
             <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
-          )}*/}
+          )}
         </div>
       </div>
     </>
