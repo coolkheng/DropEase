@@ -399,39 +399,32 @@ app.post('/cartretailer', fetchUser, async (req, res) => {
 app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
   try {
     console.log('Checkout endpoint reached');
-    console.log('Request body:', req.body); // Log the request body to see the payload
-    
+    console.log('Request body:', req.body);
+
     const userID = req.user.id;
 
-    // Find retailer cart for the user
     const cartRetailer = await CartRetailer.findOne({ userId: userID });
-    console.log('Retrieved cart:', cartRetailer); // Log the retrieved cart
-    
-    
+    console.log('Retrieved cart:', cartRetailer);
+
     if (!cartRetailer || Object.keys(cartRetailer.cartData).length === 0) {
       return res.status(400).json({ success: false, errors: "No items in retailer cart" });
     }
-   
 
-
-    // Process the order (this part can include order creation, payment processing, etc.)
-    // For this example, we'll simply clear the cart
-
-    console.log('Cart before clearing:', cartRetailer.cartData); // Log cart data before clearing
+    console.log('Cart before clearing:', cartRetailer.cartData);
 
     cartRetailer.cartData = {};
-    await cartRetailer.save(); // Save the cleared cart
-    
- 
+    await cartRetailer.save();
 
-    console.log('Cart after clearing:', cartRetailer.cartData); // Log cart data after clearing
+    console.log('Cart after clearing:', cartRetailer.cartData);
 
     res.json({ success: true, message: "Checkout successful" });
   } catch (error) {
-    console.error('Checkout error:', error); // Log any errors
+    console.error('Checkout error:', error);
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
+
+
 
 app.post('/cartretailer/decreaseQty', fetchUser, async (req, res) => {
   try {
@@ -499,32 +492,56 @@ app.post('/cartretailer/removeFromCart', fetchUser, async (req, res) => {
 });
 
 // Stripe Payment Integration
-app.post("/create-checkout-session", async (req, res) => {
+app.post('/create-checkout-session', fetchUser, async (req, res) => {
   try {
+    const { products, userId } = req.body;
+
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: req.body.products.map(product => ({
+      payment_method_types: ['card'],
+      line_items: products.map(product => ({
         price_data: {
-          currency: "myr",
+          currency: 'usd',
           product_data: {
             name: product.name,
-            images: [product.image]
+            images: [product.image],
           },
-          unit_amount: product.price * 100
+          unit_amount: product.price * 100,
         },
-        quantity: product.quantity
+        quantity: product.quantity,
       })),
-      mode: "payment",
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
+      mode: 'payment',
+      success_url: 'http://localhost:3000/foodbeverages',
+      cancel_url: 'http://localhost:3000/foodbeverages',
     });
 
-    res.json({ id: session.id });  // Ensure we are sending a valid JSON response
+    res.json({ id: session.id });
   } catch (error) {
-    console.error("Error creating checkout session:", error);
-    res.status(500).send("Error creating checkout session");
+    console.error('Error creating checkout session:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
   }
 });
+
+app.post('/cartretailer/clear', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find retailer cart for the user
+    let cart = await CartRetailer.findOne({ userId });
+
+    if (cart) {
+      cart.cartData = {}; // Clear the cart data
+      await cart.save(); // Save the cleared cart
+      console.log('Cart cleared:', cart);
+      res.json({ success: true, message: "Cart cleared successfully" });
+    } else {
+      res.status(400).json({ success: false, message: "No cart found for user" });
+    }
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
 
 
 
