@@ -34,7 +34,6 @@ import ProductDetails from "./pages/ProductDetails.jsx";
 import EditShop from "./pages/EditShop.js";
 import Women from "./pages/Women.jsx";
 import Men from "./pages/Men.jsx";
-import Kids from "./pages/Kids.jsx";
 import Profile from "./pages/Profile.jsx";
 import { CartProvider } from "./pages/cartContext";
 import SupplierProductDetails from "./pages/SupplierProductDetails.jsx";
@@ -74,7 +73,6 @@ function App() {
             <Route path="/edit-store" element={<EditShop />} />
             <Route path="/women" element={<Women />} />
             <Route path="/men" element={<Men />} />
-            <Route path="/kids" element={<Kids />} />
             <Route path="/products/:id" element={<SupplierProductDetails />} />
             <Route
               path="/apparel"
