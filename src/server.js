@@ -323,6 +323,21 @@ app.get("/allstore", async (req, res) => {
   }
 });
 
+app.get("/store/:storeId", async (req, res) => {
+  try {
+    const storeId = req.params.storeId;
+    const store = await Users.findOne({ storeId });
+    if (store) {
+      res.json({ success: true, store });
+    } else {
+      res.status(404).json({ success: false, errors: "Store not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, errors: "Internal Server Error" });
+  }
+});
+
+
 // Creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
   const token = req.header("auth-token");
