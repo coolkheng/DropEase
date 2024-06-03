@@ -146,9 +146,11 @@ const bannerSchema = new mongoose.Schema({
   filename: String,
   contentType: String,
   data: Buffer,
+  imageUrl: String, // Add the imageUrl field to the schema
 });
 
 const Banner = mongoose.model("Banner", bannerSchema);
+
 
 // Banner Storage Engine using Multer
 const bannerStorage = multer.diskStorage({
@@ -176,18 +178,19 @@ app.post(
       if (!storeId) {
         return res.status(400).json({ error: "storeId is required" });
       }
-
+      
+      const imageUrl = `http://localhost:${port}/banners/${req.file.filename}`;
       // Save the uploaded file as a banner document in MongoDB
       const newBanner = new Banner({
         storeId,
-        filename: file.originalname,
+        filename: file.filename,
         contentType: file.mimetype,
         data: file.buffer,
+        imageUrl: imageUrl,
       });
       await newBanner.save();
 
       // Construct the image URL for the uploaded banner
-      const imageUrl = `http://localhost:${port}/banners/${file.originalname}`;
 
       res.status(201).json({
         success: 1,
