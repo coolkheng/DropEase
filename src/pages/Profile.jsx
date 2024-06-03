@@ -3,6 +3,7 @@ import axios from "axios";
 import Header from "../components/Header";
 import SideNav from "../components/SideNav";
 import styles from "../style/Profile.module.css";
+import defaultImage from "../asset/user icon.png";
 
 const Profile = () => {
     const [userData, setUserData] = useState({
@@ -137,7 +138,11 @@ const Profile = () => {
       <Header />
       <SideNav />
       <div className={styles.profileHeader}>
-          <img src={imageUrl} alt="Uploaded" className={styles.profileImage} />
+      <img
+          src={userData.imageUrl ? userData.imageUrl : defaultImage}
+          alt="Uploaded"
+          className={styles.profileImage}
+        />
         </div>
       <div className={styles.login_container}>
         <div className={styles.login_form_container}>

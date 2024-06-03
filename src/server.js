@@ -154,7 +154,7 @@ const UsersSchema = new mongoose.Schema({
   accountId: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String },
-  role: { type: String },
+  role: { type: String, required: true},
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String },
   store: { type: String },
@@ -283,14 +283,9 @@ app.post("/signup", async (req, res) => {
     }
 
     const user = new Users({
-      googleId: "",
       email: req.body.email,
       password: req.body.password,
       role: req.body.role,
-      imageUrl: "",
-      store: "",
-      phoneno: "",
-      category: "",
     });
 
 
@@ -359,7 +354,7 @@ const fetchUser = async (req, res, next) => {
 
 // Multer configuration for profile image upload
 const profileStorage = multer.diskStorage({
-  destination: './uploads/profiles',
+  destination: "./upload/images",
   filename: (req, file, cb) => {
     cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
   }
@@ -368,11 +363,12 @@ const profileStorage = multer.diskStorage({
 const uploadProfile = multer({ storage: profileStorage });
 
 // Profile image upload endpoint
+app.use("/images", express.static("upload/images"));
 app.post('/upload-profile', uploadProfile.single('image'), (req, res) => {
   try {
     const filePath = req.file.path;
     // Save the file path or URL to the user's profile
-    const imageUrl = `http://localhost:${port}/${filePath}`;
+    const imageUrl = `http://localhost:${port}/images/${req.file.filename}`;
     res.json({ imageUrl });
   } catch (error) {
     console.error('Error uploading profile image:', error);
