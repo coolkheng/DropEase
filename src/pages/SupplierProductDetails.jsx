@@ -2,6 +2,8 @@ import React,{useState, useContext} from "react";
 import { useLocation , useNavigate} from "react-router-dom";
 import {CartContext} from "./cartContext";
 import "../style/ProductDetails.css";
+import axios from 'axios';
+
 
 
 const SupplierProductDetails = () => {
@@ -26,11 +28,30 @@ const SupplierProductDetails = () => {
     setSelectedColor(color);
   };
 
-  const handleAddToCart = () => {
-      addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor });
-      navigate('/retailercart');
+  const handleAddToCart = async () => {
+    await addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor });
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.post("http://localhost:4000/cartretailer", {
+        productId: product.id,
+        quantity: 1, // Assuming you add one item at a time
+      }, {
+        headers: {
+          'auth-token': token,
+        }
+      });
+  
+      if (response.data === "Added to cart") {
+        console.log("Item added to cart successfully");
+        navigate('/retailercart'); // Navigate only after the backend request is successful
+      } else {
+        console.log("Failed to add item to cart");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
   };
-
+  
   if (!product) {
     return <div>Product not found</div>;
   }

@@ -57,24 +57,14 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const removeFromCart = (productId, authToken) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
-
-    if (authToken) {
-      fetch('http://localhost:4000/removefromcart', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'auth-token': authToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productId })
-      })
-        .then((response) => response.json())
-        .then((data) => console.log(data.message))
-        .catch((error) => console.error("Error removing from cart:", error));
-    }
+  const removeFromCart = (productId) => {
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems.filter((item) => item.id !== productId);
+      console.log("Updated cart items:", updatedItems);
+      return updatedItems;
+    });
   };
+  
 
   return (
     <CartContext.Provider value={{ cartItems, setCartItems, addToCart, decreaseQty, removeFromCart}}>

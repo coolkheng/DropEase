@@ -364,20 +364,24 @@ const CartRetailer = mongoose.model('CartRetailer', CartRetailerSchema);
 app.post('/cartretailer', fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { productId, quantity } = req.body;
+    const { productId, quantity} = req.body;
+
+    // Ensure productId and quantity are properly typed
+    const prodId = String(productId); // Convert productId to string because Map keys are strings
+    const qty = Number(quantity);
 
     // Find cart data for the user
     let cart = await CartRetailer.findOne({ userId });
-    
+
     if (!cart) {
-      // Create new cart if not exists
-      cart = new CartRetailer({ userId, cartData: { [productId]: quantity } });
+      // Create new cart if it doesn't exist
+      cart = new CartRetailer({ userId, cartData: { [prodId]: qty } });
     } else {
       // Update existing cart
-      if (cart.cartData.has(productId)) {
-        cart.cartData.set(productId, cart.cartData.get(productId) + quantity);
+      if (cart.cartData.has(prodId)) {
+        cart.cartData.set(prodId, cart.cartData.get(prodId) + qty);
       } else {
-        cart.cartData.set(productId, quantity);
+        cart.cartData.set(prodId, qty);
       }
     }
 
@@ -390,6 +394,7 @@ app.post('/cartretailer', fetchUser, async (req, res) => {
   }
 });
 
+
 app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
   try {
     console.log('Checkout endpoint reached');
@@ -401,9 +406,12 @@ app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
     const cartRetailer = await CartRetailer.findOne({ userId: userID });
     console.log('Retrieved cart:', cartRetailer); // Log the retrieved cart
     
+    
     if (!cartRetailer || Object.keys(cartRetailer.cartData).length === 0) {
       return res.status(400).json({ success: false, errors: "No items in retailer cart" });
     }
+   
+
 
     // Process the order (this part can include order creation, payment processing, etc.)
     // For this example, we'll simply clear the cart
@@ -411,7 +419,9 @@ app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
     console.log('Cart before clearing:', cartRetailer.cartData); // Log cart data before clearing
 
     cartRetailer.cartData = {};
-    await cartRetailer.save();
+    await cartRetailer.save(); // Save the cleared cart
+    
+ 
 
     console.log('Cart after clearing:', cartRetailer.cartData); // Log cart data after clearing
 
@@ -421,6 +431,74 @@ app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
+
+app.post('/cartretailer/decreaseQty', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId } = req.body;
+
+    // Ensure productId is properly typed
+    const prodId = String(productId); // Convert productId to string because Map keys are strings
+
+    // Find cart data for the user
+    let cart = await CartRetailer.findOne({ userId });
+
+    if (!cart) {
+      return res.status(400).json({ success: false, errors: "No cart found for the user" });
+    }
+
+    // Decrease quantity of the specified product
+    if (cart.cartData.has(prodId) && cart.cartData.get(prodId) > 1) {
+      cart.cartData.set(prodId, cart.cartData.get(prodId) - 1);
+      await cart.save();
+      console.log('Cart updated after decreasing quantity:', cart);
+      res.send("Quantity decreased");
+    } else {
+      res.status(400).json({ success: false, errors: "Cannot decrease quantity further" });
+    }
+  } catch (error) {
+    console.error('Error decreasing quantity:', error); // Log any errors
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+// Add this route to your backend
+app.post('/cartretailer/removeFromCart', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId } = req.body;
+
+    // Convert productId to string because Map keys are strings
+    const prodId = String(productId);
+
+    console.log('Request received to remove product ID:', prodId);
+
+    // Find cart data for the user
+    let cart = await CartRetailer.findOne({ userId });
+
+    if (!cart) {
+      console.log('No cart found for user ID:', userId);
+      return res.status(400).json({ success: false, errors: "No cart found for the user" });
+    }
+
+    // Remove the specified product from the cart
+    if (cart.cartData.has(prodId)) {
+      cart.cartData.delete(prodId);
+      await cart.save();
+      console.log('Cart updated after removing item:', cart);
+      res.send("Item removed from cart");
+    } else {
+      console.log('Item not found in cart for product ID:', prodId);
+      res.status(400).json({ success: false, errors: "Item not found in cart" });
+    }
+  } catch (error) {
+    console.error('Error removing item from cart:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+
+
 
 
 
