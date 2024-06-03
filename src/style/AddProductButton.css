@@ -1,0 +1,27 @@
+.add-product-button {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 200px;
+  height: 292.81px;
+  margin-bottom: 16px;
+  margin-right: 16px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-product-button:hover {
+  background-color: #9b9b9b;
+}
+
+.add-product-button-image {
+  width: 25%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  margin-left: 38%;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}

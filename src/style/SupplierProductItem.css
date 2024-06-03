@@ -1,0 +1,37 @@
+.supplier-product-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 260px;
+    height: 400px;
+    padding: 16px;
+    margin-bottom: 16px;
+    margin-right: 16px; /* Add spacing between items */
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .supplier-product-image {
+    width: 100%;
+    height: auto; /* Ensure the image maintains its aspect ratio */
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .supplier-productitem-content {
+    display: flex; /* Ensure the content is displayed as a flex container */
+    flex-direction: column; /* Stack the title and description vertically */
+    align-items: flex-start; /* Align children to the left side */
+  }
+  
+  .supplier-product-title {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    align-self: flex-start; /* Align the title to the left side */
+  }
+  
+  .supplier-product-description {
+    font-size: 1rem;
+    color: #666;
+  }
+  

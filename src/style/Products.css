@@ -1,0 +1,53 @@
+/* Addproduct.css */
+
+.AddProduct {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 50px; /* Add padding to the top to create space for the header */
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 40px; /* Adjust the top margin as needed */
+    padding-left: 10px;
+  }
+
+.product-content-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.product-content {
+    flex: 1;
+    justify-content: start;
+}
+
+.productpage-title{
+    padding-top: 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+
+.product-main-content {
+    padding-bottom: 20px;
+    background-color: rgb(255, 255, 255);
+    min-height: 100vh;
+}
+
+
+footer {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px; /* Adjust padding as needed */
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+
