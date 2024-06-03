@@ -6,13 +6,13 @@ import styles from "../style/Profile.module.css";
 import defaultImage from "../asset/user icon.png";
 
 const Profile = () => {
-    const [userData, setUserData] = useState({
-        email: "",
-        imageUrl: "",
-        store: "",
-        phoneno: "",
-        category: ""
-      });
+  const [userData, setUserData] = useState({
+    email: "",
+    imageUrl: "",
+    store: "",
+    phoneno: "",
+    category: ""
+  });
   const [errorMessage, setErrorMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
@@ -40,32 +40,32 @@ const Profile = () => {
       }
     };
 
-  //   const getUser = async () => {
-  //     try {
-  //         const response = await axios.get("http://localhost:4000/login/success", { withCredentials: true });
-  //         setUserData(response.data.user)
-  //     } catch (error) {
-  //         console.log("error", error)
-  //     }
-  // }
-  // const checkAuthentication = async () => {
-  //   try {
-  //     const response = await axios.get("http://localhost:4000/login/success", { withCredentials: true });
-  //     if (response.data.googleId !== "") {
-  //       // User logged in using Google OAuth, call getUser()
-  //       getUser();
-  //     } else {
-  //       // User logged in using another method, call fetchUserData()
-  //       fetchUserData();
-  //     }
-  //   } catch (error) {
-  //     setErrorMessage("Failed to fetch user data");
-  //   }
-  // };
+    //   const getUser = async () => {
+    //     try {
+    //         const response = await axios.get("http://localhost:4000/login/success", { withCredentials: true });
+    //         setUserData(response.data.user)
+    //     } catch (error) {
+    //         console.log("error", error)
+    //     }
+    // }
+    // const checkAuthentication = async () => {
+    //   try {
+    //     const response = await axios.get("http://localhost:4000/login/success", { withCredentials: true });
+    //     if (response.data.googleId !== "") {
+    //       // User logged in using Google OAuth, call getUser()
+    //       getUser();
+    //     } else {
+    //       // User logged in using another method, call fetchUserData()
+    //       fetchUserData();
+    //     }
+    //   } catch (error) {
+    //     setErrorMessage("Failed to fetch user data");
+    //   }
+    // };
 
-  fetchUserData();
-}, []);
-  
+    fetchUserData();
+  }, []);
+
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -104,24 +104,27 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-        const imageUrl = await uploadImage(); // Wait for image upload to complete
-        if (localStorage.getItem('auth-token')) {
-            const response = await fetch('http://localhost:4000/updateprofile', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/form-data',
-                    'Content-Type': 'application/json',
-                    'auth-token': localStorage.getItem('auth-token'),
-                },
-                body: JSON.stringify({ ...userData, imageUrl }) // Include imageUrl in the request body
-            });
-            const data = await response.json();
-            console.log(data);
-        }
+      const imageUrl = await uploadImage(); // Wait for image upload to complete
+      if (localStorage.getItem('auth-token')) {
+        const response = await fetch('http://localhost:4000/updateprofile', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/form-data',
+            'Content-Type': 'application/json',
+            'auth-token': localStorage.getItem('auth-token'),
+          },
+          body: JSON.stringify({ ...userData, imageUrl }) // Include imageUrl in the request body
+        });
+        const data = await response.json();
+        console.log(data);
+
+        // Reload the page after successful update
+        window.location.reload();
+      }
     } catch (error) {
-        console.error('Error saving profile:', error);
+      console.error('Error saving profile:', error);
     }
-};
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -138,12 +141,12 @@ const Profile = () => {
       <Header />
       <SideNav />
       <div className={styles.profileHeader}>
-      <img
+        <img
           src={userData.imageUrl ? userData.imageUrl : defaultImage}
           alt="Uploaded"
           className={styles.profileImage}
         />
-        </div>
+      </div>
       <div className={styles.login_container}>
         <div className={styles.login_form_container}>
           <div className={styles.left}>
@@ -157,8 +160,8 @@ const Profile = () => {
                   onChange={handleImageChange}
                   readOnly={!isEditing}
                   accept="image/*"
-                  className={styles.input_odd}
-                  />
+                  className={`${styles.input_odd} ${isEditing ? '' : styles.hidden}`}
+                />
 
                 <input
                   type="text"
