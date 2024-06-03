@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "./cartContext";
 import "../style/ProductDetails.css";
 import HeaderCustomer from "../components/Header(Customer)";
+import SideNav from "../components/SideNav";
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -14,6 +15,7 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  
 
   const handleImageClick = (image) => {
     setMainImage(image);
@@ -91,7 +93,14 @@ const ProductDetails = () => {
 
   return (
     <>
-    <HeaderCustomer/>
+    {userRole === 'customer' && (
+            <HeaderCustomer/>
+          )}
+    {userRole === 'retailer' && (
+            <SideNav />
+          )}
+
+      <div>
       <div className="productdisplay">
         <div className="productdisplay-left">
           <div className="productdisplay-img-list">
@@ -168,6 +177,7 @@ const ProductDetails = () => {
             <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
           )}
         </div>
+      </div>
       </div>
     </>
   );
