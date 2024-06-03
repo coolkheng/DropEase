@@ -7,18 +7,18 @@ import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
 import { CartContext } from "./cartContext";
 import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
 
 const RetailerCart = () => {
   const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
 
-  // Function to handle adding items to the cart and send request to the backend
   const handleAddToCart = async (item) => {
     await addToCart(item);
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.post("http://localhost:4000/cartretailer", {
         productId: item.id,
-        quantity: 1, // Assuming you add one item at a time
+        quantity: 1,
       }, {
         headers: {
           'auth-token': token,
@@ -35,19 +35,18 @@ const RetailerCart = () => {
     }
   };
 
-  // Function to handle decreasing item quantity in the cart and send request to the backend
   const handleDecreaseQty = async (item) => {
     await decreaseQty(item);
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.post("http://localhost:4000/cartretailer/decreaseQty", {
-        productId: item.id, // Include productId in the request body
+        productId: item.id,
       }, {
         headers: {
           'auth-token': token,
         }
       });
-  
+
       if (response.data === "Quantity decreased") {
         console.log("Item quantity decreased successfully");
       } else {
@@ -57,71 +56,80 @@ const RetailerCart = () => {
       console.error("Error decreasing item quantity:", error);
     }
   };
-  
 
-  // Calculate total price of items
   const totalPrice = cartItems.reduce(
     (price, item) => price + item.qty * item.price,
     0
   );
 
   const handleCheckout = async () => {
+    const stripe = await loadStripe("pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D");
+  
+    const body = {
+      products: cartItems.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.qty,
+        image: item.mainImages
+      }))
+    };
+  
+    const headers = {
+      "Content-Type": "application/json"
+    };
+  
+    try {
+      const response = await fetch("http://localhost:4000/create-checkout-session", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const { id: sessionId } = await response.json();  // Ensure complete JSON is parsed
+  
+      const result = await stripe.redirectToCheckout({
+        sessionId: sessionId
+      });
+  
+      if (result.error) {
+        console.log(result.error.message);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+    }
+  };
+  
+
+  const handleRemoveCartItem = async (itemId) => {
+    console.log("Attempting to remove item with ID:", itemId);
+    console.log("Current cart items before removal:", cartItems);
+
     try {
       const token = localStorage.getItem("auth-token");
-      console.log("Cart Items:", cartItems);
-      const cartItemsPayload = cartItems.map(item => ({
-        productId: item.id,
-        quantity: item.qty
-      }));
-      const response = await axios.post("http://localhost:4000/cartretailer/checkout", {
-        items: cartItemsPayload,
+      const response = await axios.post("http://localhost:4000/cartretailer/removeFromCart", {
+        productId: itemId,
       }, {
         headers: {
           'auth-token': token,
         }
       });
-  
-      if (response.data.success) {
-        alert("Checkout successful!");
+
+      if (response.data === "Item removed from cart") {
+        console.log("Item removed from cart successfully");
+        removeFromCart(itemId);
+        console.log("Current cart items after removal:", cartItems);
       } else {
-        alert("Checkout failed. Please try again.");
+        console.log("Failed to remove item from cart");
       }
     } catch (error) {
-      console.error("Checkout error:", error);
-      alert("An error occurred during checkout. Please try again later.");
+      console.error("Error removing item from cart:", error);
     }
   };
 
-    // Function to handle removing item from the cart and send request to the backend
-    const handleRemoveCartItem = async (itemId) => {
-      console.log("Attempting to remove item with ID:", itemId);
-      console.log("Current cart items before removal:", cartItems);
-    
-      try {
-        const token = localStorage.getItem("auth-token");
-        const response = await axios.post("http://localhost:4000/cartretailer/removeFromCart", {
-          productId: itemId, // Send productId to the backend
-        }, {
-          headers: {
-            'auth-token': token,
-          }
-        });
-    
-        if (response.data === "Item removed from cart") {
-          console.log("Item removed from cart successfully");
-          removeFromCart(itemId);
-          console.log("Current cart items after removal:", cartItems);
-        } else {
-          console.log("Failed to remove item from cart");
-        }
-      } catch (error) {
-        console.error("Error removing item from cart:", error);
-      }
-    };
-    
-    
-
-  // Render cart items
   return (
     <>
       <Header>
@@ -166,7 +174,7 @@ const RetailerCart = () => {
                       </button>
                       <button
                         className="desCart"
-                        onClick={() => handleDecreaseQty(item)} // Updated function call
+                        onClick={() => handleDecreaseQty(item)}
                       >
                         <FaMinus />
                       </button>

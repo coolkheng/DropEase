@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
-
+const stripe = require("stripe")("sk_test_51PNRN72MhvOMkL1SzV5ouwWSRSIy1ZCrAJByjrtfK9zvwyPiTkTvdh1nuStkEK2U2OGDVNK7MAeC8u1hta9u6pK300Hz6UOdQv")
+const router = express.Router();
 const app = express();
 const port = 4000;
 
@@ -497,8 +498,33 @@ app.post('/cartretailer/removeFromCart', fetchUser, async (req, res) => {
   }
 });
 
+// Stripe Payment Integration
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: req.body.products.map(product => ({
+        price_data: {
+          currency: "myr",
+          product_data: {
+            name: product.name,
+            images: [product.image]
+          },
+          unit_amount: product.price * 100
+        },
+        quantity: product.quantity
+      })),
+      mode: "payment",
+      success_url: "http://localhost:3000/success",
+      cancel_url: "http://localhost:3000/cancel",
+    });
 
-
+    res.json({ id: session.id });  // Ensure we are sending a valid JSON response
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).send("Error creating checkout session");
+  }
+});
 
 
 
