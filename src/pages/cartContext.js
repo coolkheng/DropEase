@@ -1,11 +1,11 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (product, authToken) => {
+  const addToCart = (product) => {
     setCartItems((prevItems) => {
       const itemExists = prevItems.find((item) => item.id === product.id);
       if (itemExists) {
@@ -15,24 +15,9 @@ export const CartProvider = ({ children }) => {
       }
       return [...prevItems, { ...product, qty: 1 }];
     });
-
-    if (authToken) {
-      fetch('http://localhost:4000/addtocart', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'auth-token': authToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productId: product.id })
-      })
-        .then((response) => response.json())
-        .then((data) => console.log(data.message))
-        .catch((error) => console.error("Error adding to cart:", error));
-    }
   };
 
-  const decreaseQty = (product, authToken) => {
+  const decreaseQty = (product) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === product.id
@@ -40,21 +25,6 @@ export const CartProvider = ({ children }) => {
           : item
       )
     );
-
-    if (authToken) {
-      fetch('http://localhost:4000/decreasequantity', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'auth-token': authToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productId: product.id })
-      })
-        .then((response) => response.json())
-        .then((data) => console.log(data.message))
-        .catch((error) => console.error("Error decreasing quantity:", error));
-    }
   };
 
   const removeFromCart = (productId) => {
@@ -67,7 +37,7 @@ export const CartProvider = ({ children }) => {
   
 
   return (
-    <CartContext.Provider value={{ cartItems, setCartItems, addToCart, decreaseQty, removeFromCart}}>
+    <CartContext.Provider value={{ cartItems, addToCart, decreaseQty, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

@@ -34,6 +34,7 @@ import ProductDetails from "./pages/ProductDetails.jsx";
 import EditShop from "./pages/EditShop.js";
 import Women from "./pages/Women.jsx";
 import Men from "./pages/Men.jsx";
+import Kids from "./pages/Kids.jsx";
 import Profile from "./pages/Profile.jsx";
 import { CartProvider } from "./pages/cartContext";
 import SupplierProductDetails from "./pages/SupplierProductDetails.jsx";
