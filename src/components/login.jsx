@@ -1,13 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+
 
 const Login = () => {
-  const navigate = useNavigate(); 
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userType, setUserType] = useState(""); // State to manage selected user type
-  const [storeId, setStoreId] = useState(null);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     password: "",
@@ -29,14 +26,13 @@ const Login = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    })
-    .then((response) => response.json())
-    .then((data) => responseData = data);
+    }).then((response) => response.json())
+      .then((data) => responseData = data);
 
     if (responseData.success) {
+      console.log("Login Successful:", responseData);
       localStorage.setItem('auth-token', responseData.token);
-      const userStoreId = await fetchUserStoreId(responseData.token);
-      const linkDestination = responseData.role === "customer" ? "/customerhome" : `/home/${userStoreId}`;
+      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home";
       navigate(linkDestination);
     } else {
       alert(responseData.errors);
@@ -70,6 +66,18 @@ const Login = () => {
     login();
   };
 
+  const loginwithgoogle = () => {
+    window.open("http://localhost:4000/auth/google/callback", "_self")
+  }
+
+  const github = () => {
+    window.open("http://localhost:4000/auth/github", "_self");
+  };
+
+  const facebook = () => {
+    window.open("https://www.facebook.com/login", "_self");
+  };
+
   return (
     <div className={styles.login_container}>
       <div className={styles.login_form_container}>
@@ -92,7 +100,7 @@ const Login = () => {
                 onChange={changeHandler}
               />
               <input
-                type={passwordVisible ? "text" : "password"}
+                type="password"
                 placeholder="Password"
                 name="password"
                 required
@@ -107,6 +115,8 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
+
+
               <button type="submit" className={styles.orange_btn}>
                 Sign In
               </button>
@@ -118,20 +128,23 @@ const Login = () => {
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_google}`}
+              onClick={loginwithgoogle}
             >
               Continue with Google
             </button>
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_facebook}`}
+              onClick={facebook}
             >
               Continue with Facebook
             </button>
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_apple}`}
+              onClick={github}
             >
-              Continue with Apple
+              Continue with Github
             </button>
           </div>
         </div>

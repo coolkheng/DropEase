@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import "../style/Header.css";
 import { FaRegCircleUser } from "react-icons/fa6";
 import DropdownMenu from "./UsernameDropDown";
+import { useState, useEffect } from "react";
 
 const Header = () => {
   const [userRole, setUserRole] = useState(null);

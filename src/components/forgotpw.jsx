@@ -1,23 +1,42 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
 
 const Pw = () => {
-  const [passwordVisible, setPasswordVisible] = useState(false); // State to manage password visibility
-  const [submitTextVisible, setSubmitTextVisible] = useState(false); // State to manage visibility of text after submit button is pressed
+    const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+  });
 
-  // Function to toggle password visibility
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
+  const changeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Function to handle form submission
-  const handleSubmit = (event) => {
-    // Prevent default form submission behavior
-    event.preventDefault();
-    // Set the visibility of submit text to true
-    setSubmitTextVisible(true);
-    // Here you can perform other submission related tasks
+  const forgotpw = async () => {
+    console.log(formData);
+    await fetch('http://localhost:4000/forgot-password', {
+      method: 'POST',
+      crossDomain: true,
+      headers: {
+        Accept: 'application/form-data',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': "*",
+      },
+      body: JSON.stringify(formData),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data, "userRegister");
+      alert(data.status);
+      if (data.status === "Email sent successfully") {
+        navigate("/login");
+      }
+    });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    forgotpw();
   };
 
   return (
@@ -31,29 +50,19 @@ const Pw = () => {
           />
           <div className={styles.left_box}>
             <form className={styles.form_container} onSubmit={handleSubmit}>
-              <h1>Change Password</h1>
+              <h1>Retype Email</h1>
               <input
-                type={passwordVisible ? "text" : "password"} // Conditional rendering based on passwordVisible state
-                placeholder="Password"
-                name="password"
-                required
-                className={styles.input_odd}
-              />
-              <input
-                type={passwordVisible ? "text" : "password"} // Conditional rendering based on passwordVisible state
-                placeholder="Retype Password"
-                name="password"
+                type="text"
+                placeholder="Email"
+                name="email"
+                value={setFormData.email}
+                onChange={changeHandler}
                 required
                 className={styles.input_odd}
               />
               <button type="submit" className={styles.orange_btn}>
                 Submit
               </button>
-              {submitTextVisible && (
-                <p className={styles.submitpw}>
-                  Password submitted! Verification sent to email
-                </p>
-              )}
               <Link to="/login" className={styles.back_button}></Link>
             </form>
           </div>
