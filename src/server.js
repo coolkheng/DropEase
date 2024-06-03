@@ -528,6 +528,10 @@ app.post('/cartretailer/clear', fetchUser, async (req, res) => {
     // Find retailer cart for the user
     let cart = await CartRetailer.findOne({ userId });
 
+
+//fetch data to retailerproducts!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
     if (cart) {
       cart.cartData = {}; // Clear the cart data
       await cart.save(); // Save the cleared cart

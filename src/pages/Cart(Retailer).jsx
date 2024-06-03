@@ -64,6 +64,9 @@ const RetailerCart = () => {
 
   const handleCheckout = async () => {
     console.log("Handle checkout function called!");
+
+
+    
     await clearCart();
 
     const stripe = await loadStripe("pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D");
