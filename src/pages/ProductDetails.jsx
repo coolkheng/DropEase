@@ -59,31 +59,31 @@ const ProductDetails = () => {
     navigate('/customercart'); // Redirect to customer cart after adding to cart
   };
 
- //TODO: Re-operate button function 
- // const checkUserRole = async () => {
- //   try {
- //     const authToken = localStorage.getItem('auth-token');
- //     if (authToken) {
- //       const response = await fetch('http://localhost:4000/login', {
- //         method: 'POST',
- //         headers: {
- //           'auth-token': authToken,
- //           'Content-Type': 'application/json',
- //         },
- //         body: JSON.stringify({}),
- //       });
-//
- //       const data = await response.json();
- //       if (data.success) {
- //         setUserRole(data.role);
- //       } else {
- //         setUserRole(null);
- //       }
- //     }
- //   } catch (error) {
- //     console.error("Error fetching user role:", error);
- //   }
- // };
+//  TODO: Re-operate button function 
+ const checkUserRole = async () => {
+   try {
+     const authToken = localStorage.getItem('auth-token');
+     if (authToken) {
+       const response = await fetch('http://localhost:4000/login', {
+         method: 'POST',
+         headers: {
+           'auth-token': authToken,
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({}),
+       });
+
+       const data = await response.json();
+       if (data.success) {
+         setUserRole(data.role);
+       } else {
+         setUserRole(null);
+       }
+     }
+   } catch (error) {
+     console.error("Error fetching user role:", error);
+   }
+ };
   
 
   if (!product) {
@@ -165,7 +165,7 @@ const ProductDetails = () => {
 
           <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
 
-          {/*{userRole === 'customer' && (
+          {/*{userRole === 'customer' && 'retailer' (
             <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
           )}*/}
         </div>
