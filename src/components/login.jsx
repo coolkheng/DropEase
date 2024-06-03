@@ -1,13 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
-import axios from 'axios';
+
 
 const Login = () => {
-  const navigate = useNavigate(); 
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userType, setUserType] = useState(""); // State to manage selected user type
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     password: "",
@@ -30,7 +27,7 @@ const Login = () => {
       },
       body: JSON.stringify(formData),
     }).then((response) => response.json())
-    .then((data) => responseData = data);
+      .then((data) => responseData = data);
 
     if (responseData.success) {
       console.log("Login Successful:", responseData);
@@ -45,6 +42,18 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     login();
+  };
+
+  const loginwithgoogle = () => {
+    window.open("http://localhost:4000/auth/google/callback", "_self")
+  }
+
+  const github = () => {
+    window.open("http://localhost:4000/auth/github", "_self");
+  };
+
+  const facebook = () => {
+    window.open("https://www.facebook.com/login", "_self");
   };
 
   return (
@@ -69,7 +78,7 @@ const Login = () => {
                 onChange={changeHandler}
               />
               <input
-                type={passwordVisible ? "text" : "password"}
+                type="password"
                 placeholder="Password"
                 name="password"
                 required
@@ -84,7 +93,7 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-              
+
 
               <button type="submit" className={styles.orange_btn}>
                 Sign In
@@ -97,6 +106,7 @@ const Login = () => {
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_google}`}
+              onClick={loginwithgoogle}
             >
               Continue with Google
             </button>
@@ -104,6 +114,7 @@ const Login = () => {
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_facebook}`}
+              onClick={facebook}
             >
               Continue with Facebook
             </button>
@@ -111,8 +122,9 @@ const Login = () => {
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_apple}`}
+              onClick={github}
             >
-              Continue with Apple
+              Continue with Github
             </button>
           </div>
         </div>

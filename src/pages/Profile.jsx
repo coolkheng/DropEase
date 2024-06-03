@@ -38,9 +38,32 @@ const Profile = () => {
         setErrorMessage("Failed to fetch user data");
       }
     };
-  
-    fetchUserData();
-  }, []);
+
+  //   const getUser = async () => {
+  //     try {
+  //         const response = await axios.get("http://localhost:4000/login/success", { withCredentials: true });
+  //         setUserData(response.data.user)
+  //     } catch (error) {
+  //         console.log("error", error)
+  //     }
+  // }
+  // const checkAuthentication = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:4000/login/success", { withCredentials: true });
+  //     if (response.data.googleId !== "") {
+  //       // User logged in using Google OAuth, call getUser()
+  //       getUser();
+  //     } else {
+  //       // User logged in using another method, call fetchUserData()
+  //       fetchUserData();
+  //     }
+  //   } catch (error) {
+  //     setErrorMessage("Failed to fetch user data");
+  //   }
+  // };
+
+  fetchUserData();
+}, []);
   
 
   const handleImageChange = (e) => {

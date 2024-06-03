@@ -4,24 +4,38 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
+const AutoIncrement = require("mongoose-sequence")(mongoose);
+const session = require("express-session");
+const passport = require("passport");
+const OAuth2Strategy = require("passport-google-oauth2").Strategy;
+const GithubStrategy = require("passport-github2").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 
 const app = express();
 const port = 4000;
 
 const uri = "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?retryWrites=true&w=majority&appName=dropease";
 
+const clientid = "396263817906-3dtrg2a07p67ftl499nje8569abkpe3v.apps.googleusercontent.com";
+const clientsecret = "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";
+const GITHUB_CLIENT_ID = "Ov23liodfi5diY3DkY5X";
+const GITHUB_CLIENT_SECRET = "b36f44a5e0693da7f91e68cf71374ebe84722d0d";
+const FACEBOOK_APP_ID = "477378908065588";
+const FACEBOOK_APP_SECRET = "f4c91f1b03806a72aed90cee9eea6c04";
+
 // Serve the React frontend as static files
 app.use(express.static(path.join(__dirname + "public")));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.urlencoded({ extended: true }));
 var nodemailer = require('nodemailer');
 
 
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'views'));
-
-
 
 // Connect to MongoDB
 async function connect() {
@@ -33,7 +47,6 @@ async function connect() {
   }
 }
 connect();
-
 
 // Image Storage Engine using Multer
 const storage = multer.diskStorage({
@@ -137,15 +150,128 @@ app.get('/allproduct', async (req, res) => {
 });
 
 // Schema for User model
-const Users = mongoose.model('Users', {
+const UsersSchema = new mongoose.Schema({
+  accountId: { type: String },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, required: true },
+  password: { type: String },
+  role: { type: String },
   createdAt: { type: Date, default: Date.now },
-  imageUrl: {type: String},
+  imageUrl: { type: String },
   store: { type: String },
   phoneno: { type: String },
   category: { type: String },
+  storeId: { type: Number, unique: true }, // Correct usage of unique option
+});
+UsersSchema.plugin(AutoIncrement, { inc_field: "storeId" });
+const Users = mongoose.model("Users", UsersSchema);
+
+//setup session for googleauth
+app.use(session({
+  secret: "dropease",
+  resave: false,
+  saveUninitialized: true
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(
+  new OAuth2Strategy({
+    clientID: clientid,
+    clientSecret: clientsecret,
+    callbackURL: "/auth/google/callback",
+    scope: ["profile", "email"]
+  },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await Users.findOne({ accountId: profile.id });
+
+        if (!user) {
+          user = new Users({
+            accountId: profile.id,
+            store: profile.displayName,
+            email: profile.emails[0].value,
+            imageUrl: profile.photos[0].value
+          });
+
+          await user.save();
+        }
+
+        return done(null, user)
+      } catch (error) {
+        return done(error, null)
+      }
+    }
+  )
+)
+
+
+// initial google ouath login
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+app.get("/auth/google/callback", passport.authenticate("google", {
+  successRedirect: "http://localhost:3000/customerhome",
+  failureRedirect: "http://localhost:3000/login"
+}))
+
+// app.get("/login/success",async(req,res)=>{
+//   if(req.user){
+//       res.status(200).json({message:"User Login",user: req.user})
+//   }else{
+//       res.status(400).json({message:"Not Authorized"})
+//   }
+// })
+
+passport.use(
+  new GithubStrategy(
+    {
+      clientID: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+      callbackURL: "http://localhost:4000/auth/github/callback",
+    },
+    function (accessToken, refreshToken, profile, done) {
+      done(null, profile);
+    }
+  )
+);
+
+app.get("/auth/github", passport.authenticate("github"));
+
+app.get(
+  "/auth/github/callback",
+  passport.authenticate("github",{
+    successRedirect: "http://localhost:3000/customerhome",
+    failureRedirect: "http://localhost:3000/login",
+  })
+);
+
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: FACEBOOK_APP_ID,
+      clientSecret: FACEBOOK_APP_SECRET,
+      callbackURL: "/auth/facebook/callback",
+      scope: ["profile", "email"]
+    },
+    function (accessToken, refreshToken, profile, done) {
+      done(null, profile);
+    }
+  )
+);
+
+app.get("/auth/facebook", passport.authenticate("facebook", { scope: ["profile", "email"] }));
+
+app.get("/auth/facebook/callback", passport.authenticate("facebook", {
+  successRedirect: "http://localhost:3000/customerhome",
+  failureRedirect: "http://localhost:3000/login"
+}))
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+})
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
 
 // Creating Endpoint for registering user
@@ -157,6 +283,7 @@ app.post("/signup", async (req, res) => {
     }
 
     const user = new Users({
+      googleId: "",
       email: req.body.email,
       password: req.body.password,
       role: req.body.role,
@@ -217,15 +344,15 @@ app.post('/login', async (req, res) => {
 // Creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
   const token = req.header('auth-token');
-  if(!token){
-    res.status(401).send({errors:"Please authenticate using valid authentication"});
-  }else{
+  if (!token) {
+    res.status(401).send({ errors: "Please authenticate using valid authentication" });
+  } else {
     try {
-      const data=jwt.verify(token,'secret_token');
+      const data = jwt.verify(token, 'secret_token');
       req.user = data.user;
       next();
     } catch (error) {
-      res.status(401).send({errors:"Please authenticate using a valid token"});
+      res.status(401).send({ errors: "Please authenticate using a valid token" });
     }
   }
 };
@@ -297,14 +424,14 @@ app.post('/updateprofile', fetchUser, async (req, res) => {
 
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
-  try{
-    console.log("email: " , {email});
-    const oldUser = await Users.findOne({email});
-    if(!oldUser) {
-      return res.json({ status: "User not exist"});
+  try {
+    console.log("email: ", { email });
+    const oldUser = await Users.findOne({ email });
+    if (!oldUser) {
+      return res.json({ status: "User not exist" });
     }
 
-    const token = jwt.sign({email: oldUser.email, id: oldUser._id}, 'secret_token', {
+    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, 'secret_token', {
       // expiresIn: "5m"
     });
     const link = `http://localhost:4000/reset-password/${oldUser._id}/${token}`;
@@ -315,15 +442,15 @@ app.post('/forgot-password', async (req, res) => {
         pass: 'amdatqkdipshbqdv'
       }
     });
-    
+
     var mailOptions = {
       from: 'youremail@gmail.com',
       to: req.body.email,
       subject: 'Password Reset',
       text: link,
     };
-    
-    transporter.sendMail(mailOptions, function(error, info){
+
+    transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
       } else {
@@ -332,19 +459,19 @@ app.post('/forgot-password', async (req, res) => {
       }
     });
     console.log(link);
-  } catch (error) {}
+  } catch (error) { }
 });
 
 app.get('/reset-password/:id/:token', async (req, res) => {
   const { id, token } = req.params;
   console.log(req.params);
   const oldUser = await Users.findOne({ _id: id });
-  if(!oldUser) {
-    return res.json({ status: "User not exist"});
+  if (!oldUser) {
+    return res.json({ status: "User not exist" });
   }
-  try{
+  try {
     const verify = jwt.verify(token, 'secret_token');
-    res.render("index", {email: verify.email, status: "Not Verified"})
+    res.render("index", { email: verify.email, status: "Not Verified" })
   } catch (error) {
     res.send("Not Verified");
   }
@@ -355,10 +482,10 @@ app.post('/reset-password/:id/:token', async (req, res) => {
   const password = req.body.password;
   console.log("password", password);
   const oldUser = await Users.findOne({ _id: id });
-  if(!oldUser) {
-    return res.json({ status: "User not exist"});
+  if (!oldUser) {
+    return res.json({ status: "User not exist" });
   }
-  try{
+  try {
     const verify = jwt.verify(token, 'secret_token');
     //const encryptedPassword = await bcrypt.hash(password, 10);
     await Users.updateOne(
