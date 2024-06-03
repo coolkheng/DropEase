@@ -5,11 +5,59 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import Header from "../components/Header";
 import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
-import { CartContext } from "./cartContext"; // Ensure the correct path to your CartContext
+import { CartContext } from "./cartContext";
 import axios from 'axios';
 
 const RetailerCart = () => {
   const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
+
+  // Function to handle adding items to the cart and send request to the backend
+  const handleAddToCart = async (item) => {
+    await addToCart(item);
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.post("http://localhost:4000/cartretailer", {
+        productId: item.id,
+        quantity: 1, // Assuming you add one item at a time
+      }, {
+        headers: {
+          'auth-token': token,
+        }
+      });
+
+      if (response.data === "Added to cart") {
+        console.log("Item added to cart successfully");
+      } else {
+        console.log("Failed to add item to cart");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
+  // Function to handle decreasing item quantity in the cart and send request to the backend
+  const handleDecreaseQty = async (item) => {
+    await decreaseQty(item);
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.post("http://localhost:4000/cartretailer/decreaseQty", {
+        productId: item.id, // Include productId in the request body
+      }, {
+        headers: {
+          'auth-token': token,
+        }
+      });
+  
+      if (response.data === "Quantity decreased") {
+        console.log("Item quantity decreased successfully");
+      } else {
+        console.log("Failed to decrease item quantity");
+      }
+    } catch (error) {
+      console.error("Error decreasing item quantity:", error);
+    }
+  };
+  
 
   // Calculate total price of items
   const totalPrice = cartItems.reduce(
@@ -20,7 +68,7 @@ const RetailerCart = () => {
   const handleCheckout = async () => {
     try {
       const token = localStorage.getItem("auth-token");
-      console.log("Cart Items:", cartItems); // Add this line for debugging
+      console.log("Cart Items:", cartItems);
       const cartItemsPayload = cartItems.map(item => ({
         productId: item.id,
         quantity: item.qty
@@ -33,12 +81,8 @@ const RetailerCart = () => {
         }
       });
   
-      // Rest of the function remains the same...
-  
-  
       if (response.data.success) {
         alert("Checkout successful!");
-        // Optionally, clear the cart or redirect to a different page
       } else {
         alert("Checkout failed. Please try again.");
       }
@@ -48,13 +92,42 @@ const RetailerCart = () => {
     }
   };
 
+    // Function to handle removing item from the cart and send request to the backend
+    const handleRemoveCartItem = async (itemId) => {
+      console.log("Attempting to remove item with ID:", itemId);
+      console.log("Current cart items before removal:", cartItems);
+    
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await axios.post("http://localhost:4000/cartretailer/removeFromCart", {
+          productId: itemId, // Send productId to the backend
+        }, {
+          headers: {
+            'auth-token': token,
+          }
+        });
+    
+        if (response.data === "Item removed from cart") {
+          console.log("Item removed from cart successfully");
+          removeFromCart(itemId);
+          console.log("Current cart items after removal:", cartItems);
+        } else {
+          console.log("Failed to remove item from cart");
+        }
+      } catch (error) {
+        console.error("Error removing item from cart:", error);
+      }
+    };
+    
+    
+
   // Render cart items
   return (
     <>
       <Header>
         <DropdownMenu />
       </Header>
-      <SideNavSupplier /> {/* Ensure the component is imported correctly */}
+      <SideNavSupplier />
       <section className="cart-items">
         <div className="container-cart">
           <div className="cart-details">
@@ -79,7 +152,7 @@ const RetailerCart = () => {
                     <div className="removeCart">
                       <button
                         className="removeCartButton"
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => handleRemoveCartItem(item.id)}
                       >
                         <FaXmark />
                       </button>
@@ -87,13 +160,13 @@ const RetailerCart = () => {
                     <div className="cartControl">
                       <button
                         className="incCart"
-                        onClick={() => addToCart(item)}
+                        onClick={() => handleAddToCart(item)}
                       >
                         <FaPlus />
                       </button>
                       <button
                         className="desCart"
-                        onClick={() => decreaseQty(item)}
+                        onClick={() => handleDecreaseQty(item)} // Updated function call
                       >
                         <FaMinus />
                       </button>

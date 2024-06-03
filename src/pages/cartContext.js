@@ -28,8 +28,13 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (productId) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems.filter((item) => item.id !== productId);
+      console.log("Updated cart items:", updatedItems);
+      return updatedItems;
+    });
   };
+  
 
   return (
     <CartContext.Provider value={{ cartItems, addToCart, decreaseQty, removeFromCart }}>
