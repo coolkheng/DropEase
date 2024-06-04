@@ -90,7 +90,7 @@ export const HeaderCustomer = () => {
             />
           </NavLink>
           <div className="header-cart-count">{totalQuantity}</div>
-          <button
+          <p
             onClick={() => setMenu("cart")}
             className={menu === "cart" ? "active" : ""}
           >
@@ -101,7 +101,7 @@ export const HeaderCustomer = () => {
             >
               Shopping Cart
             </NavLink>
-          </button>
+          </p>
         </div>
       </div>
       <div className="navbar">
