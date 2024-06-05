@@ -5,6 +5,7 @@ import Hero from "../components/Hero";
 import Collections from "../components/Collections";
 import Products from "../components/Productss";
 
+
 const Store = () => {
   const { storeId } = useParams(); // Get storeId from URL parameters
 
@@ -13,6 +14,7 @@ const Store = () => {
       <div className="flex justify-between items-center mt-5">
         <Header />
       </div>
+
 
       <div className="flex justify-center mt-5">
         <Hero storeId={storeId} /> {/* Pass storeId to Hero component */}
@@ -32,6 +34,9 @@ const Store = () => {
       <div className="mb-20">
         <Products storeId={storeId} /> {/* Pass storeId to Products component */}
       </div>
+
+      
+
     </div>
   );
 };

@@ -11,6 +11,11 @@ import AddProductButton from "../components/AddProductButton";
 import DropdownMenu from "../components/UsernameDropDown"; // Assuming UsernameDropDown is your dropdown menu component
 import SearchBar from "../components/SearchBar";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+
+
+import GroupedProductItems from "../components/GroupedProductItems";
 
 const Products = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -18,6 +23,8 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
   const [products, setProducts] = useState([]); // State for all products
+const { storeId } = useParams(); // Get storeId from URL parameters
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,7 +49,6 @@ const Products = () => {
           throw new Error('Failed to fetch products');
         }
         const data = await response.json();
-        console.log('Fetched products:', data); // Log fetched products
         setProducts(data);
         setFilteredProducts(data); // Initialize filtered products
       } catch (err) {
@@ -57,7 +63,6 @@ const Products = () => {
     const filtered = products.filter(product =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    console.log('Filtered products:', filtered); // Log filtered products
     setFilteredProducts(filtered);
   }, [searchTerm, products]);
 
@@ -107,10 +112,7 @@ const Products = () => {
               </div>
               <div className="product-content">
                 <div className="product-list">
-                  {filteredProducts.map((product) => {
-                    console.log('Rendering product:', product); // Log each product being rendered
-                    return <ProductItem key={product._id} product={product} />;
-                  })}
+                <GroupedProductItems storeId={storeId} /> {/* Pass storeId to Products component */}
                   <Link to="/foodbeverages">
                     <AddProductButton
                       image={require("../asset/add-button.png")}
