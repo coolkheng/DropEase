@@ -22,9 +22,6 @@ const Category = () => {
                 >
                   Men's
                 </Link>
-                <Link className="category__link relative px-4 py-2" to="/kids">
-                  Kids'
-                </Link>
               </div>
             </div>
           </div>
