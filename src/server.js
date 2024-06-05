@@ -500,7 +500,7 @@ app.post('/create-checkout-session', fetchUser, async (req, res) => {
       payment_method_types: ['card'],
       line_items: products.map(product => ({
         price_data: {
-          currency: 'usd',
+          currency: 'myr',
           product_data: {
             name: product.name,
             images: [product.image],
@@ -539,7 +539,7 @@ app.post('/cartretailer/clear', fetchUser, async (req, res) => {
       res.json({ success: true, message: "Cart cleared successfully" });
     } else {
       res.status(400).json({ success: false, message: "No cart found for user" });
-    }
+    } 
   } catch (error) {
     console.error('Error clearing cart:', error);
     res.status(500).send({ errors: "Internal Server Error" });
