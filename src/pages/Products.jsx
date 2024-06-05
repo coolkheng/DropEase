@@ -42,6 +42,7 @@ const Products = () => {
           throw new Error('Failed to fetch products');
         }
         const data = await response.json();
+        console.log('Fetched products:', data); // Log fetched products
         setProducts(data);
         setFilteredProducts(data); // Initialize filtered products
       } catch (err) {
@@ -56,6 +57,7 @@ const Products = () => {
     const filtered = products.filter(product =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    console.log('Filtered products:', filtered); // Log filtered products
     setFilteredProducts(filtered);
   }, [searchTerm, products]);
 
@@ -105,9 +107,10 @@ const Products = () => {
               </div>
               <div className="product-content">
                 <div className="product-list">
-                  {filteredProducts.map((product) => (
-                    <ProductItem key={product._id} product={product} />
-                  ))}
+                  {filteredProducts.map((product) => {
+                    console.log('Rendering product:', product); // Log each product being rendered
+                    return <ProductItem key={product._id} product={product} />;
+                  })}
                   <Link to="/foodbeverages">
                     <AddProductButton
                       image={require("../asset/add-button.png")}

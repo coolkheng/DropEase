@@ -362,6 +362,28 @@ const CartRetailerSchema = new mongoose.Schema({
 
 const CartRetailer = mongoose.model('CartRetailer', CartRetailerSchema);
 
+// Define the schema for archived cart data
+const RetailerProductSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users',
+    required: true,
+    unique: true // Add unique constraint on userId
+  },
+  cartData: {
+    type: Map,
+    of: Number,
+    default: {}
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Create the Mongoose model for the "retailerproduct" collection
+const RetailerProduct = mongoose.model('retailerproduct', RetailerProductSchema);
+
 app.post('/cartretailer', fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -521,6 +543,7 @@ app.post('/create-checkout-session', fetchUser, async (req, res) => {
   }
 });
 
+
 app.post('/cartretailer/clear', fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -528,14 +551,38 @@ app.post('/cartretailer/clear', fetchUser, async (req, res) => {
     // Find retailer cart for the user
     let cart = await CartRetailer.findOne({ userId });
 
-
-//fetch data to retailerproducts!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
     if (cart) {
-      cart.cartData = {}; // Clear the cart data
-      await cart.save(); // Save the cleared cart
-      console.log('Cart cleared:', cart);
+      // Create a copy of the cart data for archiving
+      const archivedCartData = new Map(cart.cartData);
+
+      // Check for existing archived cart for the user
+      let existingArchivedCart = await RetailerProduct.findOne({ userId });
+
+      if (existingArchivedCart) {
+        for (const [productId, quantity] of archivedCartData.entries()) {
+          if (existingArchivedCart.cartData.has(productId)) {
+            // Update quantity if product exists
+            existingArchivedCart.cartData.set(productId, existingArchivedCart.cartData.get(productId) + quantity);
+          } else {
+            // Set quantity correctly for new product
+            existingArchivedCart.cartData.set(productId, quantity);
+          }
+        }
+        await existingArchivedCart.save();
+      } else {
+        // Create new archived cart if none exists
+        const archivedCart = new RetailerProduct({
+          userId,
+          cartData: archivedCartData
+        });
+        await archivedCart.save();
+      }
+
+      // Clear the cart data from the main collection
+      cart.cartData.clear();
+      await cart.save();
+
+      console.log('Cart cleared and archived successfully:', existingArchivedCart || archivedCart);
       res.json({ success: true, message: "Cart cleared successfully" });
     } else {
       res.status(400).json({ success: false, message: "No cart found for user" });
@@ -545,8 +592,6 @@ app.post('/cartretailer/clear', fetchUser, async (req, res) => {
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
-
-
 
 
 
