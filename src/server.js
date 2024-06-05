@@ -284,6 +284,7 @@ app.put("/api/orders/:orderId", async (req, res) => {
     res.status(500).json({ error: "Failed to update order status" });
   }
 });
+
 try {
   const products = await Product.find({});
   console.log("All Products Fetched");
@@ -481,12 +482,10 @@ app.post("/signup", async (req, res) => {
   try {
     let check = await Users.findOne({ email: req.body.email }); // Check if the user has been registered before
     if (check) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          errors: "Existing user found with the same email address",
-        });
+      return res.status(400).json({
+        success: false,
+        errors: "Existing user found with the same email address",
+      });
     }
 
     const user = new Users({
@@ -508,12 +507,10 @@ app.post("/signup", async (req, res) => {
     res.json({ success: true, token });
   } catch (error) {
     console.error("Signup error:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        errors: "Server error. Please try again later.",
-      });
+    res.status(500).json({
+      success: false,
+      errors: "Server error. Please try again later.",
+    });
   }
 });
 
