@@ -285,14 +285,14 @@ app.put("/api/orders/:orderId", async (req, res) => {
   }
 });
 
-try {
-  const products = await Product.find({});
-  console.log("All Products Fetched");
-  res.json(products); // Use res.json to explicitly send JSON data
-} catch (error) {
-  console.error("Error fetching products:", error);
-  res.status(500).json({ error: "Internal Server Error" });
-}
+// try {
+//   const products = await Product.find({});
+//   console.log("All Products Fetched");
+//   res.json(products); // Use res.json to explicitly send JSON data
+// } catch (error) {
+//   console.error("Error fetching products:", error);
+//   res.status(500).json({ error: "Internal Server Error" });
+// }
 
 // Define the Users schema and model
 const UsersSchema = new mongoose.Schema({
