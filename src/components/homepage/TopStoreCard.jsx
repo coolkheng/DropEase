@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from "react-router-dom";
+import apple from "../../asset/Apple-Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLongArrowAltLeft,
@@ -31,34 +31,7 @@ const SamplePrevArrow = (props) => {
   );
 };
 
-const TopStoreCard = () => {
-  const [stores, setStores] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/allstore');
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.error('Failed to fetch stores:', response.status, errorMessage);
-          throw new Error('Failed to fetch stores');
-        }
-        const data = await response.json();
-        setStores(data);
-        console.log(data);
-      } catch (err) {
-        console.error('Error:', err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStores();
-  }, []);
-
+const TopStoreCard = ({ shopItems }) => {
   const settings = {
     dots: false,
     infinite: true,
@@ -69,20 +42,40 @@ const TopStoreCard = () => {
     prevArrow: <SamplePrevArrow />,
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  const placeholderShopItems = [
+    {
+      id: 1,
+      name: "Shop 1",
+      cover: apple,
+    },
+    {
+      id: 2,
+      name: "Shop 2",
+      cover: apple,
+    },
+    {
+      id: 3,
+      name: "Shop 3",
+      cover: apple,
+    },
+    {
+      id: 4,
+      name: "Shop 4",
+      cover: apple,
+    },
+  ];
 
   return (
     <Slider {...settings}>
-      {stores.map((store) => (
-        <Link key={store.storeId} to={`/store/${store.storeId}`} className="box">
+      {placeholderShopItems.map((shop) => (
+        <div key={shop.id} className="box">
           <div className="shop-container">
             <div className="img-container">
-              <img className="shop-img" src={store.imageUrl} alt={store.store} />
+              <img className="shop-img" src={shop.cover} alt="" />
             </div>
-            <p className="shop-name">{store.store}</p>
+            <p className="shop-name">{shop.name}</p>
           </div>
-        </Link>
+        </div>
       ))}
     </Slider>
   );

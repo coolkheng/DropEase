@@ -2,8 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "./cartContext";
 import "../style/ProductDetails.css";
-import HeaderCustomer from "../components/Header(Customer)";
-import SideNav from "../components/SideNav";
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -15,6 +13,10 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [userRole, setUserRole] = useState(null);
+
+//  useEffect(() => {
+//    checkUserRole();
+//  }, []);
 
   const handleImageClick = (image) => {
     setMainImage(image);
@@ -31,67 +33,65 @@ const ProductDetails = () => {
   const [hasSize, setHasSize] = useState(product.size && product.size.length > 0);
   const [hasColor, setHasColor] = useState(product.color && product.color.length > 0);
 
+
   const handleAddToCart = () => {
     let missingField = false;
-
+  
+    // Check if size is required and selected
     if (hasSize && !selectedSize) {
       alert("Please select a size.");
       missingField = true;
     }
-
+  
+    // Check if color is required and selected
     if (hasColor && !selectedColor) {
       alert("Please select a color.");
       missingField = true;
     }
-
+  
     if (missingField) {
       return;
     }
-
+  
     const authToken = localStorage.getItem('auth-token');
     addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor }, authToken);
-
-    navigate('/customercart');
+  
+    navigate('/customercart'); // Redirect to customer cart after adding to cart
   };
 
-  useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const authToken = localStorage.getItem('auth-token');
-        if (authToken) {
-          const response = await fetch('http://localhost:4000/userData', {
-            method: 'POST',
-            headers: {
-              'auth-token': authToken,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-          });
+//  TODO: Re-operate button function 
+ const checkUserRole = async () => {
+   try {
+     const authToken = localStorage.getItem('auth-token');
+     if (authToken) {
+       const response = await fetch('http://localhost:4000/login', {
+         method: 'POST',
+         headers: {
+           'auth-token': authToken,
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({}),
+       });
 
-          const data = await response.json();
-          if (data.success) {
-            setUserRole(data.data.role);
-          } else {
-            setUserRole(null);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user role:", error);
-      }
-    };
-
-    checkUserRole();
-  }, []);
+       const data = await response.json();
+       if (data.success) {
+         setUserRole(data.role);
+       } else {
+         setUserRole(null);
+       }
+     }
+   } catch (error) {
+     console.error("Error fetching user role:", error);
+   }
+ };
+  
 
   if (!product) {
     return <div>Product not found</div>;
   }
 
   return (
-    <div className={userRole === 'retailer' ? 'sidenav-visible' : ''}>
-      {userRole === 'customer' && <HeaderCustomer />}
-      {userRole === 'retailer' && <SideNav className="sidenav" />}
-
+    <>
       <div className="productdisplay">
         <div className="productdisplay-left">
           <div className="productdisplay-img-list">
@@ -110,17 +110,21 @@ const ProductDetails = () => {
         </div>
         <div className="productdisplay-right">
           <h1 className="productName">{product.name}</h1>
+
           <div className="productdisplay-right-decs">
             <p>{product.desc}</p>
           </div>
+
           <div className="productdisplay-right-prices">
-            <h2 className="priceDetails">RM {product.price}</h2>
+            <h2 className="priceDetails">RM {product.price}.00</h2>
           </div>
+
           {product.longdesc && product.longdesc.length > 0 && (
             <div className="productdisplay-right-longDesc">
               <p>{product.longdesc}</p>
             </div>
           )}
+
           {product.size && product.size.length > 0 && (
             <div className="productdisplay-right-size">
               <h3>Select Size</h3>
@@ -139,6 +143,7 @@ const ProductDetails = () => {
               </div>
             </div>
           )}
+
           {product.color && product.color.length > 0 && (
             <div className="productdisplay-right-size">
               <h3>Select Color</h3>
@@ -157,12 +162,15 @@ const ProductDetails = () => {
               </div>
             </div>
           )}
-          {userRole === 'customer' && (
+
+          <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
+
+          {/*{userRole === 'customer' && 'retailer' (
             <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
-          )}
+          )}*/}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

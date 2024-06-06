@@ -135,9 +135,8 @@
   background: #ffffff;
 }
 
-.nav-link123 :hover{
+.nav-link {
   color: #ffffff;
   text-decoration: none;
   font-size: 13px;
-  
 }

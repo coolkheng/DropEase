@@ -9,20 +9,21 @@
 }
 
 .Ordered-items {
+  display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
 }
-
 .CartContainer {
-  margin-top: 60px;
-  margin-right: 40px;
-  margin-left: 40px;
-  margin-bottom: 60px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-right: 20px;
+  width: 110%;
   height: 150%;
   background-color: #ffffff;
   border-radius: 20px;
-  box-shadow: -1px -1px 20px 5px #1687d933;
+  box-shadow: 0px 10px 20px #1687d933;
 }
 
 .Cart-Header {
@@ -36,6 +37,7 @@
 
 .Heading {
   font-size: 30px;
+  font-family: "Poppins";
   font-weight: 700;
   color: #2f3841;
   margin-bottom: 10px;
@@ -43,8 +45,7 @@
 
 .Cart-Items {
   margin: auto;
-  margin-bottom: 20px;
-  width: 80%;
+  width: 90%;
   height: 30%;
   display: flex;
   justify-content: space-between;
@@ -52,22 +53,13 @@
 }
 
 .Cart-image-box {
-  flex-shrink: 0;
-  width: 120px; /* Fixed width for the image */
-  height: 120px; /* Fixed height for the image */
-  margin-right: 20px; /* Adjust as needed */
-  overflow: hidden; /* Ensure the image does not overflow the box */
-  display: flex; /* Center the image within the box */
-  align-items: center;
-  justify-content: center;
+  text-align: left;
 }
-
 .Cart-about {
   height: 70%;
   width: 75%;
   text-align: start;
 }
-
 .Cart-title {
   font-size: 25px;
   font-family: "Poppins", sans-serif;
@@ -92,7 +84,7 @@
 .Cart-amount {
   padding-top: 20px;
   font-size: 26px;
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins";
   font-weight: 800;
   color: #424669;
 }
@@ -107,38 +99,33 @@ hr {
   margin-right: 5%;
 }
 .Cart-checkout {
-  justify-content: flex-end;
+  float: right;
   margin-right: 5%;
-  display: grid;
+  width: 28%;
 }
 .Cart-total {
   width: 100%;
   display: flex;
-  font-family: "Poppins", sans-serif;
-  justify-content: flex-end;
-  align-items: center;
-  margin-right: 3px;
-  margin-bottom: 50px;
+  justify-content: space-between;
 }
 .Cart-Subtotal {
   font-size: 22px;
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins";
   font-weight: 700;
   color: #424669;
 }
 .Cart-items {
   font-size: 16px;
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins";
   font-weight: 500;
   color: #909090;
   line-height: 10px;
 }
 .Cart-total-amount {
   font-size: 36px;
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins";
   font-weight: 900;
   color: #424669;
-  margin-right: 52px;
 }
 .Cart-button {
   margin-top: 10px;
@@ -166,26 +153,18 @@ hr {
   margin-top: 20px;
 }
 
-.Price-Description {
-  margin-right: 20px;
-}
-
 .DeliveryStatus {
-  font-weight: 900;
+  font-weight: 700;
   color: #2f3841;
   text-align: center;
   position: relative;
-  font-family: "Poppins", sans-serif;
-  margin-bottom: 40px;
-  margin-right: 20px;
-  font-size: 30px;
+  margin-bottom: 20px;
+  margin-right: 25px;
+  font-size: 25px;
 }
 
 .Progress-Bar {
   display: flex;
   justify-content: center;
-}
-
-.Delivery {
-  margin-top: 50px;
+  padding-right: 100px;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SideNav from "../components/SideNav";
 import TopBar from "../components/TopBar";
 import "slick-carousel/slick/slick.css";
@@ -7,12 +7,11 @@ import "slick-carousel/slick/slick-theme.css";
 import Store from "../components/store";
 
 const Shop = () => {
+  const [menu, setMenu] = useState("Home");
   const [storeId, setStoreId] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   // Handling different size of screen
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const navigate = useNavigate();
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,7 +40,6 @@ const Shop = () => {
         const data = await response.json();
         if (data.success) {
           setStoreId(data.data.storeId);
-          navigate(`/home/${data.data.storeId}`); // Navigate to the store page based on storeId
         } else {
           setErrorMessage(data.errors);
         }
@@ -51,10 +49,13 @@ const Shop = () => {
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, []);
 
   return (
-    <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
+    <Link
+      to={`/home/${storeId}`}
+      className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row"
+    >
       {!isSmallScreen && (
         <aside className="w-full md:w-[20%]">
           <SideNav />
@@ -71,7 +72,7 @@ const Shop = () => {
       >
         <Store />
       </main>
-    </div>
+    </Link>
   );
 };
 
