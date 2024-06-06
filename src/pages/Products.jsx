@@ -6,6 +6,7 @@ import "../style/Header.css";
 import "../style/SideNav.css";
 import "../style/Products.css";
 import '../style/SearchBar.css'; 
+
 import ProductItem from "../components/ProductItem";
 import AddProductButton from "../components/AddProductButton";
 import DropdownMenu from "../components/UsernameDropDown"; // Assuming UsernameDropDown is your dropdown menu component
@@ -13,19 +14,16 @@ import SearchBar from "../components/SearchBar";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
-
-
-import GroupedProductItems from "../components/GroupedProductItems";
-
 const Products = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
   const [products, setProducts] = useState([]); // State for all products
-const { storeId } = useParams(); // Get storeId from URL parameters
-
-
+  const { storeId } = useParams(); // Get storeId from URL parameters
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+        
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 1024);
@@ -51,17 +49,50 @@ const { storeId } = useParams(); // Get storeId from URL parameters
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data); // Initialize filtered products
+
       } catch (err) {
         console.error('Error:', err.message);
-      }
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      } 
     };
 
     fetchProducts();
   }, []);
 
   useEffect(() => {
+    const fetchRetailerProducts = async () => {
+      try {
+        const userId = user.userId;
+        console.log('userId: ', userId)
+        const response = await fetch(`http://localhost:4000/retailerproduct/`, {
+          userID: userId
+        });
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          console.error('Failed to fetch products:', response.status, errorMessage);
+          throw new Error('Failed to fetch products');
+        }
+        console.log('response in proudct page: ', response.data)
+        const data = await response.json();
+        setProducts(data);
+        setFilteredProducts(data); // Initialize filtered products
+
+      } catch (err) {
+        console.error('Error:', err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      } 
+    };
+
+    fetchRetailerProducts();
+  }, []);
+
+  useEffect(() => {
     const filtered = products.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      product.name?.toLowerCase().includes(searchTerm.toLowerCase()) 
     );
     setFilteredProducts(filtered);
   }, [searchTerm, products]);
@@ -73,6 +104,9 @@ const { storeId } = useParams(); // Get storeId from URL parameters
   const toggleCreateCollectionModal = () => {
     setShowCreateCollectionModal(!showCreateCollectionModal);
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
@@ -112,13 +146,30 @@ const { storeId } = useParams(); // Get storeId from URL parameters
               </div>
               <div className="product-content">
                 <div className="product-list">
-                <GroupedProductItems storeId={storeId} /> {/* Pass storeId to Products component */}
-                  <Link to="/foodbeverages">
+                  <div className="grouped-products-container">
+                    {/* {filteredProducts.map((product) => (
+                      <div key={product._id} className="grouped-products-item">
+                        <ProductItem
+                          img={product.mainImages}
+                          name={product.name}
+                          desc={product.desc}
+                          longDesc={product.longdesc}
+                          rating={product.rating}
+                          price={product.price}
+                          product={product}
+                          color={product.color}
+                          size={product.sizes}
+                        />
+                      </div>
+                    ))} */}
+                    <Link to="/foodbeverages">
                     <AddProductButton
                       image={require("../asset/add-button.png")}
                       description="Add Products"
                     />
                   </Link>
+                  </div>
+                  
                 </div>
               </div>
             </div>

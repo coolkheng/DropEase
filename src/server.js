@@ -203,6 +203,14 @@ app.get('/allproduct',async(req,res)=>{
   res.send(products);
 })
 
+app.get('/retailerproduct',async(req,res)=>{
+  const hello = req.userID;
+  let retailerproducts = await RetailerProduct.findOne({hello});
+  console.log("All Retailer Products Fetched");
+  console.log(res);
+  res.send(retailerproducts);
+})
+
 //Shema craeting for User model
 const Users = mongoose.model('Users',{
   name:{
@@ -594,6 +602,18 @@ app.post('/cartretailer/clear', fetchUser, async (req, res) => {
 });
 
 
+
+// Route to fetch retailer products
+app.get('/retailerproduct', async (req, res) => {
+  try {
+    // Fetch all retailer products from the MongoDB collection
+    const retailerProducts = await RetailerProduct.find();
+    res.json(retailerProducts); // Send the retailer products data as JSON response
+  } catch (error) {
+    console.error('Error fetching retailer products:', error);
+    res.status(500).json({ error: 'Failed to fetch retailer products' }); // Send an error response if fetching fails
+  }
+});
 
 // Start the Express server
 app.listen(port, (error) => {
