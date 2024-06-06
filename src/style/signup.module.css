@@ -87,13 +87,9 @@
 
 .logo {
   position: absolute;
-
-  top: 12px;
-
-  left: 30px;
-
+  top: 8%;
+  left: 8%;
   width: 150px;
-
   height: 40px;
 }
 

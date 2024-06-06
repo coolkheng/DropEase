@@ -42,7 +42,7 @@ const Hero = ({ storeId }) => { // Accept storeId as a prop
     <div className="w-[80%] max-height-[100px]">
       <Slider {...settings}>
         {slideData.map((item) => (
-          <Slide key={item._id} img={`/banners/${item.filename}`} />
+          <Slide key={item._id} img={item.imageUrl}/>
         ))}
       </Slider>
     </div>

@@ -1,167 +1,47 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap");
-
-:root {
-  --primary: #ffffff;
-  --secondary: #767db8;
-  --grey: #808080;
-  --white: #ffffff;
-  --black: #222222;
-}
-
-body {
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh; */
-  background-color: var(--primary);
-}
-
-.progressbar_wrapper {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-  width: 1000px;
-  background-color: var(--primary);
-  font-family: "Poppins", sans-serif;
-}
-
-.progress-container {
-  position: relative;
-  margin-left: 160px;
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.progress-container::after {
-  content: "";
-  position: absolute;
-  height: 3px;
-  width: 90%;
-  top: 31%;
-  background-color: var(--grey);
-  left: 1rem;
-  z-index: 0;
-}
-
-.progress {
-  position: absolute;
-  left: 0;
-  height: 4px;
-  top: 33%;
-  width: 0;
-  transform: translateY(-50%);
-  background-color: #767db8;
-  transition: width 0.2s;
-  z-index: 1;
-}
-
-.progress-step {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  font-weight: 500;
-  color: var(--black);
-  z-index: 2;
-  text-align: center;
-  margin-left: 0px;
-}
-
-.progress-step .fa-solid {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--grey);
-  height: 50px;
-  width: 50px;
-  font-size: 1.3rem;
-  border-radius: 50%;
-  background-color: var(--white);
-  border: 3px solid var(--grey);
-  margin-bottom: 10px;
-  transition: border 0.2s, color 0.2s;
-}
-
-.progressbar-btn-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2rem;
-  margin-bottom: 3rem;
-}
-
-.progressbar-btn-container .progress_btn {
-  padding: 0.5rem 1.5rem;
-  margin: 0 1rem;
-  border-radius: 50px;
-  cursor: pointer;
-  color: var(--white);
-  font-weight: 500;
-  background-color: #767db8;
-}
-
-.progress-step .fa-solid.active {
-  border: 3px solid #767db8;
-  color: #767db8;
-}
-
-.progressbar-btn.disabled {
-  background-color: var(--grey);
-  color: var(--white);
-  cursor: not-allowed;
-}
-
-.progressbar-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.progressbar-modal-content {
-  background-color: #fff;
-  padding: 20px;
+.RSPBprogressBar {
+  height: 20px;
+  line-height: 1;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.progressbar-modal h2 {
-  margin-top: 0;
-}
-
-.progressbar-modal p {
-  margin-bottom: 20px;
-}
-
-.progressbar-modal-buttons {
+  position: relative;
+  background-color: rgba(211, 211, 211, 0.6);
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  z-index: 0;
+  margin-left: 40px; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
+}
+
+.RSPBprogressBar .RSPBstep {
+  display: inline-flex;
   justify-content: center;
+  align-items: center;
+  z-index: 0;
+  position: absolute;
+  transform: translateX(-50%);
+  transition-property: all;
+  transition-timing-function: ease;
 }
-
-.progressbar-modal-buttons button {
-  margin: 0 10px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.confirmation-message {
-  position: fixed;
+.RSPBprogressBar .RSPBprogressBarText {
+  color: white;
+  font-size: 10px;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 20px;
+}
+.RSPBprogressBar .RSPBprogression {
+  position: absolute;
+  transition: width 0.3s ease;
+  left: 0;
+  top: 0;
+  bottom: 0;
   border-radius: 10px;
+  background: rgba(0, 116, 217, 0.8);
+  z-index: -1;
+}
+.ProgressBar-Image {
+  height: 80px;
+  width: 80px;
 }
