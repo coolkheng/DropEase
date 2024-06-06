@@ -1,17 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Collections from "../components/Collections";
 import Products from "../components/Productss";
+import HeaderCustomer from "./Header(Customer)";
+
 
 
 const Store = () => {
   const { storeId } = useParams(); // Get storeId from URL parameters
+  const [userRole, setUserRole] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setUserRole(data.data.role);
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  });
 
   return (
     <div>
-      <div className="flex justify-between items-center mt-5">
+      {userRole === "customer" && <HeaderCustomer/>}
+      <div style={{marginLeft:"30px"}} className="flex justify-between items-center mt-5">
         <Header />
       </div>
 
@@ -19,14 +49,8 @@ const Store = () => {
       <div className="flex justify-center mt-5">
         <Hero storeId={storeId} /> {/* Pass storeId to Hero component */}
       </div>
-      <div className="flex justify-center">
-        <h2 className="pt-20 text-3xl font-bold">Collections</h2>
-      </div>
       <div>
-        <Collections storeId={storeId} /> {/* Pass storeId to Collections component */}
-      </div>
-      <div>
-        <h2 className="flex justify-center pt-10 text-3xl font-bold">
+        <h2 style={{marginTop:"80px"}} className="flex justify-center pt-10 text-3xl font-bold">
           All Products
         </h2>
       </div>
