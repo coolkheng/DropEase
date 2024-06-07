@@ -849,7 +849,7 @@ app.post('/create-checkout-session', fetchUser, async (req, res) => {
             name: product.name,
             images: [product.image],
           },
-          unit_amount: product.price * 100,
+          unit_amount: Math.round(product.price * 100),
         },
         quantity: product.quantity,
       })),
@@ -894,37 +894,33 @@ app.post('/cartretailer/clear', fetchUser, async (req, res) => {
 app.post("/addtocart", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { productId } = req.body;
+    const { productId, quantity} = req.body;
 
-    console.log("User ID:", userId);
-    console.log("Product ID:", productId);
-
-    // Convert productId to string
-    const productIdStr = String(productId);
+    // Ensure productId and quantity are properly typed
+    const prodId = String(productId); // Convert productId to string because Map keys are strings
+    const qty = Number(quantity);
 
     // Find cart data for the user
     let cart = await CartCustomer.findOne({ userId });
 
     if (!cart) {
-      // Create new cart if not exists
-      cart = new CartCustomer({
-        userId,
-        cartData: new Map([[productIdStr, 1]]),
-      });
+      // Create new cart if it doesn't exist
+      cart = new CartCustomer({ userId, cartData: { [prodId]: qty } });
     } else {
       // Update existing cart
-      if (cart.cartData.has(productIdStr)) {
-        cart.cartData.set(productIdStr, cart.cartData.get(productIdStr) + 1);
+      if (cart.cartData.has(prodId)) {
+        cart.cartData.set(prodId, cart.cartData.get(prodId) + qty);
       } else {
-        cart.cartData.set(productIdStr, 1);
+        cart.cartData.set(prodId, qty);
       }
     }
 
     await cart.save();
-    res.json({ message: "Added to cart" });
+    console.log('Cart saved:', cart); // Log the cart object
+    res.send("Added to cart");
   } catch (error) {
-    console.error("Error adding to cart:", error);
-    res.status(500).json({ errors: "Internal Server Error" });
+    console.error('Error adding to cart:', error); // Log any errors
+    res.status(500).send({ errors: "Internal Server Error" });
   }
 });
 
@@ -934,27 +930,32 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
     const userId = req.user.id;
     const { productId } = req.body;
 
-    console.log("User ID:", userId);
-    console.log("Product ID:", productId);
+    // Convert productId to string because Map keys are strings
+    const prodId = String(productId);
 
-    // Convert productId to string
-    const productIdStr = String(productId);
+    console.log('Request received to remove product ID:', prodId);
 
     // Find cart data for the user
     let cart = await CartCustomer.findOne({ userId });
 
-    if (!cart || !cart.cartData.has(productIdStr)) {
-      return res.status(404).json({ errors: "Product not found in cart" });
+    if (!cart) {
+      console.log('No cart found for user ID:', userId);
+      return res.status(400).json({ success: false, errors: "No cart found for the user" });
     }
 
-    // Remove product from cart
-    cart.cartData.delete(productIdStr);
-
-    await cart.save();
-    res.json({ message: "Removed from cart" });
+    // Remove the specified product from the cart
+    if (cart.cartData.has(prodId)) {
+      cart.cartData.delete(prodId);
+      await cart.save();
+      console.log('Cart updated after removing item:', cart);
+      res.send("Item removed from cart");
+    } else {
+      console.log('Item not found in cart for product ID:', prodId);
+      res.status(400).json({ success: false, errors: "Item not found in cart" });
+    }
   } catch (error) {
-    console.error("Error removing from cart:", error);
-    res.status(500).json({ errors: "Internal Server Error" });
+    console.error('Error removing item from cart:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
   }
 });
 //TODO: Change productId based on Eugene's product-id
@@ -963,34 +964,53 @@ app.post("/decreasequantity", fetchUser, async (req, res) => {
     const userId = req.user.id;
     const { productId } = req.body;
 
-    console.log("User ID:", userId);
-    console.log("Product ID:", productId);
-
-    // Convert productId to string
-    const productIdStr = String(productId);
+    // Ensure productId is properly typed
+    const prodId = String(productId); // Convert productId to string because Map keys are strings
 
     // Find cart data for the user
     let cart = await CartCustomer.findOne({ userId });
 
-    if (!cart || !cart.cartData.has(productIdStr)) {
-      return res.status(404).json({ errors: "Product not found in cart" });
+    if (!cart) {
+      return res.status(400).json({ success: false, errors: "No cart found for the user" });
     }
 
-    const productQuantity = cart.cartData.get(productIdStr);
-
-    if (productQuantity > 1) {
-      // Decrease quantity if more than 1
-      cart.cartData.set(productIdStr, productQuantity - 1);
+    // Decrease quantity of the specified product
+    if (cart.cartData.has(prodId) && cart.cartData.get(prodId) > 1) {
+      cart.cartData.set(prodId, cart.cartData.get(prodId) - 1);
+      await cart.save();
+      console.log('Cart updated after decreasing quantity:', cart);
+      res.send("Quantity decreased");
     } else {
-      // Remove product from cart if quantity is 1
-      cart.cartData.delete(productIdStr);
+      res.status(400).json({ success: false, errors: "Cannot decrease quantity further" });
     }
-
-    await cart.save();
-    res.json({ message: "Quantity decreased" });
   } catch (error) {
-    console.error("Error decreasing quantity:", error);
-    res.status(500).json({ errors: "Internal Server Error" });
+    console.error('Error decreasing quantity:', error); // Log any errors
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+app.post('/clear', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find retailer cart for the user
+    let cart = await CartCustomer.findOne({ userId });
+
+
+//fetch data to retailerproducts!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+    if (cart) {
+      cart.cartData = {}; // Clear the cart data
+      await cart.save(); // Save the cleared cart
+      console.log('Cart cleared:', cart);
+      res.json({ success: true, message: "Cart cleared successfully" });
+    } else {
+      res.status(400).json({ success: false, message: "No cart found for user" });
+    } 
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
   }
 });
 
