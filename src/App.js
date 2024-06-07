@@ -28,20 +28,25 @@ import SportsGames from "./pages/SupplierCategory/SportsGames.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import CustomerHome from "./pages/Home(Customer).jsx";
 import CustomerCart from "./pages/Cart(Customer).jsx";
+import RetailerCart from "./pages/Cart(Retailer).jsx";
 import ShopCategory from "./pages/ShopCategory(Customer).jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
 import EditShop from "./pages/EditShop.js";
 import Women from "./pages/Women.jsx";
 import Men from "./pages/Men.jsx";
 import Profile from "./pages/Profile.jsx";
-import { CartProvider } from "./pages/cartContext";
+import { CartRetailerProvider } from "./pages/cartRetailerContext";
+import { CartProvider } from "./pages/cartContext.js";
+import SupplierProductDetails from "./pages/SupplierProductDetails.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
 
   return (
     <Router>
-      <CartProvider>
+      
+    <CartProvider>
+    <CartRetailerProvider>
       <div className="app-container">
         <div className="content">
           <Routes>
@@ -66,10 +71,12 @@ function App() {
             <Route path="/paymentpage" element={<PaymentPage />} />
             <Route path="/customerhome" element={<CustomerHome />} />
             <Route path="/customercart" element={<CustomerCart />} />
+            <Route path="/retailercart" element={<RetailerCart />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/edit-store" element={<EditShop />} />
             <Route path="/women" element={<Women />} />
             <Route path="/men" element={<Men />} />
+            <Route path="/products/:id" element={<SupplierProductDetails />} />
             <Route
               path="/apparel"
               element={<ShopCategory category="Apparel" />}
@@ -88,6 +95,7 @@ function App() {
         </div>
       </div>
       {/* </div> */}
+    </CartRetailerProvider>
     </CartProvider>
     </Router>
   );
