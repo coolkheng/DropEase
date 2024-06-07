@@ -1,16 +1,19 @@
-import React, { useState, useEffect , useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../asset/DropEase logo.png";
 import search_icon from "../asset/search icon.png";
 import user_icon from "../asset/user icon.png";
 import cart_icon from "../asset/cart icon.png";
 import "../style/Header(Customer).css";
-import { CartContext } from "../pages/cartContext";
+import { CartContext } from "../pages/cartContext"; // Corrected import
+import SearchResults from "./SearchResults"; // Import the new component
 
-export const Header = () => {
+export const HeaderCustomer = () => {
   const location = useLocation();
-  const {cartItems} = useContext(CartContext);
+  const { cartItems } = useContext(CartContext); // Corrected context usage
   const [menu, setMenu] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     console.log("Location changed:", location.pathname);
@@ -33,13 +36,25 @@ export const Header = () => {
     }
   }, [location.pathname, menu]);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  // Calculate total quantity from cart items
+  const totalQuantity = cartItems.reduce((total, item) => {
+    const quantity = item.quantity || 0; // Ensure quantity is defined
+    return total + quantity;
+  }, 0);
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const totalQuantity = cartItems.reduce((total, item) => total + item.qty, 0);
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/searchstore?q=${searchQuery}`);
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
 
   return (
     <div className="header-container">
@@ -56,14 +71,14 @@ export const Header = () => {
             value={searchQuery}
             onChange={handleSearchInputChange}
           />
-          <button>Search</button>
+          <button onClick={handleSearch}>Search</button>
         </div>
         <div className="header-login">
           <NavLink to="/login">
             <img src={user_icon} alt="User Icon" />
           </NavLink>
           <NavLink to="/login">
-            <p className="login-button">Sign In/ Sign Up</p>
+            <p className="login-button">Sign Out</p>
           </NavLink>
           <NavLink to="/customercart">
             <img
@@ -75,7 +90,7 @@ export const Header = () => {
             />
           </NavLink>
           <div className="header-cart-count">{totalQuantity}</div>
-          <button
+          <p
             onClick={() => setMenu("cart")}
             className={menu === "cart" ? "active" : ""}
           >
@@ -86,7 +101,7 @@ export const Header = () => {
             >
               Shopping Cart
             </NavLink>
-          </button>
+          </p>
         </div>
       </div>
       <div className="navbar">
@@ -129,8 +144,11 @@ export const Header = () => {
           </li>
         </ul>
       </div>
+      {searchResults.length > 0 && (
+        <SearchResults results={searchResults} />
+      )}
     </div>
   );
 };
 
-export default Header;
+export default HeaderCustomer;

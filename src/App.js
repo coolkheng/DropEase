@@ -17,6 +17,7 @@ import Login from "./components/login.jsx";
 import Pw from "./components/forgotpw.jsx";
 import Products from "./pages/Products.jsx";
 import Shop from "./pages/Shop.jsx";
+import Store from "./components/store.jsx";
 import Suppliers from "./pages/Supplier.jsx";
 import "./App.css";
 import FoodBeverages from "./pages/SupplierCategory/FoodBeverages.jsx";
@@ -33,7 +34,6 @@ import ProductDetails from "./pages/ProductDetails.jsx";
 import EditShop from "./pages/EditShop.js";
 import Women from "./pages/Women.jsx";
 import Men from "./pages/Men.jsx";
-import Kids from "./pages/Kids.jsx";
 import Profile from "./pages/Profile.jsx";
 import { CartRetailerProvider } from "./pages/cartRetailerContext";
 import { CartProvider } from "./pages/cartContext.js";
@@ -58,7 +58,7 @@ function App() {
             <Route path="/orders" element={<OrderPage />} />
             <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/home" element={<Shop />} />
+            <Route path="/home/:storeId" element={<Shop />} />
             <Route path="/suppliers" element={<Suppliers />} />
             <Route path="/foodbeverages" element={<FoodBeverages />} />
             <Route path="/homekitchen" element={<HomeKitchen />} />
@@ -76,21 +76,21 @@ function App() {
             <Route path="/edit-store" element={<EditShop />} />
             <Route path="/women" element={<Women />} />
             <Route path="/men" element={<Men />} />
-            <Route path="/kids" element={<Kids />} />
             <Route path="/products/:id" element={<SupplierProductDetails />} />
             <Route
               path="/apparel"
-              element={<ShopCategory category="apparel" />}
+              element={<ShopCategory category="Apparel" />}
             />
             <Route
               path="/sports"
-              element={<ShopCategory category="sports" />}
+              element={<ShopCategory category="Sports" />}
             />
             <Route
               path="/electronics"
-              element={<ShopCategory category="electronics" />}
+              element={<ShopCategory category="Electronic" />}
             />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/store/:storeId" element={<Store />} />
           </Routes>
         </div>
       </div>

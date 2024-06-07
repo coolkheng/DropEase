@@ -2,15 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
 
+
 const Login = () => {
-  const navigate = useNavigate(); 
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userType, setUserType] = useState(""); // State to manage selected user type
+  const navigate = useNavigate();
+  const [errorMessage,setErrorMessage]=useState("");
 
   const [formData, setFormData] = useState({
     password: "",
-    email: ""
+    email: "",
+    role: ""
   });
 
   const changeHandler = (e) => {
@@ -27,22 +27,56 @@ const Login = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    })
-    .then((response) => response.json())
-    .then((data) => responseData = data);
+    }).then((response) => response.json())
+      .then((data) => responseData = data);
 
     if (responseData.success) {
+      console.log("Login Successful:", responseData);
       localStorage.setItem('auth-token', responseData.token);
-      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home";
+      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home/:storeId";
       navigate(linkDestination);
     } else {
       alert(responseData.errors);
     }
   };
 
+  const fetchUserStoreId = async (token) => {
+    try {
+      const response = await fetch("http://localhost:4000/userData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        return data.data.storeId;
+      } else {
+        setErrorMessage(data.errors);
+        return null;
+      }
+    } catch (error) {
+      setErrorMessage("Failed to fetch user data");
+      return null;
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     login();
+  };
+
+  const loginwithgoogle = () => {
+    window.open("http://localhost:4000/auth/google/callback", "_self")
+  }
+
+  const github = () => {
+    window.open("http://localhost:4000/auth/github", "_self");
+  };
+
+  const facebook = () => {
+    window.open("https://www.facebook.com/login", "_self");
   };
 
   return (
@@ -67,7 +101,7 @@ const Login = () => {
                 onChange={changeHandler}
               />
               <input
-                type={passwordVisible ? "text" : "password"}
+                type="password"
                 placeholder="Password"
                 name="password"
                 required
@@ -82,7 +116,7 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-              
+
 
               <button type="submit" className={styles.orange_btn}>
                 Sign In
@@ -95,22 +129,23 @@ const Login = () => {
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_google}`}
+              onClick={loginwithgoogle}
             >
               Continue with Google
             </button>
-
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_facebook}`}
+              onClick={facebook}
             >
               Continue with Facebook
             </button>
-
             <button
               type="button"
               className={`${styles.white_btn_three} ${styles.continue_with_apple}`}
+              onClick={github}
             >
-              Continue with Apple
+              Continue with Github
             </button>
           </div>
         </div>
