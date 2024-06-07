@@ -1,22 +1,62 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
 
 const Productss = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [storeId, setStoreId] = useState(null); // Initialize as null
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
+
+
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/allproduct');
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.error('Failed to fetch products:', response.status, errorMessage);
+        // Fetch storeId first
+        const token = localStorage.getItem("auth-token");
+        const userDataResponse = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const userData = await userDataResponse.json();
+        if (!userData.success) {
+          setErrorMessage(userData.errors);
+          throw new Error('Failed to fetch user data');
+        }
+        const storeId = userData.data.storeId;
+        setStoreId(storeId);
+
+        // Fetch retailer product data using storeId
+        const retailerResponse = await fetch(`http://localhost:4000/retailerproduct/`);
+        if (!retailerResponse.ok) {
+          throw new Error('Failed to fetch retailer products');
+        }
+        const retailerData = await retailerResponse.json();
+        const thisdata = retailerData.find(doc => doc.storeId === storeId);
+        if (!thisdata) {
+          throw new Error('Store data not found');
+        }
+        const keys = Object.keys(thisdata.cartData);
+        const numericKeys = keys.filter(key => !isNaN(key)).map(Number);
+
+        // Fetch all products and filter using numericKeys
+        const productsResponse = await fetch('http://localhost:4000/allproduct');
+        if (!productsResponse.ok) {
+          const errorMessage = await productsResponse.text();
+          console.error('Failed to fetch products:', productsResponse.status, errorMessage);
           throw new Error('Failed to fetch products');
         }
-        const data = await response.json();
-        setProducts(data);
+        const productsData = await productsResponse.json();
+        const filteredData = productsData.filter(product => numericKeys.includes(product.id));
+        setProducts(filteredData);
+        setFilteredProducts(filteredData);
       } catch (err) {
         console.error('Error:', err.message);
         setError(err.message);
@@ -25,8 +65,8 @@ const Productss = () => {
       }
     };
 
-    fetchProducts();
-  }, []);
+    fetchData();
+  });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
