@@ -61,34 +61,34 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    const fetchRetailerProducts = async () => {
-      try {
-        const userId = user.userId;
-        console.log('userId: ', userId)
-        const response = await fetch(`http://localhost:4000/retailerproduct/`, {
-          userID: userId
-        });
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.error('Failed to fetch products:', response.status, errorMessage);
-          throw new Error('Failed to fetch products');
-        }
-        console.log('response in proudct page: ', response.data)
-        const data = await response.json();
-        setProducts(data);
-        setFilteredProducts(data); // Initialize filtered products
+  // useEffect(() => {
+  //   const fetchRetailerProducts = async () => {
+  //     try {
+  //       const userId = user.userId;
+  //       console.log('userId: ', userId)
+  //       const response = await fetch(`http://localhost:4000/retailerproduct/`, {
+  //         userID: userId
+  //       });
+  //       if (!response.ok) {
+  //         const errorMessage = await response.text();
+  //         console.error('Failed to fetch products:', response.status, errorMessage);
+  //         throw new Error('Failed to fetch products');
+  //       }
+  //       console.log('response in proudct page: ', response.data)
+  //       const data = await response.json();
+  //       setProducts(data);
+  //       setFilteredProducts(data); // Initialize filtered products
 
-      } catch (err) {
-        console.error('Error:', err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      } 
-    };
+  //     } catch (err) {
+  //       console.error('Error:', err.message);
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     } 
+  //   };
 
-    fetchRetailerProducts();
-  }, []);
+  //   fetchRetailerProducts();
+  // }, []);
 
   useEffect(() => {
     const filtered = products.filter(product =>
