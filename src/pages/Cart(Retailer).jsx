@@ -5,12 +5,12 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import Header from "../components/Header";
 import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
-import { CartContext } from "./cartContext";
+import { CartRetailerContext } from "./cartRetailerContext";
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 
 const RetailerCart = () => {
-  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
+  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartRetailerContext);
 
   const handleAddToCart = async (item) => {
     await addToCart(item);
@@ -60,13 +60,11 @@ const RetailerCart = () => {
   const totalPrice = cartItems.reduce(
     (price, item) => price + item.qty * item.price,
     0
-  );
+  ).toFixed(2);
 
   const handleCheckout = async () => {
     console.log("Handle checkout function called!");
 
-
-    
     await clearCart();
 
     const stripe = await loadStripe("pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D");
@@ -170,7 +168,7 @@ const RetailerCart = () => {
               <h1 className="no-items product">No Items are add in Cart</h1>
             )}
             {cartItems.map((item) => {
-              const productQty = item.price * item.qty;
+              const productQty = (item.price * item.qty).toFixed(2);
               return (
                 <div className="cart-list" key={item.id}>
                   <div className="img">
@@ -179,7 +177,7 @@ const RetailerCart = () => {
                   <div className="cart-details">
                     <h3>{item.name}</h3>
                     <h4>
-                      RM {item.price} * {item.qty}
+                      RM {item.price.toFixed(2)} * {item.qty}
                       <span>RM {productQty}</span>
                     </h4>
                   </div>
@@ -217,7 +215,7 @@ const RetailerCart = () => {
               <h2>Cart Summary</h2>
               <div className="Total-product">
                 <h4>Total Price :</h4>
-                <h3>RM {totalPrice}.00</h3>
+                <h3>RM {totalPrice}</h3>
               </div>
               <button className="checkout-button" onClick={handleCheckout}>Proceed to Checkout</button>
             </div>

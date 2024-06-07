@@ -1,6 +1,6 @@
 import React,{useState, useContext} from "react";
 import { useLocation , useNavigate} from "react-router-dom";
-import {CartContext} from "./cartContext";
+import {CartRetailerContext} from "./cartRetailerContext";
 import "../style/ProductDetails.css";
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ const SupplierProductDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { product } = location.state || {};
-  const {addToCart} = useContext(CartContext);
+  const {addToCart} = useContext(CartRetailerContext);
 
   const [mainImage, setMainImage] = useState(product?.mainImages);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -82,7 +82,7 @@ const SupplierProductDetails = () => {
         </div>
 
         <div className="productdisplay-right-prices">
-          <h2 className="priceDetails">RM {product.price}.00</h2>
+          <h2 className="priceDetails">RM {product.price.toFixed(2)}</h2>
         </div>
 
         {product.longDesc && product.longDesc.length > 0 && (

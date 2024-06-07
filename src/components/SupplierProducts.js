@@ -47,7 +47,7 @@ const SupplierProducts = ({ category }) => {
               desc={product.desc}
               longDesc={product.longDesc}
               rating={product.rating}
-              price={product.price}
+              price={product.price.toFixed(2)}
               product={product}
               color={product.color}
               size={product.sizes}

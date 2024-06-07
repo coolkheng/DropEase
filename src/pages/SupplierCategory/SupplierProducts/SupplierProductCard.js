@@ -76,8 +76,8 @@ const SupplierProductCard = ({ img, name, desc, rating, price, product }) => {
       <p className="text-gray-500 max-w-[150px]">{desc}</p>
       <div>{generateRating(rating)}</div>
       <div className="font-bold flex gap-4">
-        RM{price}
-        <del className="text-gray-500 font-normal">RM{parseInt(price) + 50}.00</del>
+        RM{price.toFixed(2)}
+        <del className="text-gray-500 font-normal">RM{(parseInt(price) + 50).toFixed(2)}</del>
       </div>
       <div className="absolute bottom-0 right-0 p-4">
         <MdAddShoppingCart className="text-accent text-xl" onClick={handleProductClick} />

@@ -120,7 +120,6 @@ export const CartProvider = ({ children }) => {
       console.error("Error removing from cart:", error);
     }
   };
-  
 
   return (
     <CartContext.Provider value={{ cartItems, addToCart, decreaseQty, removeFromCart, loading, errorMessage }}>
