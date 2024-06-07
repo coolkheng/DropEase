@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
+const Order = require("./modal/ordermodal");
 const jwt = require("jsonwebtoken");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 const session = require("express-session");
@@ -280,6 +281,16 @@ app.put("/api/orders/:orderId", async (req, res) => {
   } catch (error) {
     console.error("Error updating order status:", error);
     res.status(500).json({ error: "Failed to update order status" });
+  }
+});
+
+app.get("/api/orders", async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
