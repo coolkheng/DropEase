@@ -35,7 +35,8 @@ import Women from "./pages/Women.jsx";
 import Men from "./pages/Men.jsx";
 import Kids from "./pages/Kids.jsx";
 import Profile from "./pages/Profile.jsx";
-import { CartProvider } from "./pages/cartContext";
+import { CartRetailerProvider } from "./pages/cartRetailerContext";
+import { CartProvider } from "./pages/cartContext.js";
 import SupplierProductDetails from "./pages/SupplierProductDetails.jsx";
 
 function App() {
@@ -43,7 +44,9 @@ function App() {
 
   return (
     <Router>
-      <CartProvider>
+      
+    <CartProvider>
+    <CartRetailerProvider>
       <div className="app-container">
         <div className="content">
           <Routes>
@@ -92,6 +95,7 @@ function App() {
         </div>
       </div>
       {/* </div> */}
+    </CartRetailerProvider>
     </CartProvider>
     </Router>
   );

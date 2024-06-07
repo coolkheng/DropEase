@@ -5,12 +5,12 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import Header from "../components/Header";
 import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
-import { CartContext } from "./cartContext";
+import { CartRetailerContext } from "./cartRetailerContext";
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 
 const RetailerCart = () => {
-  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartContext);
+  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartRetailerContext);
 
   const handleAddToCart = async (item) => {
     await addToCart(item);
