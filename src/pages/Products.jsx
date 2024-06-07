@@ -13,7 +13,6 @@ import AddProductButton from "../components/AddProductButton";
 import DropdownMenu from "../components/UsernameDropDown"; // Assuming UsernameDropDown is your dropdown menu component
 import SearchBar from "../components/SearchBar";
 import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
 
 const Products = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -21,12 +20,12 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
   const [products, setProducts] = useState([]); // State for all products
-  const [storeId, setStoreId] = useState(null);
+  const [storeId, setStoreId] = useState(null); // Initialize as null
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
-        
+
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 1024);
@@ -41,83 +40,62 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => { 
+    const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/allproduct');
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.error('Failed to fetch products:', response.status, errorMessage);
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        setProducts(data);
-        setFilteredProducts(data); // Initialize filtered products
-
-      } catch (err) {
-        console.error('Error:', err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      } 
-    };
-
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
+        // Fetch storeId first
         const token = localStorage.getItem("auth-token");
-        const response = await fetch("http://localhost:4000/userData", {
+        const userDataResponse = await fetch("http://localhost:4000/userData", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "auth-token": token,
           },
         });
-        const data = await response.json();
-        if (data.success) {
-          setStoreId(data.data.storeId);
-          navigate(`/productspage/${data.data.storeId}`); // Navigate to the store page based on storeId
-        } else {
-          setErrorMessage(data.errors);
+        const userData = await userDataResponse.json();
+        if (!userData.success) {
+          setErrorMessage(userData.errors);
+          throw new Error('Failed to fetch user data');
         }
-      } catch (error) {
-        setErrorMessage("Failed to fetch user data");
+        const storeId = userData.data.storeId;
+        setStoreId(storeId);
+
+        // Fetch retailer product data using storeId
+        const retailerResponse = await fetch(`http://localhost:4000/retailerproduct/`);
+        if (!retailerResponse.ok) {
+          throw new Error('Failed to fetch retailer products');
+        }
+        const retailerData = await retailerResponse.json();
+        const thisdata = retailerData.find(doc => doc.storeId === storeId);
+        if (!thisdata) {
+          throw new Error('Store data not found');
+        }
+        const keys = Object.keys(thisdata.cartData);
+        const numericKeys = keys.filter(key => !isNaN(key)).map(Number);
+
+        // Fetch all products and filter using numericKeys
+        const productsResponse = await fetch('http://localhost:4000/allproduct');
+        if (!productsResponse.ok) {
+          const errorMessage = await productsResponse.text();
+          console.error('Failed to fetch products:', productsResponse.status, errorMessage);
+          throw new Error('Failed to fetch products');
+        }
+        const productsData = await productsResponse.json();
+        const filteredData = productsData.filter(product => numericKeys.includes(product.id));
+        setProducts(filteredData);
+        setFilteredProducts(filteredData);
+
+        // Navigate to the store page based on storeId
+        navigate(`/productspage/${storeId}`);
+      } catch (err) {
+        console.error('Error:', err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, [navigate]);
-
-  // useEffect(() => {
-  //   const fetchRetailerProducts = async () => {
-  //     try {
-  //       const userId = user.userId;
-  //       console.log('userId: ', userId)
-  //       const response = await fetch(`http://localhost:4000/retailerproduct/`, {
-  //         userID: userId
-  //       });
-  //       if (!response.ok) {
-  //         const errorMessage = await response.text();
-  //         console.error('Failed to fetch products:', response.status, errorMessage);
-  //         throw new Error('Failed to fetch products');
-  //       }
-  //       console.log('response in proudct page: ', response.data)
-  //       const data = await response.json();
-  //       setProducts(data);
-  //       setFilteredProducts(data); // Initialize filtered products
-
-  //     } catch (err) {
-  //       console.error('Error:', err.message);
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     } 
-  //   };
-
-  //   fetchRetailerProducts();
-  // }, []);
 
   useEffect(() => {
     const filtered = products.filter(product =>
@@ -176,12 +154,12 @@ const Products = () => {
               <div className="product-content">
                 <div className="product-list">
                   <div className="grouped-products-container">
-                    {/* {filteredProducts.map((product) => (
+                    {filteredProducts.map((product) => (
                       <div key={product._id} className="grouped-products-item">
                         <ProductItem
                           img={product.mainImages}
                           name={product.name}
-                          desc={product.desc}
+                          desc={product.desc} 
                           longDesc={product.longdesc}
                           rating={product.rating}
                           price={product.price}
@@ -190,7 +168,7 @@ const Products = () => {
                           size={product.sizes}
                         />
                       </div>
-                    ))} */}
+                    ))}
                     <Link to={`/foodbeverages/${storeId}`}>
                       <AddProductButton
                        image={require("../asset/add-button.png")}

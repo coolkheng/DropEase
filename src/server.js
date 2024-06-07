@@ -739,9 +739,8 @@ const RetailerProductSchema = new mongoose.Schema({
 // Create the Mongoose model for the "retailerproduct" collection
 const RetailerProduct = mongoose.model('retailerproduct', RetailerProductSchema);
 
-app.get('/retailerproduct',async(req,res)=>{
-  const hello = req.userID;
-  let retailerproduct = await RetailerProduct.findOne({hello});
+app.get('/retailerproduct', async(req,res)=>{
+  let retailerproduct = await RetailerProduct.find();
   console.log("All Retailer Products Fetched");
   console.log(res);
   res.send(retailerproduct);
