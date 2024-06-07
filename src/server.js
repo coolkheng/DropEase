@@ -707,6 +707,13 @@ const CartRetailerSchema = new mongoose.Schema({
 
 const CartRetailer = mongoose.model('CartRetailer', CartRetailerSchema);
 
+app.get('/retailerproduct',async(req,res)=>{
+  const hello = req.userID;
+  let retailerproducts = await RetailerProduct.findOne({hello});
+  console.log("All Retailer Products Fetched");
+  console.log(res);
+  res.send(retailerproducts);
+})
 
 
 app.post('/cartretailer', fetchUser, async (req, res) => {

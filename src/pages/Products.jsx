@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Navbar from "../components/SideNav"; // Assuming Navbar is your sidebar component
 import TopBar from "../components/TopBar"; // Assuming TopBar is your top bar component
@@ -20,9 +21,11 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
   const [products, setProducts] = useState([]); // State for all products
-  const { storeId } = useParams(); // Get storeId from URL parameters
+  const [storeId, setStoreId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
         
   useEffect(() => {
     const handleResize = () => {
@@ -38,7 +41,7 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProducts = async () => { 
       try {
         const response = await fetch('http://localhost:4000/allproduct');
         if (!response.ok) {
@@ -60,6 +63,32 @@ const Products = () => {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setStoreId(data.data.storeId);
+          navigate(`/productspage/${data.data.storeId}`); // Navigate to the store page based on storeId
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   // useEffect(() => {
   //   const fetchRetailerProducts = async () => {
@@ -162,12 +191,13 @@ const Products = () => {
                         />
                       </div>
                     ))} */}
-                    <Link to="/foodbeverages">
-                    <AddProductButton
-                      image={require("../asset/add-button.png")}
-                      description="Add Products"
-                    />
-                  </Link>
+                    <Link to={`/foodbeverages/${storeId}`}>
+                      <AddProductButton
+                       image={require("../asset/add-button.png")}
+                       description="Add Products"
+                      />
+                    </Link>
+
                   </div>
                   
                 </div>
