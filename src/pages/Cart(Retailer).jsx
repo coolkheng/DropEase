@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "../style/Cart(Customer).css";
 import { FaXmark } from "react-icons/fa6";
 import { FaPlus, FaMinus } from "react-icons/fa";
@@ -10,7 +10,34 @@ import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 
 const RetailerCart = () => {
+  const [storeId, setStoreId] = useState(null);
   const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartRetailerContext);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setStoreId(data.data.storeId);
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleAddToCart = async (item) => {
     await addToCart(item);
@@ -19,6 +46,7 @@ const RetailerCart = () => {
       const response = await axios.post("http://localhost:4000/cartretailer", {
         productId: item.id,
         quantity: 1,
+        storeId: storeId // Include storeId
       }, {
         headers: {
           'auth-token': token,
@@ -41,6 +69,7 @@ const RetailerCart = () => {
       const token = localStorage.getItem("auth-token");
       const response = await axios.post("http://localhost:4000/cartretailer/decreaseQty", {
         productId: item.id,
+        storeId: storeId // Include storeId
       }, {
         headers: {
           'auth-token': token,
@@ -57,10 +86,32 @@ const RetailerCart = () => {
     }
   };
 
-  const totalPrice = cartItems.reduce(
-    (price, item) => price + item.qty * item.price,
-    0
-  ).toFixed(2);
+  const handleRemoveCartItem = async (itemId) => {
+    console.log("Attempting to remove item with ID:", itemId);
+    console.log("Current cart items before removal:", cartItems);
+
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.post("http://localhost:4000/cartretailer/removeFromCart", {
+        productId: itemId,
+        storeId: storeId // Include storeId
+      }, {
+        headers: {
+          'auth-token': token,
+        }
+      });
+
+      if (response.data === "Item removed from cart") {
+        console.log("Item removed from cart successfully");
+        removeFromCart(itemId);
+        console.log("Current cart items after removal:", cartItems);
+      } else {
+        console.log("Failed to remove item from cart");
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
+  };
 
   const handleCheckout = async () => {
     console.log("Handle checkout function called!");
@@ -76,7 +127,8 @@ const RetailerCart = () => {
         quantity: item.qty,
         image: item.mainImages
       })),
-      userId: localStorage.getItem("auth-token")
+      userId: localStorage.getItem("auth-token"),
+      storeId: storeId // Include storeId
     };
 
     const headers = {
@@ -113,7 +165,9 @@ const RetailerCart = () => {
     console.log("Clear cart function called!");
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/cartretailer/clear", {}, {
+      const response = await axios.post("http://localhost:4000/cartretailer/clear", {
+        storeId: storeId // Include storeId
+      }, {
         headers: {
           'auth-token': token,
         }
@@ -129,31 +183,10 @@ const RetailerCart = () => {
     }
   };
 
-  const handleRemoveCartItem = async (itemId) => {
-    console.log("Attempting to remove item with ID:", itemId);
-    console.log("Current cart items before removal:", cartItems);
-
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/cartretailer/removeFromCart", {
-        productId: itemId,
-      }, {
-        headers: {
-          'auth-token': token,
-        }
-      });
-
-      if (response.data === "Item removed from cart") {
-        console.log("Item removed from cart successfully");
-        removeFromCart(itemId);
-        console.log("Current cart items after removal:", cartItems);
-      } else {
-        console.log("Failed to remove item from cart");
-      }
-    } catch (error) {
-      console.error("Error removing item from cart:", error);
-    }
-  };
+  const totalPrice = cartItems.reduce(
+    (price, item) => price + item.qty * item.price,
+    0
+  ).toFixed(2);
 
   return (
     <>

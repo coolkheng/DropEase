@@ -68,7 +68,7 @@ function App() {
             <Route path="/paymentpage" element={<PaymentPage />} />
             <Route path="/customerhome" element={<CustomerHome />} />
             <Route path="/customercart" element={<CustomerCart />} />
-            <Route path="/retailercart" element={<RetailerCart />} />
+            <Route path="/retailercart/:id" element={<RetailerCart />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/edit-store" element={<EditShop />} />
             <Route path="/women" element={<Women />} />
