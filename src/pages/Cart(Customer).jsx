@@ -72,7 +72,7 @@ const Cart = () => {
   const handleCheckout = async () => {
     console.log("Handle checkout function called!");
 
-    // await clearCart();
+    await clearCart();
 
     const stripe = await loadStripe(
       "pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D"
@@ -117,33 +117,33 @@ const Cart = () => {
       console.error("Checkout error:", error);
     }
 
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:4000/create-checkout-session",
-    //     body,
-    //     { headers }
-    //   );
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/create-checkout-session",
+        body,
+        { headers }
+      );
 
-    //   console.log("Response from backend:", response);
+      console.log("Response from backend:", response);
 
-    //   if (response.status !== 200) {
-    //     throw new Error(`HTTP error! status: ${response.status}`);
-    //   }
+      if (response.status !== 200) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    //   const { id: sessionId } = response.data;
+      const { id: sessionId } = response.data;
 
-    //   const result = await stripe.redirectToCheckout({
-    //     sessionId: sessionId,
-    //   });
+      const result = await stripe.redirectToCheckout({
+        sessionId: sessionId,
+      });
 
-    //   if (result.error) {
-    //     console.log(result.error.message);
-    //   } else {
-    //     console.log("Redirect to checkout successful");
-    //   }
-    // } catch (error) {
-    //   console.error("Checkout error:", error);
-    // }
+      if (result.error) {
+        console.log(result.error.message);
+      } else {
+        console.log("Redirect to checkout successful");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+    }
   };
 
   const clearCart = async () => {
