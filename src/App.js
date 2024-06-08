@@ -38,6 +38,7 @@ import Profile from "./pages/Profile.jsx";
 import { CartRetailerProvider } from "./pages/cartRetailerContext";
 import { CartProvider } from "./pages/cartContext.js";
 import SupplierProductDetails from "./pages/SupplierProductDetails.jsx";
+import ApparelAccessories from "./pages/SupplierCategory/ApparelAccessories.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -62,6 +63,7 @@ function App() {
             <Route path="/suppliers" element={<Suppliers />} />
             <Route path="/foodbeverages" element={<FoodBeverages />} />
             <Route path="/homekitchen" element={<HomeKitchen />} />
+            <Route path="/apparelaccessories" element={<ApparelAccessories />} />
             <Route
               path="/officestationaries"
               element={<OfficeStationaries />}
