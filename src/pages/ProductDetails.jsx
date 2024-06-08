@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { CartContext } from "./cartContext";
 import "../style/ProductDetails.css";
 import HeaderCustomer from "../components/Header(Customer)";
@@ -7,6 +8,8 @@ import SideNav from "../components/SideNav";
 import axios from "axios";
 
 const ProductDetails = () => {
+  let Id = useParams();
+  console.log(Id.customerId);
   const location = useLocation();
   const navigate = useNavigate();
   const { product } = location.state || {};
@@ -29,8 +32,12 @@ const ProductDetails = () => {
     setSelectedColor(color);
   };
 
-  const [hasSize, setHasSize] = useState(product.size && product.size.length > 0);
-  const [hasColor, setHasColor] = useState(product.color && product.color.length > 0);
+  const [hasSize, setHasSize] = useState(
+    product.size && product.size.length > 0
+  );
+  const [hasColor, setHasColor] = useState(
+    product.color && product.color.length > 0
+  );
 
   const handleAddToCart = async () => {
     let missingField = false;
@@ -49,22 +56,29 @@ const ProductDetails = () => {
       return;
     }
 
-    const authToken = localStorage.getItem('auth-token');
-    addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor }, authToken);
+    const authToken = localStorage.getItem("auth-token");
+    addToCart(
+      { ...product, mainImage, size: selectedSize, color: selectedColor },
+      authToken
+    );
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/addtocart", {
-        productId: product.id,
-        quantity: 1, // Assuming you add one item at a time
-      }, {
-        headers: {
-          'auth-token': token,
+      const response = await axios.post(
+        "http://localhost:4000/addtocart",
+        {
+          productId: product.id,
+          quantity: 1, // Assuming you add one item at a time
+        },
+        {
+          headers: {
+            "auth-token": token,
+          },
         }
-      });
-  
+      );
+
       if (response.data === "Added to cart") {
         console.log("Item added to cart successfully");
-        navigate('/customercart'); // Navigate only after the backend request is successful
+        navigate(`/${Id.customerId}/store/${Id.storeId}/customercart`); // Navigate only after the backend request is successful
       } else {
         console.log("Failed to add item to cart");
       }
@@ -76,13 +90,13 @@ const ProductDetails = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const authToken = localStorage.getItem('auth-token');
+        const authToken = localStorage.getItem("auth-token");
         if (authToken) {
-          const response = await fetch('http://localhost:4000/userData', {
-            method: 'POST',
+          const response = await fetch("http://localhost:4000/userData", {
+            method: "POST",
             headers: {
-              'auth-token': authToken,
-              'Content-Type': 'application/json',
+              "auth-token": authToken,
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({}),
           });
@@ -107,9 +121,9 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className={userRole === 'retailer' ? 'sidenav-visible' : ''}>
-      {userRole === 'customer' && <HeaderCustomer />}
-      {userRole === 'retailer' && <SideNav className="sidenav" />}
+    <div className={userRole === "retailer" ? "sidenav-visible" : ""}>
+      {userRole === "customer" && <HeaderCustomer customer={Id} />}
+      {userRole === "retailer" && <SideNav className="sidenav" />}
 
       <div className="productdisplay">
         <div className="productdisplay-left">
@@ -124,7 +138,11 @@ const ProductDetails = () => {
             ))}
           </div>
           <div className="productdisplay-img">
-            <img className="productdisplay-main-img" src={mainImage} alt={product.name} />
+            <img
+              className="productdisplay-main-img"
+              src={mainImage}
+              alt={product.name}
+            />
           </div>
         </div>
         <div className="productdisplay-right">
@@ -148,10 +166,12 @@ const ProductDetails = () => {
                   <button
                     style={{
                       color: selectedSize === size ? "black" : "black",
-                      backgroundColor: selectedSize === size ? "#f8b179" : "#f9f9fc",
+                      backgroundColor:
+                        selectedSize === size ? "#f8b179" : "#f9f9fc",
                     }}
                     onClick={() => handleSizeClick(size)}
-                    key={size}>
+                    key={size}
+                  >
                     {size}
                   </button>
                 ))}
@@ -166,18 +186,22 @@ const ProductDetails = () => {
                   <button
                     style={{
                       color: selectedColor === color ? "black" : "black",
-                      backgroundColor: selectedColor === color ? "#f8b179" : "#f9f9fc",
+                      backgroundColor:
+                        selectedColor === color ? "#f8b179" : "#f9f9fc",
                     }}
                     onClick={() => handleColorClick(color)}
-                    key={color}>
+                    key={color}
+                  >
                     {color}
                   </button>
                 ))}
               </div>
             </div>
           )}
-          {userRole === 'customer' && (
-            <button className="addtocart-button" onClick={handleAddToCart}>ADD TO CART</button>
+          {userRole === "customer" && (
+            <button className="addtocart-button" onClick={handleAddToCart}>
+              ADD TO CART
+            </button>
           )}
         </div>
       </div>

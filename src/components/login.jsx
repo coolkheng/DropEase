@@ -2,15 +2,14 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "../style/login.module.css";
 import React, { useState } from "react";
 
-
 const Login = () => {
   const navigate = useNavigate();
-  const [errorMessage,setErrorMessage]=useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     password: "",
     email: "",
-    role: ""
+    role: "",
   });
 
   const changeHandler = (e) => {
@@ -20,20 +19,25 @@ const Login = () => {
   const login = async () => {
     console.log("Log in function executed", formData);
     let responseData;
-    await fetch('http://localhost:4000/login', {
-      method: 'POST',
+    await fetch("http://localhost:4000/login", {
+      method: "POST",
       headers: {
-        Accept: 'application/form-data',
-        'Content-Type': 'application/json',
+        Accept: "application/form-data",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-    }).then((response) => response.json())
-      .then((data) => responseData = data);
+    })
+      .then((response) => response.json())
+      .then((data) => (responseData = data));
 
     if (responseData.success) {
       console.log("Login Successful:", responseData);
-      localStorage.setItem('auth-token', responseData.token);
-      const linkDestination = responseData.role === "customer" ? "/customerhome" : "/home/:storeId";
+      localStorage.setItem("auth-token", responseData.token);
+      console.log(responseData.userData._id);
+      const linkDestination =
+        responseData.role === "customer"
+          ? `/customerhome/${responseData.userData._id}`
+          : "/home/:storeId";
       navigate(linkDestination);
     } else {
       alert(responseData.errors);
@@ -68,8 +72,8 @@ const Login = () => {
   };
 
   const loginwithgoogle = () => {
-    window.open("http://localhost:4000/auth/google/callback", "_self")
-  }
+    window.open("http://localhost:4000/auth/google/callback", "_self");
+  };
 
   const github = () => {
     window.open("http://localhost:4000/auth/github", "_self");
@@ -116,7 +120,6 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-
 
               <button type="submit" className={styles.orange_btn}>
                 Sign In

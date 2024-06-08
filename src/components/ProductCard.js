@@ -3,11 +3,22 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { MdAddShoppingCart } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-const ProductCard = ({ img, name, desc, rating, price, product }) => {
+const ProductCard = ({
+  img,
+  name,
+  desc,
+  rating,
+  price,
+  product,
+  storeId,
+  customerId,
+}) => {
   const navigate = useNavigate();
 
   const handleProductClick = () => {
-    navigate(`/product/${product.id}`, { state: { product } });
+    navigate(`/${customerId}/store/${storeId}/product/${product.id}`, {
+      state: { product },
+    });
   };
 
   const generateRating = (rating) => {
@@ -68,19 +79,31 @@ const ProductCard = ({ img, name, desc, rating, price, product }) => {
   };
 
   return (
-    <div className="relative px-5 border border-gray-200 rounded-xl w-[200px] h-[350px]" onClick={handleProductClick}>
+    <div
+      className="relative px-5 border border-gray-200 rounded-xl w-[200px] h-[350px]"
+      onClick={handleProductClick}
+    >
       <div>
-        <img className="mt-4 w-[200px] h-[150px] rounded-md" src={img} alt={name} />
+        <img
+          className="mt-4 w-[200px] h-[150px] rounded-md"
+          src={img}
+          alt={name}
+        />
       </div>
       <h2 className="text-accent font-medium uppercase">{name}</h2>
       <p className="text-gray-500 max-w-[150px]">{desc}</p>
       <div>{generateRating(rating)}</div>
       <div className="font-bold flex gap-4">
         RM{price}
-        <del className="text-gray-500 font-normal">RM{parseInt(price) + 50}.00</del>
+        <del className="text-gray-500 font-normal">
+          RM{parseInt(price) + 50}.00
+        </del>
       </div>
       <div className="absolute bottom-0 right-0 p-4">
-        <MdAddShoppingCart className="text-accent text-xl" onClick={handleProductClick} />
+        <MdAddShoppingCart
+          className="text-accent text-xl"
+          onClick={handleProductClick}
+        />
       </div>
     </div>
   );

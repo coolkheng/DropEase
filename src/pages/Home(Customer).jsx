@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "../style/Home(Customer).css";
 import { NavLink } from "react-router-dom";
 import FooterCustomer from "../components/Footer(Customer)";
@@ -8,15 +8,16 @@ import FlashDeals from "../components/homepage/TopStore";
 import TopCate from "../components/homepage/TopCate";
 import Annocuments from "../components/homepage/Announcements";
 import Wrapper from "../components/homepage/Wrapper";
-
-
+import { useParams } from "react-router-dom";
 
 const Home = () => {
+  let userId = useParams();
+  console.log(userId.customerId);
   return (
     <div className="Home">
       <>
         <section className="home">
-          <HeaderCustomer />
+          <HeaderCustomer customer={userId} />
           <div className="container d_flex">
             <SliderHome />
             <FlashDeals />

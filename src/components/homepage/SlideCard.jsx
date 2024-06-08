@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Sdata from "./Sdata";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 const SlideCard = () => {
   const navigate = useNavigate();
+  const Id = useParams();
 
   const settings = {
     dots: true,
@@ -21,11 +22,11 @@ const SlideCard = () => {
 
   const handleNavigation = (index) => {
     if (index === 0) {
-      navigate('/apparel');
+      navigate(`/apparel/${Id.customerId}`);
     } else if (index === 1) {
-      navigate('/sports');
+      navigate(`/sports/${Id.customerId}`);
     } else if (index === 2) {
-      navigate('/electronics');
+      navigate(`/electronics/${Id.customerId}`);
     }
   };
 
@@ -40,10 +41,17 @@ const SlideCard = () => {
             <div className="banner-container">
               <div className="detail">
                 <h3>{value.desc1}</h3>
-                <h1 style={{ fontWeight:"bold", fontSize: "50px" }}>{value.title}</h1>
+                <h1 style={{ fontWeight: "bold", fontSize: "50px" }}>
+                  {value.title}
+                </h1>
                 <h3>{value.desc2}</h3>
                 <h5>{value.available}</h5>
-                <button className="btn-primary" onClick={() => handleNavigation(index)}>Shop Now</button>
+                <button
+                  className="btn-primary"
+                  onClick={() => handleNavigation(index)}
+                >
+                  Shop Now
+                </button>
               </div>
               <div className="img-box">
                 <img src={value.cover} alt="" />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 
-const Productss = () => {
+const Productss = ({ storeId, customerId }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,16 +9,20 @@ const Productss = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/allproduct');
+        const response = await fetch("http://localhost:4000/allproduct");
         if (!response.ok) {
           const errorMessage = await response.text();
-          console.error('Failed to fetch products:', response.status, errorMessage);
-          throw new Error('Failed to fetch products');
+          console.error(
+            "Failed to fetch products:",
+            response.status,
+            errorMessage
+          );
+          throw new Error("Failed to fetch products");
         }
         const data = await response.json();
         setProducts(data);
       } catch (err) {
-        console.error('Error:', err.message);
+        console.error("Error:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -48,6 +52,8 @@ const Productss = () => {
               product={product}
               color={product.color}
               size={product.sizes}
+              storeId={storeId}
+              customerId={customerId}
             />
           ))}
         </div>

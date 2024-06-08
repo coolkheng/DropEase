@@ -8,18 +8,18 @@ import "../style/Header(Customer).css";
 import { CartContext } from "../pages/cartContext"; // Corrected import
 import SearchResults from "./SearchResults"; // Import the new component
 
-export const HeaderCustomer = () => {
+export const HeaderCustomer = ({ customer }) => {
+  console.log(customer);
   const location = useLocation();
   const { cartItems } = useContext(CartContext); // Corrected context usage
   const [menu, setMenu] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
   useEffect(() => {
     console.log("Location changed:", location.pathname);
 
     let newMenu = "home";
-    if (location.pathname.includes("/apparel")) {
+    if (location.pathname.includes(`/apparel`)) {
       newMenu = "apparels";
     } else if (location.pathname.includes("/sports")) {
       newMenu = "sports";
@@ -48,7 +48,9 @@ export const HeaderCustomer = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/searchstore?q=${searchQuery}`);
+      const response = await fetch(
+        `http://localhost:4000/searchstore?q=${searchQuery}`
+      );
       const data = await response.json();
       setSearchResults(data);
     } catch (error) {
@@ -80,7 +82,9 @@ export const HeaderCustomer = () => {
           <NavLink to="/login">
             <p className="login-button">Sign Out</p>
           </NavLink>
-          <NavLink to="/customercart">
+          <NavLink
+            to={`/${customer.customerId}/store/${customer.storeId}/customercart`}
+          >
             <img
               onClick={() => setMenu("cart")}
               className={menu === "cart" ? "active" : ""}
@@ -110,7 +114,10 @@ export const HeaderCustomer = () => {
             onClick={() => setMenu("home")}
             className={menu === "home" ? "active" : ""}
           >
-            <NavLink className="nav-link" to="/customerhome">
+            <NavLink
+              className="nav-link"
+              to={`/customerhome/${customer.customerId}`}
+            >
               Home
             </NavLink>
             {menu === "home" && <hr />}
@@ -119,7 +126,10 @@ export const HeaderCustomer = () => {
             onClick={() => setMenu("apparels")}
             className={menu === "apparels" ? "active" : ""}
           >
-            <NavLink className="nav-link" to="/apparel">
+            <NavLink
+              className="nav-link"
+              to={`/apparel/${customer.customerId}`}
+            >
               Apparel & Accessories
             </NavLink>
             {menu === "apparels" && <hr />}
@@ -128,7 +138,7 @@ export const HeaderCustomer = () => {
             onClick={() => setMenu("sports")}
             className={menu === "sports" ? "active" : ""}
           >
-            <NavLink className="nav-link" to="/sports">
+            <NavLink className="nav-link" to={`/sports/${customer.customerId}`}>
               Sports & Entertainment
             </NavLink>
             {menu === "sports" && <hr />}
@@ -137,16 +147,17 @@ export const HeaderCustomer = () => {
             onClick={() => setMenu("electronics")}
             className={menu === "electronics" ? "active" : ""}
           >
-            <NavLink className="nav-link" to="/electronics">
+            <NavLink
+              className="nav-link"
+              to={`/electronics/${customer.customerId}`}
+            >
               Electronics
             </NavLink>
             {menu === "electronics" && <hr />}
           </li>
         </ul>
       </div>
-      {searchResults.length > 0 && (
-        <SearchResults results={searchResults} />
-      )}
+      {searchResults.length > 0 && <SearchResults results={searchResults} />}
     </div>
   );
 };

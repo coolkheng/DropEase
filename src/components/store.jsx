@@ -6,12 +6,13 @@ import Collections from "../components/Collections";
 import Products from "../components/Productss";
 import HeaderCustomer from "./Header(Customer)";
 
-
 const Store = () => {
-  const { storeId } = useParams(); // Get storeId from URL parameters
+  let Id = useParams(); // Get storeId from URL parameter
+  console.log(Id);
   const [userRole, setUserRole] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  console.log();
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -39,22 +40,27 @@ const Store = () => {
 
   return (
     <div>
-      {userRole === "customer" && <HeaderCustomer/>}
-      <div style={{marginLeft:"30px"}} className="flex justify-between items-center mt-5">
-        <Header />
-      </div>
+      {userRole === "customer" && <HeaderCustomer customer={Id} />}
+      <div
+        style={{ marginLeft: "30px" }}
+        className="flex justify-between items-center mt-5"
+      ></div>
 
       <div className="flex justify-center mt-5">
-        <Hero storeId={storeId} /> {/* Pass storeId to Hero component */}
+        <Hero storeId={Id.storeId} /> {/* Pass storeId to Hero component */}
       </div>
       <div>
-        <h2 style={{marginTop:"80px"}} className="flex justify-center pt-10 text-3xl font-bold">
+        <h2
+          style={{ marginTop: "80px" }}
+          className="flex justify-center pt-10 text-3xl font-bold"
+        >
           All Products
         </h2>
       </div>
 
       <div className="mb-20">
-        <Products storeId={storeId} /> {/* Pass storeId to Products component */}
+        <Products storeId={Id.storeId} customerId={Id.customerId} />{" "}
+        {/* Pass storeId to Products component */}
       </div>
     </div>
   );

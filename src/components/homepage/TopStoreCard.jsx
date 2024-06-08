@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
+import { useParams } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
@@ -35,21 +36,26 @@ const TopStoreCard = () => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  let Id = useParams();
 
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch('http://localhost:4000/allstore');
+        const response = await fetch("http://localhost:4000/allstore");
         if (!response.ok) {
           const errorMessage = await response.text();
-          console.error('Failed to fetch stores:', response.status, errorMessage);
-          throw new Error('Failed to fetch stores');
+          console.error(
+            "Failed to fetch stores:",
+            response.status,
+            errorMessage
+          );
+          throw new Error("Failed to fetch stores");
         }
         const data = await response.json();
         setStores(data);
         console.log(data);
       } catch (err) {
-        console.error('Error:', err.message);
+        console.error("Error:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -75,10 +81,18 @@ const TopStoreCard = () => {
   return (
     <Slider {...settings}>
       {stores.map((store) => (
-        <Link key={store.storeId} to={`/store/${store.storeId}`} className="box">
+        <Link
+          key={store.storeId}
+          to={`/${Id.customerId}/store/${store.storeId}`}
+          className="box"
+        >
           <div className="shop-container">
             <div className="img-container">
-              <img className="shop-img" src={store.imageUrl} alt={store.store} />
+              <img
+                className="shop-img"
+                src={store.imageUrl}
+                alt={store.store}
+              />
             </div>
             <p className="shop-name">{store.store}</p>
           </div>

@@ -44,59 +44,73 @@ function App() {
 
   return (
     <Router>
-      
-    <CartProvider>
-    <CartRetailerProvider>
-      <div className="app-container">
-        <div className="content">
-          <Routes>
-            {user && <Route path="/" exact element={<Main />} />}
-            <Route path="/signup" exact element={<Signup />} />
-            <Route path="/login" exact element={<Login />} />
-            <Route path="/forgotpw" exact element={<Pw />} />
-            <Route path="/" element={<Navigate replace to="/login" />} />
-            <Route path="/orders" element={<OrderPage />} />
-            <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/home/:storeId" element={<Shop />} />
-            <Route path="/suppliers" element={<Suppliers />} />
-            <Route path="/foodbeverages" element={<FoodBeverages />} />
-            <Route path="/homekitchen" element={<HomeKitchen />} />
-            <Route
-              path="/officestationaries"
-              element={<OfficeStationaries />}
-            />
-            <Route path="/householdcleaning" element={<HouseholdCleaning />} />
-            <Route path="/sportsgames" element={<SportsGames />} />
-            <Route path="/paymentpage" element={<PaymentPage />} />
-            <Route path="/customerhome" element={<CustomerHome />} />
-            <Route path="/customercart" element={<CustomerCart />} />
-            <Route path="/retailercart" element={<RetailerCart />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/edit-store" element={<EditShop />} />
-            <Route path="/women" element={<Women />} />
-            <Route path="/men" element={<Men />} />
-            <Route path="/products/:id" element={<SupplierProductDetails />} />
-            <Route
-              path="/apparel"
-              element={<ShopCategory category="Apparel" />}
-            />
-            <Route
-              path="/sports"
-              element={<ShopCategory category="Sports" />}
-            />
-            <Route
-              path="/electronics"
-              element={<ShopCategory category="Electronic" />}
-            />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/store/:storeId" element={<Store />} />
-          </Routes>
-        </div>
-      </div>
-      {/* </div> */}
-    </CartRetailerProvider>
-    </CartProvider>
+      <CartProvider>
+        <CartRetailerProvider>
+          <div className="app-container">
+            <div className="content">
+              <Routes>
+                {user && <Route path="/" exact element={<Main />} />}
+                <Route path="/signup" exact element={<Signup />} />
+                <Route path="/login" exact element={<Login />} />
+                <Route path="/forgotpw" exact element={<Pw />} />
+                <Route path="/" element={<Navigate replace to="/login" />} />
+                <Route path="/orders" element={<OrderPage />} />
+                <Route path="/ordered-item/:id" element={<OrderedItemPage />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/home/:storeId" element={<Shop />} />
+                <Route path="/suppliers" element={<Suppliers />} />
+                <Route path="/foodbeverages" element={<FoodBeverages />} />
+                <Route path="/homekitchen" element={<HomeKitchen />} />
+                <Route
+                  path="/officestationaries"
+                  element={<OfficeStationaries />}
+                />
+                <Route
+                  path="/householdcleaning"
+                  element={<HouseholdCleaning />}
+                />
+                <Route path="/sportsgames" element={<SportsGames />} />
+                <Route path="/paymentpage" element={<PaymentPage />} />
+                <Route
+                  path="/customerhome/:customerId"
+                  element={<CustomerHome />}
+                />
+                <Route
+                  path="/:customerId/store/:storeId/customercart"
+                  element={<CustomerCart />}
+                />
+                <Route path="/retailercart" element={<RetailerCart />} />
+                <Route
+                  path="/:customerId/store/:storeId/product/:productid"
+                  element={<ProductDetails />}
+                />
+                <Route path="/edit-store" element={<EditShop />} />
+                <Route path="/women" element={<Women />} />
+                <Route path="/men" element={<Men />} />
+                <Route
+                  path="/products/:id"
+                  element={<SupplierProductDetails />}
+                />
+                <Route
+                  path="/apparel/:customerId"
+                  element={<ShopCategory category="Apparel" />}
+                />
+                <Route
+                  path="/sports/:customerId"
+                  element={<ShopCategory category="Sports" />}
+                />
+                <Route
+                  path="/electronics/:customerId"
+                  element={<ShopCategory category="Electronic" />}
+                />
+                <Route path="/profile" element={<Profile />} />
+                <Route path=":customerId/store/:storeId" element={<Store />} />
+              </Routes>
+            </div>
+          </div>
+          {/* </div> */}
+        </CartRetailerProvider>
+      </CartProvider>
     </Router>
   );
 }
