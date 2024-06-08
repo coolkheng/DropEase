@@ -74,6 +74,8 @@ function App() {
                   element={<HouseholdCleaning />}
                 />
                 <Route path="/sportsgames/:storeId" element={<SportsGames />} />
+                <Route path="/apparelaccessories/:storeId" element={<ApparelAccessories />} />
+
                 <Route path="/paymentpage" element={<PaymentPage />} />
                 <Route
                   path="/customerhome/:customerId"

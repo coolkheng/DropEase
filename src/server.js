@@ -983,6 +983,35 @@ app.post("/create-checkout-session", fetchUser, async (req, res) => {
   }
 });
 
+app.post("/create-checkout-session-customer", fetchUser, async (req, res) => {
+  try {
+    const { products, userId } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: products.map((product) => ({
+        price_data: {
+          currency: "myr",
+          product_data: {
+            name: product.name,
+            images: [product.image],
+          },
+          unit_amount: Math.round(product.price * 100),
+        },
+        quantity: product.quantity,
+      })),
+      mode: "payment",
+      success_url: `http://localhost:3000/customerhome/${userId}`,
+      cancel_url: `http://localhost:3000/customerhome/${userId}`,
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
 app.post("/cartretailer/clear", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;

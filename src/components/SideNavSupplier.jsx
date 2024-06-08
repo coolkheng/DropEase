@@ -98,7 +98,7 @@ const SideNavSupplier = () => {
                 <Link to={`/sportsgames/${storeId}`}>Sports&Games</Link>
               </li>
               <li className="sidenav-item">
-                <Link to="/apparelaccessories">Apparel&Accessories</Link>
+                <Link to={`/apparelaccessories/${storeId}`}>Apparel&Accessories</Link>
               </li>
             </ul>
           </div>

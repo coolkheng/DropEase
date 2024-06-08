@@ -130,7 +130,7 @@ const Cart = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/create-checkout-session",
+        "http://localhost:4000/create-checkout-session-customer",
         body,
         { headers }
       );
