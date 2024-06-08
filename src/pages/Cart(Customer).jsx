@@ -97,11 +97,11 @@ const Cart = () => {
     };
 
     const productsData = cartItems.map((item) => ({
-      name: item.name,
+      productName: item.name,
       price: item.price,
       quantity: item.qty,
-      image: item.mainImages,
-      ShopCategory: item.ShopCategory,
+      productImage: item.mainImages,
+      category: item.category || "Uncategorized",
     }));
 
     const orderData = {
