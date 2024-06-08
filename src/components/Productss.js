@@ -1,52 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom"; // Correct import for useParams
 import ProductCard from "./ProductCard";
 
 const Productss = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const [storeId, setStoreId] = useState(null); // Initialize as null
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
-
+  const { storeId } = useParams(); // Get storeId from URL parameter
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch storeId first
-        const token = localStorage.getItem("auth-token");
-        const userDataResponse = await fetch("http://localhost:4000/userData", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": token,
-          },
-        });
-        const userData = await userDataResponse.json();
-        if (!userData.success) {
-          setErrorMessage(userData.errors);
-          throw new Error('Failed to fetch user data');
-        }
-        const storeId = userData.data.storeId;
-        setStoreId(storeId);
-
         // Fetch retailer product data using storeId
+        console.log(`Fetching data for storeId: ${storeId}`);
         const retailerResponse = await fetch(`http://localhost:4000/retailerproduct/`);
         if (!retailerResponse.ok) {
           throw new Error('Failed to fetch retailer products');
         }
         const retailerData = await retailerResponse.json();
-        const thisdata = retailerData.find(doc => doc.storeId === storeId);
-        if (!thisdata) {
-          throw new Error('Store data not found');
-        }
-        const keys = Object.keys(thisdata.cartData);
-        const numericKeys = keys.filter(key => !isNaN(key)).map(Number);
+        console.log(`Retailer data fetched:`, retailerData);
 
-        // Fetch all products and filter using numericKeys
+        const storeData = retailerData.find(doc => doc.storeId.toString() === storeId);
+        if (!storeData) {
+          throw new Error(`Store data not found for storeId: ${storeId}`);
+        }
+        console.log(`Data for storeId ${storeId}:`, storeData);
+
+        const productIds = Object.keys(storeData.cartData).map(Number);
+        console.log(`Product IDs in cart for storeId ${storeId}:`, productIds);
+
+        // Fetch all products and filter using productIds
         const productsResponse = await fetch('http://localhost:4000/allproduct');
         if (!productsResponse.ok) {
           const errorMessage = await productsResponse.text();
@@ -54,9 +38,11 @@ const Productss = () => {
           throw new Error('Failed to fetch products');
         }
         const productsData = await productsResponse.json();
-        const filteredData = productsData.filter(product => numericKeys.includes(product.id));
+        console.log(`All products fetched:`, productsData);
+
+        const filteredData = productsData.filter(product => productIds.includes(product.id));
         setProducts(filteredData);
-        setFilteredProducts(filteredData);
+        console.log(`Filtered products:`, filteredData);
       } catch (err) {
         console.error('Error:', err.message);
         setError(err.message);
@@ -66,7 +52,8 @@ const Productss = () => {
     };
 
     fetchData();
-  });
+  }, [storeId]);
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
