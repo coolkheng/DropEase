@@ -85,6 +85,45 @@ const OrderPage = ({ data }) => {
     },
   ];
 
+  // const orders = [
+  //   {
+  //     Order: 1,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Ordered_item: ["Nike shoes", "Nike bag", "Nike clothes"],
+  //     Fulfilment: "Fulfilled",
+  //   },
+  //   {
+  //     Order: 2,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 3,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 4,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 5,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid"
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  // ];
+
   const orders = retrieved_orders.map((order, i) => {
     // Extracting relevant fields from the retrieved order object
     const {

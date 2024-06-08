@@ -129,7 +129,7 @@ export default function CustomizedSteppers({ orderDetails }) {
   }, [status]);
 
   return (
-    <Stack sx={{ width: "100%" }} spacing={4} className="Custom-Container">
+    <Stack sx={{ width: "100%" }} spacing={4}>
       <Stepper
         alternativeLabel
         activeStep={activeStep}
@@ -141,9 +141,7 @@ export default function CustomizedSteppers({ orderDetails }) {
           </Step>
         ))}
       </Stepper>
-      <button className="progress-bar-button" onClick={handleNext}>
-        Next
-      </button>
+      <button onClick={handleNext}>Next</button>
     </Stack>
   );
 }

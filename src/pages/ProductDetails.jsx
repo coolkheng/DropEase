@@ -4,7 +4,6 @@ import { CartContext } from "./cartContext";
 import "../style/ProductDetails.css";
 import HeaderCustomer from "../components/Header(Customer)";
 import SideNav from "../components/SideNav";
-import axios from "axios";
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -32,7 +31,7 @@ const ProductDetails = () => {
   const [hasSize, setHasSize] = useState(product.size && product.size.length > 0);
   const [hasColor, setHasColor] = useState(product.color && product.color.length > 0);
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     let missingField = false;
 
     if (hasSize && !selectedSize) {
@@ -51,26 +50,8 @@ const ProductDetails = () => {
 
     const authToken = localStorage.getItem('auth-token');
     addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor }, authToken);
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/addtocart", {
-        productId: product.id,
-        quantity: 1, // Assuming you add one item at a time
-      }, {
-        headers: {
-          'auth-token': token,
-        }
-      });
-  
-      if (response.data === "Added to cart") {
-        console.log("Item added to cart successfully");
-        navigate('/customercart'); // Navigate only after the backend request is successful
-      } else {
-        console.log("Failed to add item to cart");
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-    }
+
+    navigate('/customercart');
   };
 
   useEffect(() => {
