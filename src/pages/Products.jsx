@@ -83,9 +83,6 @@ const Products = () => {
         const filteredData = productsData.filter(product => numericKeys.includes(product.id));
         setProducts(filteredData);
         setFilteredProducts(filteredData);
-
-        // Navigate to the store page based on storeId
-        navigate(`/productspage/${storeId}`);
       } catch (err) {
         console.error('Error:', err.message);
         setError(err.message);
@@ -162,7 +159,7 @@ const Products = () => {
                           desc={product.desc} 
                           longDesc={product.longdesc}
                           rating={product.rating}
-                          price={product.price}
+                          price={Number((product.price * 1.10).toFixed(2))}                          
                           product={product}
                           color={product.color}
                           size={product.sizes}
