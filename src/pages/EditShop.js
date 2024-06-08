@@ -1,18 +1,16 @@
+// EditShop.jsx
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Navbar from "../components/SideNav";
 import TopBar from "../components/TopBar";
-import CollectionsTable from "../components/CollectionsTable";
-import CollectionSearchBar from "../components/CollectionSearchBar.jsx";
-import CreateCollectionForm from "../components/CreateCollectionForm.jsx";
 import UploadBanner from "../components/UploadBanner.jsx";
 import Modal from "../components/Modal.jsx";
 import Button from '@mui/material/Button';
 
 const EditShop = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [showCreateCollectionModal, setShowCreateCollectionModal] =
-    useState(false);
+  const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -39,9 +37,7 @@ const EditShop = () => {
         </aside>
       )}
 
-      <main
-        className={`w-full ${isSmallScreen ? "" : "md:w-[95%]"} mr-10 mt-10`}
-      >
+      <main className={`w-full ${isSmallScreen ? "" : "md:w-[95%]"} mr-10 mt-10`}>
         {isSmallScreen && (
           <div className="fixed-top-bar">
             <TopBar />
@@ -71,54 +67,8 @@ const EditShop = () => {
           />
         </div>
         <div style={{ marginTop: "30px", marginBottom: "20px" }}>
-          <UploadBanner />
+          <UploadBanner images={images} setImages={setImages} />
         </div>
-
-        <div style={{ width: "100%", marginTop: "30px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <p style={{ fontSize: "25px", fontWeight: "bold" }}>Collections</p>
-            <Button
-              type="button"
-              onClick={toggleCreateCollectionModal}
-              style={{ marginRight: "10px" }}
-              sx={{
-                backgroundColor: "#424669",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#767DB8",
-                },
-              }}
-            >
-              + Create Collection
-            </Button>
-          </div>
-          <hr
-            style={{
-              border: "1px solid #000",
-              width: "100%",
-              marginTop: "10px",
-              marginRight: "5px",
-            }}
-          />
-        </div>
-        <div style={{ marginTop: "30px", marginBottom: "20px" }}>
-          <CollectionSearchBar />
-        </div>
-        <div className="mb-10">
-          <CollectionsTable />
-        </div>
-        <Modal
-          show={showCreateCollectionModal}
-          handleClose={toggleCreateCollectionModal}
-        >
-          <CreateCollectionForm />
-        </Modal>
       </main>
     </div>
   );
