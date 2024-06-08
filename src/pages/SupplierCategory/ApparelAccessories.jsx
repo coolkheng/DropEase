@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import Suppliers from './Suppliers/Suppliers';
 import SupplierProducts from "../../components/SupplierProducts";
 
-function HomeKitchen() {
+function ApparelAccessories() {
 
   // Handling different size of screen
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -50,14 +50,14 @@ function HomeKitchen() {
     <main
       className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
     >
-    <div className="FoodBeverages">
+    <div className="apparelaccessories">
          <Header>
         <DropdownMenu 
         /> 
       </Header>
        {/* Ensure the component is imported correctly */}
       <div className="product-main-content">
-        <SupplierProducts category="homekitchen"/>
+        <SupplierProducts category="apparelaccessories"/>
       </div>
       <footer>
         <p>&copy; 2024 My App</p>
@@ -68,4 +68,4 @@ function HomeKitchen() {
   );
 }
 
-export default HomeKitchen;
+export default ApparelAccessories;

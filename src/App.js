@@ -38,6 +38,7 @@ import Profile from "./pages/Profile.jsx";
 import { CartRetailerProvider } from "./pages/cartRetailerContext";
 import { CartProvider } from "./pages/cartContext.js";
 import SupplierProductDetails from "./pages/SupplierProductDetails.jsx";
+import ApparelAccessories from "./pages/SupplierCategory/ApparelAccessories.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -75,6 +76,7 @@ function App() {
                   path="/customerhome/:customerId"
                   element={<CustomerHome />}
                 />
+                ``
                 <Route
                   path="/:customerId/store/:storeId/customercart"
                   element={<CustomerCart />}
