@@ -8,9 +8,11 @@ import { useNavigate } from "react-router-dom";
 import "../style/Header.css";
 import "../style/SideNav.css";
 import "../style/Order.css";
+import axios from "axios";
 
 const OrderPage = ({ data }) => {
   const navigate = useNavigate();
+  const [retrieved_orders, setOrders] = useState([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -22,6 +24,19 @@ const OrderPage = ({ data }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/orders"); // Adjust the URL if needed
+        setOrders(response.data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchOrders();
   }, []);
 
   const columns = [
@@ -70,50 +85,75 @@ const OrderPage = ({ data }) => {
     },
   ];
 
-  const orders = [
-    {
-      Order: 1,
-      Date: "22 - 4 - 2024",
-      Customer: "Tan Yan Ho",
-      PaymentStatus: "Paid",
-      Ordered_item: ["Nike shoes", "Nike bag", "Nike clothes"],
-      Fulfilment: "Fulfilled",
-    },
-    {
-      Order: 2,
-      Date: "22 - 4 - 2024",
-      Customer: "Tan Yan Ho",
-      PaymentStatus: "Paid",
-      Fulfilment: "UnFulfilled",
-    },
-    {
-      Order: 3,
-      Date: "22 - 4 - 2024",
-      Customer: "Tan Yan Ho",
-      PaymentStatus: "Paid",
-      Fulfilment: "UnFulfilled",
-    },
-    {
-      Order: 4,
-      Date: "22 - 4 - 2024",
-      Customer: "Tan Yan Ho",
-      PaymentStatus: "Paid",
-      Fulfilment: "UnFulfilled",
-    },
-    {
-      Order: 5,
-      Date: "22 - 4 - 2024",
-      Customer: "Tan Yan Ho",
-      PaymentStatus: "Paid",
-      Fulfilment: "UnFulfilled",
-    },
-  ];
+  // const orders = [
+  //   {
+  //     Order: 1,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Ordered_item: ["Nike shoes", "Nike bag", "Nike clothes"],
+  //     Fulfilment: "Fulfilled",
+  //   },
+  //   {
+  //     Order: 2,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 3,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 4,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 5,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid"
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  // ];
+
+  const orders = retrieved_orders.map((order, i) => {
+    // Extracting relevant fields from the retrieved order object
+    const {
+      _id,
+      orderDate,
+      customer,
+      payment_status,
+      products,
+      delivery_status,
+    } = order;
+
+    let date = new Date(orderDate);
+    // Creating an object with the desired format
+    const formattedOrder = {
+      Order: `C${i}`, // Assuming _id is used as the order ID
+      Date: date.toLocaleDateString(), // Assuming orderDate is a Date object
+      Customer: customer.name, // Assuming customer is an object with a 'name' property
+      PaymentStatus: payment_status,
+      Ordered_item: products.map((product) => product.productName), // Assuming products is an array of products
+      Fulfilment: delivery_status || "UnFulfilled", // Assuming delivery_status is present in the order object
+    };
+    i++;
+    return formattedOrder;
+  });
 
   const options = {
     selectableRows: false,
     filterType: "checkbox",
     onRowClick: (rowData, rowMeta) => {
-      const orderId = orders[rowMeta.dataIndex].Order;
+      const orderId = retrieved_orders[rowMeta.dataIndex]._id;
       navigate(`/ordered-item/${orderId}`);
     },
   };

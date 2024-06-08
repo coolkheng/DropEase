@@ -8,9 +8,9 @@ import "../style/Products.css";
 import SupplierProductItem from '../components/SupplierProductItem';
 import DropdownMenu from '../components/UsernameDropDown'; // Check if the path is correct
 
-function Suppliers() {
+function Supplier() {
   return (
-    <div className="Suppliers">
+    <div className="Supplier">
          <Header>
         <DropdownMenu 
         /> 
@@ -112,4 +112,4 @@ function Suppliers() {
   );
 }
 
-export default Suppliers;
+export default Supplier;

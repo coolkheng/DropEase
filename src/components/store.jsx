@@ -7,6 +7,7 @@ import Products from "../components/Productss";
 import HeaderCustomer from "./Header(Customer)";
 
 
+
 const Store = () => {
   const { storeId } = useParams(); // Get storeId from URL parameters
   const [userRole, setUserRole] = useState(null);
@@ -44,6 +45,7 @@ const Store = () => {
         <Header />
       </div>
 
+
       <div className="flex justify-center mt-5">
         <Hero storeId={storeId} /> {/* Pass storeId to Hero component */}
       </div>
@@ -56,6 +58,11 @@ const Store = () => {
       <div className="mb-20">
         <Products storeId={storeId} /> {/* Pass storeId to Products component */}
       </div>
+
+      
+
+      
+
     </div>
   );
 };

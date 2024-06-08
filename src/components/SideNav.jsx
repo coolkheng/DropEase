@@ -77,9 +77,9 @@ const SideNav = () => {
           </li>
           <li className="sidenav-item">
             <Link 
-              to="/products" 
-              className={activeLink === '/products' ? 'active' : ''} 
-              onClick={() => handleLinkClick('/products')}
+              to={`/productspage/${storeId}`}
+              className={activeLink === `/productspage/${storeId}` ? 'active' : ''} 
+              onClick={() => handleLinkClick(`/productspage/${storeId}`)}
             >
               Products
             </Link>

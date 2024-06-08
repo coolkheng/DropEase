@@ -114,7 +114,7 @@ const ProductDetails = () => {
             <p>{product.desc}</p>
           </div>
           <div className="productdisplay-right-prices">
-            <h2 className="priceDetails">RM {product.price}</h2>
+            <h2 className="priceDetails">RM {Number((product.price * 1.10).toFixed(2))}</h2>
           </div>
           {product.longdesc && product.longdesc.length > 0 && (
             <div className="productdisplay-right-longDesc">

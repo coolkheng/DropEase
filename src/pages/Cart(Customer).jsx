@@ -11,7 +11,7 @@ const Cart = () => {
 
   // Calculate total price of items
   const totalPrice = cartItems.reduce(
-    (price, item) => price + item.quantity * item.product.price,
+    (price, item) => price + item.quantity * Number((item.product.price * 1.10).toFixed(2)),
     0
   );
 
@@ -31,7 +31,7 @@ const Cart = () => {
                 return null;
               }
 
-              const productQty = item.product.price * item.quantity;
+              const productQty = Number((item.product.price * 1.10).toFixed(2)) * item.quantity;
               return (
                 <div className="cart-list" key={index}>
                   <div className="img">
@@ -40,7 +40,7 @@ const Cart = () => {
                   <div className="cart-details">
                     <h3>{item.product.name}</h3>
                     <h4>
-                      RM {item.product.price} * {item.quantity}
+                      RM {Number((item.product.price * 1.10).toFixed(2))} * {item.quantity}
                       <span>RM {productQty}</span>
                     </h4>
                   </div>

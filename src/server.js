@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
+const Order = require("./modal/ordermodal");
 const jwt = require("jsonwebtoken");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 const session = require("express-session");
@@ -10,14 +11,15 @@ const passport = require("passport");
 const OAuth2Strategy = require("passport-google-oauth2").Strategy;
 const GithubStrategy = require("passport-github2").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
-
+const stripe = require("stripe")("sk_test_51PNRN72MhvOMkL1SzV5ouwWSRSIy1ZCrAJByjrtfK9zvwyPiTkTvdh1nuStkEK2U2OGDVNK7MAeC8u1hta9u6pK300Hz6UOdQv")
+const router = express.Router();
 const app = express();
 const port = 4000;
 
 const uri =
   "mongodb+srv://admin:GGtVzRdYj2bucQ3o@dropease.itfjgle.mongodb.net/?retryWrites=true&w=majority&appName=dropease";
 
-const clientid =
+  const clientid =
   "396263817906-3dtrg2a07p67ftl499nje8569abkpe3v.apps.googleusercontent.com";
 const clientsecret = "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";
 const GITHUB_CLIENT_ID = "Ov23liodfi5diY3DkY5X";
@@ -36,6 +38,7 @@ app.use(
 );
 app.use(express.urlencoded({ extended: true }));
 var nodemailer = require("nodemailer");
+const { Int32 } = require("mongodb");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -72,7 +75,7 @@ const upload = multer({ storage });
 
 // Creating upload endpoint for images
 app.use("/images", express.static("upload/images"));
-app.post("/upload", upload.single("image"), (req, res) => {
+app.post("/upload", upload.single("product"), (req, res) => {
   res.json({
     success: 1,
     image_url: `http://localhost:${port}/images/${req.file.filename}`,
@@ -89,8 +92,8 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  images: {
-    type: [String],
+  images:{
+    type:[String],
     required: false,
   },
   mainImages: {
@@ -113,12 +116,12 @@ const Product = mongoose.model("Product", {
     type: String,
     required: true,
   },
-  size: {
-    type: [String],
+  size:{
+    type:[String],
     required: false,
   },
-  color: {
-    type: [String],
+  color:{
+    type:[String],
     required: false,
   },
   price: {
@@ -208,6 +211,7 @@ app.post(
     }
   }
 );
+
 // Creating API for getting all banners
 app.get("/retailerBanner", async (req, res) => {
   try {
@@ -236,7 +240,6 @@ app.get("/allproduct", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 // Define the Users schema and model
 const UsersSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -375,6 +378,7 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
+
 // Creating Endpoint for registering user
 app.post("/signup", async (req, res) => {
   try {
@@ -414,7 +418,7 @@ app.post("/signup", async (req, res) => {
       errors: "Server error. Please try again later.",
     });
   }
-});
+})
 
 passport.deserializeUser((user, done) => {
   done(null, user);
@@ -527,6 +531,8 @@ app.get("/searchstore", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+
 
 // Creating middleware to fetch user
 const fetchUser = async (req, res, next) => {
@@ -713,11 +719,291 @@ const CartCustomerSchema = new mongoose.Schema({
   cartData: {
     type: Map,
     of: Number,
-    default: {},
-  },
+    default: {}
+  }
 });
 
-const CartCustomer = mongoose.model("CartCustomer", CartCustomerSchema);
+const CartCustomer = mongoose.model('CartCustomer', CartCustomerSchema);
+
+
+
+const CartRetailerSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users',
+    required: true
+  },
+  storeId: {
+    type: Number,
+    required: true
+  },
+  cartData: {
+    type: Map,
+    of: Number,
+    default: {}
+  }
+}, { timestamps: true });
+
+
+
+const CartRetailer = mongoose.model('CartRetailer', CartRetailerSchema);
+
+// Define the schema for archived cart data
+const RetailerProductSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users',
+    required: true,
+    unique: true // Add unique constraint on userId
+  },
+  storeId: {
+    type: Number,
+    required: true
+  },
+  cartData: {
+    type: Map,
+    of: Number,
+    default: {}
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Create the Mongoose model for the "retailerproduct" collection
+const RetailerProduct = mongoose.model('retailerproduct', RetailerProductSchema);
+
+app.get('/retailerproduct', async(req,res)=>{
+  let retailerproduct = await RetailerProduct.find();
+  console.log("All Retailer Products Fetched");
+  console.log(res);
+  res.send(retailerproduct);
+})
+
+
+
+app.post('/cartretailer', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const storeId = req.body.storeId; // Assuming storeId is in the request body
+
+    console.log(storeId);
+
+    const { productId, quantity } = req.body;
+
+    // Ensure productId and quantity are properly typed
+    const prodId = String(productId); // Convert productId to string because Map keys are strings
+    const qty = Number(quantity);
+
+    // Find cart data for the user
+    let cart = await CartRetailer.findOne({ userId });
+
+    if (!cart) {
+      // Create new cart if it doesn't exist
+      cart = new CartRetailer({ userId, storeId, cartData: { [prodId]: qty } });
+    } else {
+      // Update existing cart
+      if (cart.cartData.has(prodId)) {
+        cart.cartData.set(prodId, cart.cartData.get(prodId) + qty);
+      } else {
+        cart.cartData.set(prodId, qty);
+      }
+    }
+
+    await cart.save();
+    console.log('Cart saved:', cart); // Log the cart object
+    res.send("Added to cart");
+  } catch (error) {
+    console.error('Error adding to cart:', error); // Log any errors
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+
+
+
+
+
+app.post('/cartretailer/checkout', fetchUser, async (req, res) => {
+  try {
+    console.log('Checkout endpoint reached');
+    console.log('Request body:', req.body);
+
+    const userID = req.user.id;
+    const storeId = req.body.storeId; // Assuming storeId is in the request body
+
+    const cartRetailer = await CartRetailer.findOne({ userId: userID });
+    console.log('Retrieved cart:', cartRetailer);
+
+    if (!cartRetailer || Object.keys(cartRetailer.cartData).length === 0) {
+      return res.status(400).json({ success: false, errors: "No items in retailer cart" });
+    }
+
+    console.log('Cart before clearing:', cartRetailer.cartData);
+
+    cartRetailer.cartData = {};
+    await cartRetailer.save();
+
+    console.log('Cart after clearing:', cartRetailer.cartData);
+
+    res.json({ success: true, message: "Checkout successful" });
+  } catch (error) {
+    console.error('Checkout error:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+
+
+app.post('/cartretailer/decreaseQty', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const storeId = req.body;
+    const { productId } = req.body;
+
+    // Ensure productId is properly typed
+    const prodId = String(productId); // Convert productId to string because Map keys are strings
+
+    // Find cart data for the user
+    let cart = await CartRetailer.findOne({ userId });
+
+    if (!cart) {
+      return res.status(400).json({ success: false, errors: "No cart found for the user" });
+    }
+
+    // Decrease quantity of the specified product
+    if (cart.cartData.has(prodId) && cart.cartData.get(prodId) > 1) {
+      cart.cartData.set(prodId, cart.cartData.get(prodId) - 1);
+      await cart.save();
+      console.log('Cart updated after decreasing quantity:', cart);
+      res.send("Quantity decreased");
+    } else {
+      res.status(400).json({ success: false, errors: "Cannot decrease quantity further" });
+    }
+  } catch (error) {
+    console.error('Error decreasing quantity:', error); // Log any errors
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+// Add this route to your backend
+app.post('/cartretailer/removeFromCart', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const storeId = req.body;
+    const { productId } = req.body;
+
+    // Convert productId to string because Map keys are strings
+    const prodId = String(productId);
+
+    console.log('Request received to remove product ID:', prodId);
+
+    // Find cart data for the user
+    let cart = await CartRetailer.findOne({ userId });
+
+    if (!cart) {
+      console.log('No cart found for user ID:', userId);
+      return res.status(400).json({ success: false, errors: "No cart found for the user" });
+    }
+
+    // Remove the specified product from the cart
+    if (cart.cartData.has(prodId)) {
+      cart.cartData.delete(prodId);
+      await cart.save();
+      console.log('Cart updated after removing item:', cart);
+      res.send("Item removed from cart");
+    } else {
+      console.log('Item not found in cart for product ID:', prodId);
+      res.status(400).json({ success: false, errors: "Item not found in cart" });
+    }
+  } catch (error) {
+    console.error('Error removing item from cart:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+// Stripe Payment Integration
+app.post('/create-checkout-session', fetchUser, async (req, res) => {
+  try {
+    const { products, userId } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: products.map(product => ({
+        price_data: {
+          currency: 'myr',
+          product_data: {
+            name: product.name,
+            images: [product.image],
+          },
+          unit_amount: product.price * 100,
+        },
+        quantity: product.quantity,
+      })),
+      mode: 'payment',
+      success_url: 'http://localhost:3000/foodbeverages',
+      cancel_url: 'http://localhost:3000/foodbeverages',
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
+app.post('/cartretailer/clear', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const storeId = req.body.storeId;
+    console.log(storeId);
+
+    // Find retailer cart for the user
+    let cart = await CartRetailer.findOne({ userId });
+
+    if (cart) {
+      // Create a copy of the cart data for archiving
+      const archivedCartData = new Map(cart.cartData);
+
+      // Check for existing archived cart for the user
+      let existingArchivedCart = await RetailerProduct.findOne({ userId });
+
+      if (existingArchivedCart) {
+        for (const [productId, quantity] of archivedCartData.entries()) {
+          if (existingArchivedCart.cartData.has(productId)) {
+            // Update quantity if product exists
+            existingArchivedCart.cartData.set(productId, existingArchivedCart.cartData.get(productId) + quantity);
+          } else {
+            // Set quantity correctly for new product
+            existingArchivedCart.cartData.set(productId, quantity);
+          }
+        }
+        await existingArchivedCart.save();
+      } else {
+        // Create new archived cart if none exists
+        const archivedCart = new RetailerProduct({
+          userId,
+          storeId,
+          cartData: archivedCartData
+        });
+        await archivedCart.save();
+      }
+
+      // Clear the cart data from the main collection
+      cart.cartData.clear();
+      await cart.save();
+
+      console.log('Cart cleared and archived successfully:', existingArchivedCart || archivedCart);
+      res.json({ success: true, message: "Cart cleared successfully" });
+    } else {
+      res.status(400).json({ success: false, message: "No cart found for user" });
+    }
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
 
 //TODO: Change productId based on Eugene's product-id
 app.post("/addtocart", fetchUser, async (req, res) => {
@@ -850,6 +1136,10 @@ app.post("/getcart", fetchUser, async (req, res) => {
     res.status(500).json({ errors: "Internal Server Error" });
   }
 });
+
+
+
+
 
 // Start the Express server
 app.listen(port, (error) => {
