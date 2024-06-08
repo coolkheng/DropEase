@@ -53,6 +53,7 @@ const SideNavSupplier = () => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
 
+
   const handleLinkClick = (path) => {
     setActiveLink(path);
   };
@@ -77,24 +78,24 @@ const SideNavSupplier = () => {
                 <Link to="/orders">Orders</Link>
               </li>
               <li className="sidenav-item">
-                <Link to="/products">Products</Link>
+                <Link to={`/productspage/${storeId}`}>Products</Link>
               </li>
               <div className="divider" />
               <h2 className="category">Categories</h2>
               <li className="sidenav-item">
-                <Link to="/foodbeverages">Food&Beverages</Link>
+                <Link to={`/foodbeverages/${storeId}`}>Food&Beverages</Link>
               </li>
               <li className="sidenav-item">
-                <Link to="/homekitchen">Home&Kitchen</Link>
+                <Link to={`/homekitchen/${storeId}`}>Home&Kitchen</Link>
               </li>
               <li className="sidenav-item">
-                <Link to="/officestationaries">Office&Stationaries</Link>
+                <Link to={`/officestationaries/${storeId}`}>Office&Stationaries</Link>
               </li>
               <li className="sidenav-item">
-                <Link to="/householdcleaning">Household&Cleaning</Link>
+                <Link to={`/householdcleaning/${storeId}`}>Household&Cleaning</Link>
               </li>
               <li className="sidenav-item">
-                <Link to="/sportsgames">Sports&Games</Link>
+                <Link to={`/sportsgames/${storeId}`}>Sports&Games</Link>
               </li>
               <li className="sidenav-item">
                 <Link to="/apparelaccessories">Apparel&Accessories</Link>

@@ -7,8 +7,8 @@ import Header from "../components/Header";
 import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
 import { CartRetailerContext } from "./cartRetailerContext";
-import axios from 'axios';
-import { loadStripe } from '@stripe/stripe-js';
+import axios from "axios";
+import { loadStripe } from "@stripe/stripe-js";
 
 const RetailerCart = () => {
   // Handling different size of screen
@@ -27,20 +27,53 @@ const RetailerCart = () => {
     };
   }, []);
 
-  const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartRetailerContext);
+  const [storeId, setStoreId] = useState(null);
+  const { cartItems, addToCart, decreaseQty, removeFromCart } =
+    useContext(CartRetailerContext);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setStoreId(data.data.storeId);
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleAddToCart = async (item) => {
     await addToCart(item);
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/cartretailer", {
-        productId: item.id,
-        quantity: 1,
-      }, {
-        headers: {
-          'auth-token': token,
+      const response = await axios.post(
+        "http://localhost:4000/cartretailer",
+        {
+          productId: item.id,
+          quantity: 1,
+          storeId: storeId, // Include storeId
+        },
+        {
+          headers: {
+            "auth-token": token,
+          },
         }
-      });
+      );
 
       if (response.data === "Added to cart") {
         console.log("Item added to cart successfully");
@@ -56,13 +89,18 @@ const RetailerCart = () => {
     await decreaseQty(item);
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/cartretailer/decreaseQty", {
-        productId: item.id,
-      }, {
-        headers: {
-          'auth-token': token,
+      const response = await axios.post(
+        "http://localhost:4000/cartretailer/decreaseQty",
+        {
+          productId: item.id,
+          storeId: storeId, // Include storeId
+        },
+        {
+          headers: {
+            "auth-token": token,
+          },
         }
-      });
+      );
 
       if (response.data === "Quantity decreased") {
         console.log("Item quantity decreased successfully");
@@ -74,35 +112,68 @@ const RetailerCart = () => {
     }
   };
 
-  const totalPrice = cartItems.reduce(
-    (price, item) => price + item.qty * item.price,
-    0
-  ).toFixed(2);
+  const handleRemoveCartItem = async (itemId) => {
+    console.log("Attempting to remove item with ID:", itemId);
+    console.log("Current cart items before removal:", cartItems);
+
+    try {
+      const token = localStorage.getItem("auth-token");
+      const response = await axios.post(
+        "http://localhost:4000/cartretailer/removeFromCart",
+        {
+          productId: itemId,
+          storeId: storeId, // Include storeId
+        },
+        {
+          headers: {
+            "auth-token": token,
+          },
+        }
+      );
+
+      if (response.data === "Item removed from cart") {
+        console.log("Item removed from cart successfully");
+        removeFromCart(itemId);
+        console.log("Current cart items after removal:", cartItems);
+      } else {
+        console.log("Failed to remove item from cart");
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
+  };
 
   const handleCheckout = async () => {
     console.log("Handle checkout function called!");
 
     await clearCart();
 
-    const stripe = await loadStripe("pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D");
+    const stripe = await loadStripe(
+      "pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D"
+    );
 
     const body = {
-      products: cartItems.map(item => ({
+      products: cartItems.map((item) => ({
         name: item.name,
         price: item.price,
         quantity: item.qty,
-        image: item.mainImages
+        image: item.mainImages,
       })),
-      userId: localStorage.getItem("auth-token")
+      userId: localStorage.getItem("auth-token"),
+      storeId: storeId, // Include storeId
     };
 
     const headers = {
       "Content-Type": "application/json",
-      'auth-token': localStorage.getItem("auth-token")
+      "auth-token": localStorage.getItem("auth-token"),
     };
 
     try {
-      const response = await axios.post("http://localhost:4000/create-checkout-session", body, { headers });
+      const response = await axios.post(
+        "http://localhost:4000/create-checkout-session",
+        body,
+        { headers }
+      );
 
       console.log("Response from backend:", response);
 
@@ -113,7 +184,7 @@ const RetailerCart = () => {
       const { id: sessionId } = response.data;
 
       const result = await stripe.redirectToCheckout({
-        sessionId: sessionId
+        sessionId: sessionId,
       });
 
       if (result.error) {
@@ -130,11 +201,17 @@ const RetailerCart = () => {
     console.log("Clear cart function called!");
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/cartretailer/clear", {}, {
-        headers: {
-          'auth-token': token,
+      const response = await axios.post(
+        "http://localhost:4000/cartretailer/clear",
+        {
+          storeId: storeId, // Include storeId
+        },
+        {
+          headers: {
+            "auth-token": token,
+          },
         }
-      });
+      );
 
       if (response.data.success) {
         console.log("Cart cleared successfully");
@@ -146,117 +223,95 @@ const RetailerCart = () => {
     }
   };
 
-  const handleRemoveCartItem = async (itemId) => {
-    console.log("Attempting to remove item with ID:", itemId);
-    console.log("Current cart items before removal:", cartItems);
-
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post("http://localhost:4000/cartretailer/removeFromCart", {
-        productId: itemId,
-      }, {
-        headers: {
-          'auth-token': token,
-        }
-      });
-
-      if (response.data === "Item removed from cart") {
-        console.log("Item removed from cart successfully");
-        removeFromCart(itemId);
-        console.log("Current cart items after removal:", cartItems);
-      } else {
-        console.log("Failed to remove item from cart");
-      }
-    } catch (error) {
-      console.error("Error removing item from cart:", error);
-    }
-  };
+  const totalPrice = cartItems
+    .reduce((price, item) => price + item.qty * item.price, 0)
+    .toFixed(2);
 
   return (
     <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
-    {!isSmallScreen && (
-      <aside className="w-full md:w-[20%]">
-        <SideNavSupplier />
-      </aside>
-    )}
+      {!isSmallScreen && (
+        <aside className="w-full md:w-[20%]">
+          <SideNavSupplier />
+        </aside>
+      )}
 
-    {isSmallScreen && (
-      <div className="fixed-top-bar">
-        <TopBar />
-      </div>
-    )}
+      {isSmallScreen && (
+        <div className="fixed-top-bar">
+          <TopBar />
+        </div>
+      )}
 
-    <main
-      className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
-    >
-    
-      <Header>
-        <DropdownMenu />
-      </Header>
-      <section className="cart-items">
-        <div className="container-cart">
-          <div className="cart-details">
-            {cartItems.length === 0 && (
-              <h1 className="no-items product">No Items are add in Cart</h1>
-            )}
-            {cartItems.map((item) => {
-              const productQty = (item.price * item.qty).toFixed(2);
-              return (
-                <div className="cart-list" key={item.id}>
-                  <div className="img">
-                    <img src={item.mainImages} alt="" />
-                  </div>
-                  <div className="cart-details">
-                    <h3>{item.name}</h3>
-                    <h4>
-                      RM {item.price.toFixed(2)} * {item.qty}
-                      <span>RM {productQty}</span>
-                    </h4>
-                  </div>
-                  <div className="cart-items-function">
-                    <div className="removeCart">
-                      <button
-                        className="removeCartButton"
-                        onClick={() => handleRemoveCartItem(item.id)}
-                      >
-                        <FaXmark />
-                      </button>
+      <main
+        className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
+      >
+        <Header>
+          <DropdownMenu />
+        </Header>
+        <section className="cart-items">
+          <div className="container-cart">
+            <div className="cart-details">
+              {cartItems.length === 0 && (
+                <h1 className="no-items product">No Items are add in Cart</h1>
+              )}
+              {cartItems.map((item) => {
+                const productQty = (item.price * item.qty).toFixed(2);
+                return (
+                  <div className="cart-list" key={item.id}>
+                    <div className="img">
+                      <img src={item.mainImages} alt="" />
                     </div>
-                    <div className="cartControl">
-                      <button
-                        className="incCart"
-                        onClick={() => handleAddToCart(item)}
-                      >
-                        <FaPlus />
-                      </button>
-                      <button
-                        className="desCart"
-                        onClick={() => handleDecreaseQty(item)}
-                      >
-                        <FaMinus />
-                      </button>
+                    <div className="cart-details">
+                      <h3>{item.name}</h3>
+                      <h4>
+                        RM {item.price.toFixed(2)} * {item.qty}
+                        <span>RM {productQty}</span>
+                      </h4>
                     </div>
+                    <div className="cart-items-function">
+                      <div className="removeCart">
+                        <button
+                          className="removeCartButton"
+                          onClick={() => handleRemoveCartItem(item.id)}
+                        >
+                          <FaXmark />
+                        </button>
+                      </div>
+                      <div className="cartControl">
+                        <button
+                          className="incCart"
+                          onClick={() => handleAddToCart(item)}
+                        >
+                          <FaPlus />
+                        </button>
+                        <button
+                          className="desCart"
+                          onClick={() => handleDecreaseQty(item)}
+                        >
+                          <FaMinus />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="cart-item-price"></div>
                   </div>
-                  <div className="cart-item-price"></div>
+                );
+              })}
+            </div>
+            <div className="cart-total">
+              <div className="totaldisplay">
+                <h2>Cart Summary</h2>
+                <div className="Total-product">
+                  <h4>Total Price :</h4>
+                  <h3>RM {totalPrice}</h3>
                 </div>
-              );
-            })}
-          </div>
-          <div className="cart-total">
-            <div className="totaldisplay">
-              <h2>Cart Summary</h2>
-              <div className="Total-product">
-                <h4>Total Price :</h4>
-                <h3>RM {totalPrice}</h3>
+                <button className="checkout-button" onClick={handleCheckout}>
+                  Proceed to Checkout
+                </button>
               </div>
-              <button className="checkout-button" onClick={handleCheckout}>Proceed to Checkout</button>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
     </div>
-    
   );
 };
 

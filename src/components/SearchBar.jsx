@@ -1,19 +1,22 @@
 import React from 'react';
-import '../style/SearchBar.css';
+import PropTypes from 'prop-types';
+import '../style/SearchBar.css'; // Import your CSS file for styling
 
-function SearchBar({ value, onChange }) {
+const SearchBar = ({ searchTerm, handleSearch }) => {
   return (
-    <div className="search-container">
-      <input
-        className="search-input"
-        type="text"
-        placeholder="Search products..."
-        value={value}
-        onChange={onChange}
-      />
-      <i className="search-icon fas fa-search"></i>
-    </div>
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={handleSearch}
+      placeholder="Search products..."
+      className="searchbar"
+    />
   );
-}
+};
+
+SearchBar.propTypes = {
+  searchTerm: PropTypes.string.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+};
 
 export default SearchBar;

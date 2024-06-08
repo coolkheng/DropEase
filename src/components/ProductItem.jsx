@@ -1,23 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import { MdAddShoppingCart } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import '../style/ProductItem.css'; // Import your CSS file for styling
 
-const ProductItem = ({ title, description, imageUrl }) => {
+const ProductItem = ({ img, name, desc, rating, price, product, quantity }) => {
+  const navigate = useNavigate();
+
+  const handleProductClick = () => {
+    navigate(`/product/${product.id}`, { state: { product } });
+  };
+
+
   return (
     <div className="product-item">
-      {imageUrl && <img src={imageUrl} alt={title} className="product-image" />}
+      {img && <img src={img} alt={name} className="product-image" />}
       <div className="productitem-content">
-        <h2 className="product-title">{title}</h2>
-        <p className="product-description">{description}</p>
+        <h2 className="product-title">{name}</h2>
+        <b className="product-price">Selling : RM {price}</b>
+        <b className="product-price">Quantity : {quantity}</b>
       </div>
     </div>
   );
-};
-
-ProductItem.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string
 };
 
 export default ProductItem;

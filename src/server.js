@@ -40,6 +40,7 @@ app.use(
 );
 app.use(express.urlencoded({ extended: true }));
 var nodemailer = require("nodemailer");
+const { Int32 } = require("mongodb");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -751,12 +752,15 @@ const CartCustomerSchema = new mongoose.Schema({
 
 const CartCustomer = mongoose.model("CartCustomer", CartCustomerSchema);
 
-// Define the schema for cart items
 const CartRetailerSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
+      required: true,
+    },
+    storeId: {
+      type: Number,
       required: true,
     },
     cartData: {
@@ -770,9 +774,49 @@ const CartRetailerSchema = new mongoose.Schema(
 
 const CartRetailer = mongoose.model("CartRetailer", CartRetailerSchema);
 
+// Define the schema for archived cart data
+const RetailerProductSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+    required: true,
+    unique: true, // Add unique constraint on userId
+  },
+  storeId: {
+    type: Number,
+    required: true,
+  },
+  cartData: {
+    type: Map,
+    of: Number,
+    default: {},
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Create the Mongoose model for the "retailerproduct" collection
+const RetailerProduct = mongoose.model(
+  "retailerproduct",
+  RetailerProductSchema
+);
+
+app.get("/retailerproduct", async (req, res) => {
+  let retailerproduct = await RetailerProduct.find();
+  console.log("All Retailer Products Fetched");
+  console.log(res);
+  res.send(retailerproduct);
+});
+
 app.post("/cartretailer", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
+    const storeId = req.body.storeId; // Assuming storeId is in the request body
+
+    console.log(storeId);
+
     const { productId, quantity } = req.body;
 
     // Ensure productId and quantity are properly typed
@@ -784,7 +828,7 @@ app.post("/cartretailer", fetchUser, async (req, res) => {
 
     if (!cart) {
       // Create new cart if it doesn't exist
-      cart = new CartRetailer({ userId, cartData: { [prodId]: qty } });
+      cart = new CartRetailer({ userId, storeId, cartData: { [prodId]: qty } });
     } else {
       // Update existing cart
       if (cart.cartData.has(prodId)) {
@@ -809,6 +853,7 @@ app.post("/cartretailer/checkout", fetchUser, async (req, res) => {
     console.log("Request body:", req.body);
 
     const userID = req.user.id;
+    const storeId = req.body.storeId; // Assuming storeId is in the request body
 
     const cartRetailer = await CartRetailer.findOne({ userId: userID });
     console.log("Retrieved cart:", cartRetailer);
@@ -836,6 +881,7 @@ app.post("/cartretailer/checkout", fetchUser, async (req, res) => {
 app.post("/cartretailer/decreaseQty", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
+    const storeId = req.body;
     const { productId } = req.body;
 
     // Ensure productId is properly typed
@@ -871,6 +917,7 @@ app.post("/cartretailer/decreaseQty", fetchUser, async (req, res) => {
 app.post("/cartretailer/removeFromCart", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
+    const storeId = req.body;
     const { productId } = req.body;
 
     // Convert productId to string because Map keys are strings
@@ -939,16 +986,51 @@ app.post("/create-checkout-session", fetchUser, async (req, res) => {
 app.post("/cartretailer/clear", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
+    const storeId = req.body.storeId;
+    console.log(storeId);
 
     // Find retailer cart for the user
     let cart = await CartRetailer.findOne({ userId });
 
-    //fetch data to retailerproducts!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     if (cart) {
-      cart.cartData = {}; // Clear the cart data
-      await cart.save(); // Save the cleared cart
-      console.log("Cart cleared:", cart);
+      // Create a copy of the cart data for archiving
+      const archivedCartData = new Map(cart.cartData);
+
+      // Check for existing archived cart for the user
+      let existingArchivedCart = await RetailerProduct.findOne({ userId });
+
+      if (existingArchivedCart) {
+        for (const [productId, quantity] of archivedCartData.entries()) {
+          if (existingArchivedCart.cartData.has(productId)) {
+            // Update quantity if product exists
+            existingArchivedCart.cartData.set(
+              productId,
+              existingArchivedCart.cartData.get(productId) + quantity
+            );
+          } else {
+            // Set quantity correctly for new product
+            existingArchivedCart.cartData.set(productId, quantity);
+          }
+        }
+        await existingArchivedCart.save();
+      } else {
+        // Create new archived cart if none exists
+        const archivedCart = new RetailerProduct({
+          userId,
+          storeId,
+          cartData: archivedCartData,
+        });
+        await archivedCart.save();
+      }
+
+      // Clear the cart data from the main collection
+      cart.cartData.clear();
+      await cart.save();
+
+      console.log(
+        "Cart cleared and archived successfully:",
+        existingArchivedCart || archivedCart
+      );
       res.json({ success: true, message: "Cart cleared successfully" });
     } else {
       res

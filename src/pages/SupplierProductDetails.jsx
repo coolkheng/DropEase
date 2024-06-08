@@ -1,4 +1,4 @@
-import React,{useState, useContext} from "react";
+import React,{useState, useContext, useEffect} from "react";
 import { useLocation , useNavigate} from "react-router-dom";
 import {CartRetailerContext} from "./cartRetailerContext";
 import "../style/ProductDetails.css";
@@ -11,10 +11,12 @@ const SupplierProductDetails = () => {
   const navigate = useNavigate();
   const { product } = location.state || {};
   const {addToCart} = useContext(CartRetailerContext);
-
+  const [storeId, setStoreId] = useState(null);
   const [mainImage, setMainImage] = useState(product?.mainImages);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
 
   const handleImageClick = (image) => {
     setMainImage(image);
@@ -28,11 +30,38 @@ const SupplierProductDetails = () => {
     setSelectedColor(color);
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("auth-token");
+        const response = await fetch("http://localhost:4000/userData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setStoreId(data.data.storeId);
+        } else {
+          setErrorMessage(data.errors);
+        }
+      } catch (error) {
+        setErrorMessage("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
+
+
   const handleAddToCart = async () => {
     await addToCart({ ...product, mainImage, size: selectedSize, color: selectedColor });
     try {
       const token = localStorage.getItem("auth-token");
       const response = await axios.post("http://localhost:4000/cartretailer", {
+        storeId: storeId,
         productId: product.id,
         quantity: 1, // Assuming you add one item at a time
       }, {
@@ -43,7 +72,7 @@ const SupplierProductDetails = () => {
   
       if (response.data === "Added to cart") {
         console.log("Item added to cart successfully");
-        navigate('/retailercart'); // Navigate only after the backend request is successful
+        navigate(`/retailercart/${storeId}`); // Navigate only after the backend request is successful
       } else {
         console.log("Failed to add item to cart");
       }
