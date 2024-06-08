@@ -16,10 +16,12 @@ const Store = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const token = localStorage.getItem("auth-token");
         const response = await fetch("http://localhost:4000/userData", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "auth-token": token,
           },
         });
         const data = await response.json();
