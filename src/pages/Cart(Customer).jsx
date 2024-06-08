@@ -7,6 +7,7 @@ import { CartContext } from "./cartContext";
 import "../style/Cart(Customer).css";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
+import ShopCategory from "./ShopCategory(Customer)";
 
 const Cart = () => {
   let Id = useParams();
@@ -78,13 +79,15 @@ const Cart = () => {
       "pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D"
     );
 
-    const productsData = cartItems.map((item) => ({
-      productName: item.name,
-      price: item.price,
-      quantity: item.qty,
-      productImage: item.mainImages,
-      category: item.category,
-    }));
+    const body = {
+      products: cartItems.map((item) => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.qty,
+        image: item.mainImages,
+      })),
+      userId: localStorage.getItem("auth-token"),
+    };
 
     const userId = localStorage.getItem("auth-token");
 
@@ -92,6 +95,14 @@ const Cart = () => {
       "Content-Type": "application/json",
       "auth-token": localStorage.getItem("auth-token"),
     };
+
+    const productsData = cartItems.map((item) => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.qty,
+      image: item.mainImages,
+      ShopCategory: item.ShopCategory,
+    }));
 
     const orderData = {
       products: productsData,
