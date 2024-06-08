@@ -294,14 +294,15 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
-app.get("/allproduct", async (req, res) => {
+app.post("/insert_orders", async (req, res) => {
   try {
-    const products = await Product.find({});
-    console.log("All Products Fetched");
-    res.json(products); // Use res.json to explicitly send JSON data
+    const orderData = req.body;
+    const newOrder = await Order.create(orderData);
+
+    res.status(201).json(newOrder);
   } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
