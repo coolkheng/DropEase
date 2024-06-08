@@ -65,7 +65,12 @@ const Products = () => {
         const productsData = await productsResponse.json();
         console.log(`All products fetched:`, productsData);
 
-        const filteredData = productsData.filter(product => productIds.includes(product.id));
+        const filteredData = productsData
+          .filter(product => productIds.includes(product.id))
+          .map(product => ({
+            ...product,
+            quantity: storeData.cartData[product.id] || 0
+          }));
         setProducts(filteredData);
         setFilteredProducts(filteredData);
         console.log(`Filtered products:`, filteredData);
@@ -141,6 +146,7 @@ const Products = () => {
                           product={product}
                           color={product.color}
                           size={product.sizes}
+                          quantity={product.quantity} // Pass quantity here
                         />
                       </div>
                     ))}

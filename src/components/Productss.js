@@ -71,7 +71,7 @@ const Productss = () => {
               desc={product.desc}
               longDesc={product.longdesc}
               rating={product.rating}
-              price={product.price}
+              price={Number((product.price * 1.10).toFixed(2))}
               product={product}
               color={product.color}
               size={product.sizes}
