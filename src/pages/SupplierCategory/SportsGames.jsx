@@ -1,68 +1,69 @@
-import React from 'react';
-import Header from '../../components/Header';
-import SideNavSupplier from '../../components/SideNavSupplier';
+import React, { useState, useEffect } from "react";
+import TopBar from "../../components/TopBar";
+import Header from "../../components/Header";
+import SideNavSupplier from "../../components/SideNavSupplier";
 import "../../style/Header.css";
 import "../../style/SideNav.css";
 import "../../style/Products.css";
-import SupplierProductItem from '../../components/SupplierProductItem';
 import DropdownMenu from '../../components/UsernameDropDown'; // Check if the path is correct
+import { Link } from 'react-router-dom';
+import Suppliers from './Suppliers/Suppliers';
+import SupplierProducts from "../../components/SupplierProducts";
 
 function SportsGames() {
+
+  // Handling different size of screen
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  console.log('DropdownMenu component:', DropdownMenu); // Add this line for debugging
+  console.log('SideNavSupplier component:', SideNavSupplier); // Add this line for debugging
+  console.log('Suppliers component:', Suppliers); // Add this line for debugging
+
+
   return (
+    <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
+    {!isSmallScreen && (
+      <aside className="w-full md:w-[20%]">
+        <SideNavSupplier />
+      </aside>
+    )}
+
+    {isSmallScreen && (
+      <div className="fixed-top-bar">
+        <TopBar />
+      </div>
+    )}
+
+    <main
+      className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
+    >
     <div className="SportsGames">
          <Header>
         <DropdownMenu 
         /> 
       </Header>
-      <SideNavSupplier /> {/* Ensure the component is imported correctly */}
+       {/* Ensure the component is imported correctly */}
       <div className="product-main-content">
-        <div className="productpage-title">
-          <h1></h1>
-        </div>
-        <div className="product-content">
-        <div className="product-list">
-            <SupplierProductItem
-                title="5cm(thickness) PE Foam with Official JVD Target Face (3 units Per Carton)"
-                description="RM75.00  /carton"
-                imageUrl="https://www.borong.com/product-images/96a48b35a3613a4f99cef005127ea2534c10494f.png"
-            />
-            <SupplierProductItem
-                title="Indoor Basketball Shooting Machine - (Automatic Scoring) Single Player Version
-
-                "
-                description="RM770.98       /unit"
-                imageUrl="https://www.borong.com/product-images/5e00fde4eb715dfa3656664edd1250e55c4c1ebd.jpg"
-            />
-            <SupplierProductItem
-                title="20kg AG Adjustable Smartbell (Comes in a pair)
-                "
-                description="RM1200.00       /unit"
-                imageUrl="https://www.borong.com/product-images/2bd529dfec39a3fcfaa0d4211a8cce863687a3bf.jpg"
-            />
-            <SupplierProductItem
-                title="UVEX SPORTSTYLE GREY EYEWEAR 9193280 (GREY)"
-                description="RM44.00       /unit"
-                imageUrl="https://www.borong.com/product-images/1681e608453f576e2705889f95166a28f53fdcfa.jpg"
-            />
-            <SupplierProductItem
-                title="Indoor Basketball Shooting Machine - (Automatic Scoring) 
-                "
-                description="RM757.44       /unit"
-                imageUrl="https://www.borong.com/product-images/d368727109a04f25e775c8fb86aa77132394c427.jpg"
-            />
-            <SupplierProductItem
-                title="Indoor Basketball Shooting Machine - (No Scoring System) Upgraded Version
-                "
-                description="RM705.60      /unit"
-                imageUrl="https://www.borong.com/product-images/94533f6f07a7ac2f0a673accabf7efb3d5306f32.jpg"
-            />
-            
-            </div>
-        </div>
+        <SupplierProducts category="sportsgames"/>
       </div>
       <footer>
         <p>&copy; 2024 My App</p>
       </footer>
+    </div>
+    </main>
     </div>
   );
 }

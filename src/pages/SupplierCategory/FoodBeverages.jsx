@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import Header from '../../components/Header';
-import SideNavSupplier from '../../components/SideNavSupplier';
+import React, { useState, useEffect } from "react";
+import TopBar from "../../components/TopBar";
+import Header from "../../components/Header";
+import SideNavSupplier from "../../components/SideNavSupplier";
 import "../../style/Header.css";
 import "../../style/SideNav.css";
 import "../../style/Products.css";
-import DropdownMenu from '../../components/UsernameDropDown'; // Ensure this path is correct
+import DropdownMenu from '../../components/UsernameDropDown'; // Check if the path is correct
 import { Link } from 'react-router-dom';
 import Suppliers from './Suppliers/Suppliers';
-import SupplierProducts from '../../components/SupplierProducts';
-import TopBar from '../../components/TopBar';
+import SupplierProducts from "../../components/SupplierProducts";
 
 function FoodBeverages() {
-  console.log('DropdownMenu component:', DropdownMenu); // Debugging
-  console.log('SideNavSupplier component:', SideNavSupplier); // Debugging
-  console.log('Suppliers component:', Suppliers); // Debugging
-  
+
+  // Handling different size of screen
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -30,28 +28,43 @@ function FoodBeverages() {
     };
   }, []);
 
-  return (
-    <>
-      <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
-        {!isSmallScreen && (
-          <aside className="w-full md:w-[20%]">
-            <SideNavSupplier />
-          </aside>
-        )}
+  console.log('DropdownMenu component:', DropdownMenu); // Add this line for debugging
+  console.log('SideNavSupplier component:', SideNavSupplier); // Add this line for debugging
+  console.log('Suppliers component:', Suppliers); // Add this line for debugging
 
-        {isSmallScreen && (
-          <div className="fixed-top-bar">
-            <TopBar />
-          </div>
-        )}
-        <main className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-20 mt-10`}>
-          <SupplierProducts category="food&beverage"/>
-        </main>
+
+  return (
+    <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
+    {!isSmallScreen && (
+      <aside className="w-full md:w-[20%]">
+        <SideNavSupplier />
+      </aside>
+    )}
+
+    {isSmallScreen && (
+      <div className="fixed-top-bar">
+        <TopBar />
       </div>
-      <footer className="w-full text-center py-4">
+    )}
+
+    <main
+      className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
+    >
+    <div className="FoodBeverages">
+         <Header>
+        <DropdownMenu 
+        /> 
+      </Header>
+       {/* Ensure the component is imported correctly */}
+      <div className="product-main-content">
+        <SupplierProducts category="food&beverage"/>
+      </div>
+      <footer>
         <p>&copy; 2024 My App</p>
       </footer>
-    </>
+    </div>
+    </main>
+    </div>
   );
 }
 

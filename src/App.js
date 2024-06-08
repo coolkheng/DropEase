@@ -38,6 +38,7 @@ import Profile from "./pages/Profile.jsx";
 import { CartRetailerProvider } from "./pages/cartRetailerContext";
 import { CartProvider } from "./pages/cartContext.js";
 import SupplierProductDetails from "./pages/SupplierProductDetails.jsx";
+import ApparelAccessories from "./pages/SupplierCategory/ApparelAccessories.jsx";
 
 function App() {
   const user = localStorage.getItem("token");
@@ -60,11 +61,15 @@ function App() {
             <Route path="/productspage/:storeId" element={<Products />} />
             <Route path="/home/:storeId" element={<Shop />} />
             <Route path="/suppliers" element={<Suppliers />} />
-            <Route path="/foodbeverages/:storeId" element={<FoodBeverages />} />
-            <Route path="/homekitchen/:storeId" element={<HomeKitchen />} />
-            <Route path="/officestationaries/:storeId" element={<OfficeStationaries />}/>
-            <Route path="/householdcleaning/:storeId" element={<HouseholdCleaning />} />
-            <Route path="/sportsgames/:storeId" element={<SportsGames />} />
+            <Route path="/foodbeverages" element={<FoodBeverages />} />
+            <Route path="/homekitchen" element={<HomeKitchen />} />
+            <Route path="/apparelaccessories" element={<ApparelAccessories />} />
+            <Route
+              path="/officestationaries"
+              element={<OfficeStationaries />}
+            />
+            <Route path="/householdcleaning" element={<HouseholdCleaning />} />
+            <Route path="/sportsgames" element={<SportsGames />} />
             <Route path="/paymentpage" element={<PaymentPage />} />
             <Route path="/customerhome" element={<CustomerHome />} />
             <Route path="/customercart" element={<CustomerCart />} />
