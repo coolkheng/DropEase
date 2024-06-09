@@ -157,7 +157,9 @@ export const HeaderCustomer = ({ customer }) => {
           </li>
         </ul>
       </div>
-      {searchResults.length > 0 && <SearchResults results={searchResults} />}
+      {searchResults.length > 0 && (
+        <SearchResults results={searchResults} customer={customer.customerId} />
+      )}
     </div>
   );
 };

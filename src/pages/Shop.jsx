@@ -13,7 +13,6 @@ const Shop = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 1024);
