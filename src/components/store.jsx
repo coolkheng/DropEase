@@ -45,7 +45,9 @@ const Store = () => {
       <div
         style={{ marginLeft: "30px" }}
         className="flex justify-between items-center mt-5"
-      ></div>
+      >
+        <Header />
+      </div>
 
       <div className="flex justify-center mt-5">
         <Hero storeId={storeId} />
