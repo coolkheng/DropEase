@@ -925,10 +925,15 @@ app.post('/cartretailer/removeFromCart', fetchUser, async (req, res) => {
 
 // Stripe Payment Integration
 app.post('/create-checkout-session', fetchUser, async (req, res) => {
+  const { user } = req;
   try {
-    const { products, userId } = req.body;
+    const { products, userId, storeId } = req.body;
 
-    const session = await stripe.checkout.sessions.create({
+    let session;
+
+    if(user.role == 'retailer'){
+
+      session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: products.map(product => ({
         price_data: {
@@ -937,14 +942,34 @@ app.post('/create-checkout-session', fetchUser, async (req, res) => {
             name: product.name,
             images: [product.image],
           },
-          unit_amount: product.price * 100,
+          unit_amount: Math.round(product.price * 100),
         },
         quantity: product.quantity,
       })),
       mode: 'payment',
-      success_url: 'http://localhost:3000/foodbeverages',
-      cancel_url: 'http://localhost:3000/foodbeverages',
+      success_url: `http://localhost:3000/productspage/${storeId}`,
+      cancel_url: `http://localhost:3000/productspage/${storeId}`,
     });
+  }
+  else if(user.role == 'customer'){
+    session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: products.map(product => ({
+        price_data: {
+          currency: 'myr',
+          product_data: {
+            name: product.name,
+            images: [product.image],
+          },
+          unit_amount: Math.round(product.price * 100),
+        },
+        quantity: product.quantity,
+      })),
+      mode: 'payment',
+      success_url: 'http://localhost:3000/customerhome',
+      cancel_url: 'http://localhost:3000/customerhome',
+    });
+  }
 
     res.json({ id: session.id });
   } catch (error) {
@@ -952,6 +977,7 @@ app.post('/create-checkout-session', fetchUser, async (req, res) => {
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
+
 
 app.post('/cartretailer/clear', fetchUser, async (req, res) => {
   try {
@@ -1004,6 +1030,30 @@ app.post('/cartretailer/clear', fetchUser, async (req, res) => {
     res.status(500).send({ errors: "Internal Server Error" });
   }
 });
+
+app.post("/clear", fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find retailer cart for the user
+    let cart = await CartCustomer.findOne({ userId });
+
+    if (cart) {
+      cart.cartData = {}; // Clear the cart data
+      await cart.save(); // Save the cleared cart
+      console.log("Cart cleared:", cart);
+      res.json({ success: true, message: "Cart cleared successfully" });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "No cart found for user" });
+    }
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    res.status(500).send({ errors: "Internal Server Error" });
+  }
+});
+
 
 //TODO: Change productId based on Eugene's product-id
 app.post("/addtocart", fetchUser, async (req, res) => {

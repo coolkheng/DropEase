@@ -19,17 +19,19 @@ const Cart = () => {
 
   const handleCheckout = async () => {
     console.log("Handle checkout function called!");
+    
 
     try {
       // Clear the cart before proceeding to checkout
       await clearCart();
+
 
       const stripe = await loadStripe("pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D");
 
       const body = {
         products: cartItems.map(item => ({
           name: item.product.name,
-          price: item.product.price,
+          price: Number((item.product.price * 1.10).toFixed(2)),
           quantity: item.quantity,
           image: item.product.mainImages
         })),
