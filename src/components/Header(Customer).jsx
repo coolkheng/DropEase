@@ -100,7 +100,7 @@ export const HeaderCustomer = ({ customer }) => {
           >
             <NavLink
               className="nav-link"
-              to="/customercart"
+              to={`/${customer.customerId}/store/${customer.storeId}/customercart`}
               style={{ color: "black" }}
             >
               Shopping Cart
