@@ -23,7 +23,7 @@ const Productss = () => {
 
         const storeData = retailerData.find(doc => doc.storeId.toString() === storeId);
         if (!storeData) {
-          throw new Error(`Store data not found for storeId: ${storeId}`);
+          throw new Error("The store doesn't have any products yet");
         }
         console.log(`Data for storeId ${storeId}:`, storeData);
 
