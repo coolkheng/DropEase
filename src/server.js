@@ -1232,6 +1232,34 @@ app.post("/getcart", fetchUser, async (req, res) => {
   }
 });
 
+app.post("/getcart", fetchUser, async (req, res) => {
+  try {
+    console.log("GetCart");
+    const userId = req.user.id;
+    let userCart = await CartCustomer.findOne({ userId });
+
+    if (!userCart) {
+      return res.status(404).json({ errors: "Cart Not Found" });
+    }
+
+    let cartItems = [];
+
+    for (let [productIdStr, quantity] of userCart.cartData) {
+      let product = await Product.findOne({ id: productIdStr }); // Use the correct field here
+      if (product) {
+        cartItems.push({
+          product: product,
+          quantity: quantity,
+        });
+      }
+    }
+    res.json(cartItems);
+  } catch (error) {
+    console.error("Error fetching cart data:", error);
+    res.status(500).json({ errors: "Internal Server Error" });
+  }
+});
+
 // Start the Express server
 app.listen(port, (error) => {
   if (!error) {
