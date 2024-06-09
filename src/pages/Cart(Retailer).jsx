@@ -222,10 +222,6 @@ const RetailerCart = () => {
     <main
       className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
     >
-    
-      <Header>
-        <DropdownMenu />
-      </Header>
       <section className="cart-items">
         <div className="container-cart">
           <div className="cart-details">
