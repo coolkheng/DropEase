@@ -17,11 +17,9 @@
 .CartContainer {
   margin-top: 60px;
   margin-right: 40px;
-  margin-left: 140px;
+  margin-left: 40px;
   margin-bottom: 60px;
-  justify-content: center;
   height: 150%;
-  width: 80%;
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: -1px -1px 20px 5px #1687d933;
@@ -37,7 +35,6 @@
 }
 
 .Heading {
-  margin-top: 30px;
   font-size: 30px;
   font-weight: 700;
   color: #2f3841;
@@ -191,21 +188,4 @@ hr {
 
 .Delivery {
   margin-top: 50px;
-}
-
-.Custom-Container .progress-bar-button {
-  background-color: #ff7600; /* Green background */
-  border: none; /* Remove borders */
-  color: white; /* White text */
-  padding: 15px 32px; /* Padding */
-  text-align: center; /* Centered text */
-  text-decoration: none; /* Remove underline */
-  display: inline-block; /* Inline-block element */
-  font-size: 16px; /* Increase font size */
-  margin: auto; /* Margins for spacing */
-  margin-top: 30px;
-  width: 150px;
-  cursor: pointer; /* Pointer cursor on hover */
-  border-radius: 12px; /* Rounded corners */
-  transition: background-color 0.3s ease; /* Smooth background color transition */
 }

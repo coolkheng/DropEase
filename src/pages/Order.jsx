@@ -85,6 +85,45 @@ const OrderPage = ({ data }) => {
     },
   ];
 
+  // const orders = [
+  //   {
+  //     Order: 1,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Ordered_item: ["Nike shoes", "Nike bag", "Nike clothes"],
+  //     Fulfilment: "Fulfilled",
+  //   },
+  //   {
+  //     Order: 2,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 3,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 4,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid",
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  //   {
+  //     Order: 5,
+  //     Date: "22 - 4 - 2024",
+  //     Customer: "Tan Yan Ho",
+  //     PaymentStatus: "Paid"
+  //     Fulfilment: "UnFulfilled",
+  //   },
+  // ];
+
   const orders = retrieved_orders.map((order, i) => {
     // Extracting relevant fields from the retrieved order object
     const {
@@ -163,13 +202,18 @@ const OrderPage = ({ data }) => {
             </div>
           )}
 
-          <div className="flex justify-between items-center mt-5">
-            <Header />
-          </div>
-
           <div className="order-content">
-            <div className="order-content-label">My Orders</div>
-            <div>
+            <div style={{ fontSize: "25px", fontWeight: "bold" }}>My Orders</div>
+            <hr
+            style={{
+              border: "1px solid #000",
+              width: "100%",
+              marginTop: "10px",
+              marginRight: "5px",
+            }}
+          />
+
+            <div className="mt-5">
               <MUIDataTable data={orders} columns={columns} options={options} />
             </div>
           </div>

@@ -1,7 +1,6 @@
-import React from "react";
-import Header from "../../components/Header";
+import React, { useState, useEffect } from "react";
 import TopBar from "../../components/TopBar";
-import { useState, useEffect } from "react";
+import Header from "../../components/Header";
 import SideNavSupplier from "../../components/SideNavSupplier";
 import "../../style/Header.css";
 import "../../style/SideNav.css";

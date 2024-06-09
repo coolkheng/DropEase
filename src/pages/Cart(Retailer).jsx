@@ -11,6 +11,7 @@ import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 
 const RetailerCart = () => {
+  const [storeId, setStoreId] = useState(null);
   // Handling different size of screen
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -27,7 +28,6 @@ const RetailerCart = () => {
     };
   }, []);
 
-  const [storeId, setStoreId] = useState(null);
   const { cartItems, addToCart, decreaseQty, removeFromCart } =
     useContext(CartRetailerContext);
   const [errorMessage, setErrorMessage] = useState(null);

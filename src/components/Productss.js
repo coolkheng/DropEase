@@ -25,7 +25,7 @@ const Productss = ({ storeId, customerId }) => {
           (doc) => doc.storeId.toString() === storeId
         );
         if (!storeData) {
-          throw new Error(`Store data not found for storeId: ${storeId}`);
+          throw new Error("The store doesn't have any products yet");
         }
         console.log(`Data for storeId ${storeId}:`, storeData);
 
@@ -80,7 +80,7 @@ const Productss = ({ storeId, customerId }) => {
               desc={product.desc}
               longDesc={product.longdesc}
               rating={product.rating}
-              price={Number((product.price * 1.1).toFixed(2))}
+              price={Number((product.price * 1.10).toFixed(2))}
               product={product}
               color={product.color}
               size={product.sizes}

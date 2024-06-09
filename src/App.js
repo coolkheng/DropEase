@@ -74,8 +74,10 @@ function App() {
                   element={<HouseholdCleaning />}
                 />
                 <Route path="/sportsgames/:storeId" element={<SportsGames />} />
-                <Route path="/apparelaccessories/:storeId" element={<ApparelAccessories />} />
-
+                <Route
+                  path="/apparelaccessories/:storeId"
+                  element={<ApparelAccessories />}
+                />
                 <Route path="/paymentpage" element={<PaymentPage />} />
                 <Route
                   path="/customerhome/:customerId"
@@ -87,10 +89,7 @@ function App() {
                   element={<CustomerCart />}
                 />
                 <Route path="/retailercart/:id" element={<RetailerCart />} />
-                <Route
-                  path="/:customerId/store/:storeId/product/:productid"
-                  element={<ProductDetails />}
-                />
+                <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/edit-store" element={<EditShop />} />
                 <Route path="/women" element={<Women />} />
                 <Route path="/men" element={<Men />} />
