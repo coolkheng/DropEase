@@ -927,7 +927,7 @@ app.post('/cartretailer/removeFromCart', fetchUser, async (req, res) => {
 app.post('/create-checkout-session', fetchUser, async (req, res) => {
   const { user } = req;
   try {
-    const { products, userId } = req.body;
+    const { products, userId, storeId } = req.body;
 
     let session;
 
@@ -942,13 +942,13 @@ app.post('/create-checkout-session', fetchUser, async (req, res) => {
             name: product.name,
             images: [product.image],
           },
-          unit_amount: product.price * 100,
+          unit_amount: Math.round(product.price * 100),
         },
         quantity: product.quantity,
       })),
       mode: 'payment',
-      success_url: 'http://localhost:3000/foodbeverages',
-      cancel_url: 'http://localhost:3000/foodbeverages',
+      success_url: `http://localhost:3000/productspage/${storeId}`,
+      cancel_url: `http://localhost:3000/productspage/${storeId}`,
     });
   }
   else if(user.role == 'customer'){
@@ -966,7 +966,7 @@ app.post('/create-checkout-session', fetchUser, async (req, res) => {
         quantity: product.quantity,
       })),
       mode: 'payment',
-      success_url: 'http://localhost:3000/cutomerhome',
+      success_url: 'http://localhost:3000/customerhome',
       cancel_url: 'http://localhost:3000/customerhome',
     });
   }
