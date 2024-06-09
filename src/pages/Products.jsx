@@ -48,7 +48,11 @@ const Products = () => {
 
         const storeData = retailerData.find(doc => doc.storeId.toString() === storeId);
         if (!storeData) {
-          throw new Error(`Store data not found for storeId: ${storeId}`);
+          console.log(`No store data found for storeId: ${storeId}`);
+          setProducts([]);
+          setFilteredProducts([]);
+          setLoading(false);
+          return;
         }
         console.log(`Data for storeId ${storeId}:`, storeData);
 
@@ -134,22 +138,26 @@ const Products = () => {
               <div className="product-content">
                 <div className="product-list">
                   <div className="grouped-products-container">
-                    {filteredProducts.map((product) => (
-                      <div key={product._id} className="grouped-products-item">
-                        <ProductItem
-                          img={product.mainImages}
-                          name={product.name}
-                          desc={product.desc} 
-                          longDesc={product.longdesc}
-                          rating={product.rating}
-                          price={Number((product.price * 1.10).toFixed(2))}                          
-                          product={product}
-                          color={product.color}
-                          size={product.sizes}
-                          quantity={product.quantity} // Pass quantity here
-                        />
-                      </div>
-                    ))}
+                    {filteredProducts.length > 0 ? (
+                      filteredProducts.map((product) => (
+                        <div key={product._id} className="grouped-products-item">
+                          <ProductItem
+                            img={product.mainImages}
+                            name={product.name}
+                            desc={product.desc} 
+                            longDesc={product.longdesc}
+                            rating={product.rating}
+                            price={Number((product.price * 1.10).toFixed(2))}                          
+                            product={product}
+                            color={product.color}
+                            size={product.sizes}
+                            quantity={product.quantity} // Pass quantity here
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
                     <Link to={`/foodbeverages/${storeId}`}>
                       <AddProductButton
                        image={require("../asset/add-button.png")}
