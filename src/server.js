@@ -1055,7 +1055,6 @@ app.post("/clear", fetchUser, async (req, res) => {
 });
 
 
-//TODO: Change productId based on Eugene's product-id
 app.post("/addtocart", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
