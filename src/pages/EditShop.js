@@ -43,10 +43,6 @@ const EditShop = () => {
             <TopBar />
           </div>
         )}
-
-        <div className="flex justify-between items-center mt-5">
-          <Header />
-        </div>
         <div style={{ width: "100%", marginTop: "30px" }}>
           <div
             style={{

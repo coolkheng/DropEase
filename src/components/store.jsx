@@ -47,7 +47,7 @@ const Store = () => {
 
 
       <div className="flex justify-center mt-5">
-        <Hero storeId={storeId} /> {/* Pass storeId to Hero component */}
+        <Hero storeId={storeId} />
       </div>
       <div>
         <h2 style={{marginTop:"80px"}} className="flex justify-center pt-10 text-3xl font-bold">
@@ -56,7 +56,7 @@ const Store = () => {
       </div>
 
       <div className="mb-20">
-        <Products storeId={storeId} /> {/* Pass storeId to Products component */}
+        <Products storeId={storeId} />
       </div>
 
       

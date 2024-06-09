@@ -202,13 +202,18 @@ const OrderPage = ({ data }) => {
             </div>
           )}
 
-          <div className="flex justify-between items-center mt-5">
-            <Header />
-          </div>
-
           <div className="order-content">
-            <div className="order-content-label">My Orders</div>
-            <div>
+            <div style={{ fontSize: "25px", fontWeight: "bold" }}>My Orders</div>
+            <hr
+            style={{
+              border: "1px solid #000",
+              width: "100%",
+              marginTop: "10px",
+              marginRight: "5px",
+            }}
+          />
+
+            <div className="mt-5">
               <MUIDataTable data={orders} columns={columns} options={options} />
             </div>
           </div>
