@@ -424,6 +424,42 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
+// Creating Endpoint for registering user
+app.post("/signup", async (req, res) => {
+  try {
+    let check = await Users.findOne({ email: req.body.email }); // Check if the user has been registered before
+    if (check) {
+      return res.status(400).json({
+        success: false,
+        errors: "Existing user found with the same email address",
+      });
+    }
+
+    const user = new Users({
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role,
+    });
+
+    await user.save(); // Save user in the database
+
+    // Create token
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    const token = jwt.sign(data, "secret_token");
+    res.json({ success: true, token });
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({
+      success: false,
+      errors: "Server error. Please try again later.",
+    });
+  }
+});
 
 // Creating endpoint for user log in
 app.post("/login", async (req, res) => {
@@ -674,12 +710,11 @@ app.post("/reset-password/:id/:token", async (req, res) => {
   }
 });
 
-
 const CartCustomerSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users',
-    required: true
+    ref: "Users",
+    required: true,
   },
   cartData: {
     type: Map,

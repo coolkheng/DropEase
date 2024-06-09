@@ -121,10 +121,27 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Function to clear the cart
+  const clearCart = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/clear", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": authToken,
+        },
+      });
+      const data = await response.json();
+      console.log("Cart cleared successfully");
+      updateCart(); // Update cart after clearing
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
+  };
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, decreaseQty, removeFromCart, loading, errorMessage }}>
+    <CartContext.Provider value={{ cartItems, addToCart, decreaseQty, removeFromCart, clearCart, loading, errorMessage }}>
       {children}
     </CartContext.Provider>
   );
 };
-

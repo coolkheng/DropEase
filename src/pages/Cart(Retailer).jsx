@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import TopBar from "../components/TopBar";
 import "../style/Cart(Customer).css";
 import { FaXmark } from "react-icons/fa6";
 import { FaPlus, FaMinus } from "react-icons/fa";
@@ -11,6 +12,22 @@ import { loadStripe } from '@stripe/stripe-js';
 
 const RetailerCart = () => {
   const [storeId, setStoreId] = useState(null);
+  // Handling different size of screen
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const { cartItems, addToCart, decreaseQty, removeFromCart } = useContext(CartRetailerContext);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -189,11 +206,26 @@ const RetailerCart = () => {
   ).toFixed(2);
 
   return (
-    <>
+    <div className="min-h-[calc(100vh-90px)] flex flex-col md:flex-row">
+    {!isSmallScreen && (
+      <aside className="w-full md:w-[20%]">
+        <SideNavSupplier />
+      </aside>
+    )}
+
+    {isSmallScreen && (
+      <div className="fixed-top-bar">
+        <TopBar />
+      </div>
+    )}
+
+    <main
+      className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
+    >
+    
       <Header>
         <DropdownMenu />
       </Header>
-      <SideNavSupplier />
       <section className="cart-items">
         <div className="container-cart">
           <div className="cart-details">
@@ -255,7 +287,9 @@ const RetailerCart = () => {
           </div>
         </div>
       </section>
-    </>
+    </main>
+    </div>
+    
   );
 };
 
