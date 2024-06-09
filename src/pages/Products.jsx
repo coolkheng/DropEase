@@ -122,16 +122,12 @@ const Products = () => {
           </div>
         )}
 
-        <div className="flex justify-between items-center mt-5">
-          <Header />
-        </div>
-
         <div style={{ width: "100%", marginTop: "30px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="product-main-content">
               <div className="productpage-title">
                 <p>Store Products</p>
-                <div className="pt-2">
+                <div className="pt-2 mt-5">
                   <SearchBar searchTerm={searchTerm} handleSearch={handleSearch} />
                 </div>
               </div>
