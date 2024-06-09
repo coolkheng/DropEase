@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import TopBar from "../components/TopBar";
 import "../style/Cart(Customer).css";
-import { FaXmark, FaPlus, FaMinus } from "react-icons/fa";
+import { FaXmark } from "react-icons/fa6";
+import { FaPlus, FaMinus } from "react-icons/fa";
 import Header from "../components/Header";
 import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
