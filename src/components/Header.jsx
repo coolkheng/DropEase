@@ -54,16 +54,14 @@ const Header = () => {
 
   return (
     <div className="header">
-      <div className="text-5xl cursor-pointer relative flex justify-start items-center">
+      <div className="header-content">
         {store && store.imageUrl ? (
-          <div className="img-container">
-          <img style={{marginTop:"40px"}} className="shop-img" src={store.imageUrl} alt={store.store} />
-        </div>
+          <img className="shop-img" src={store.imageUrl} alt={store.store} />
         ) : (
-          <FaRegCircleUser />
+          <FaRegCircleUser className="default-icon" />
         )}
         {store && (
-          <p className="capitalize text-lg font-semibold ml-3 mt-3">{store.store}</p>
+          <p className="store-name">{store.store}</p>
         )}
       </div>
 

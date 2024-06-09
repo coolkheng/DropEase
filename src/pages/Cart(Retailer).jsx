@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import TopBar from "../components/TopBar";
 import "../style/Cart(Customer).css";
-import { FaXmark } from "react-icons/fa6";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaXmark, FaPlus, FaMinus } from "react-icons/fa";
 import Header from "../components/Header";
 import DropdownMenu from "../components/UsernameDropDown";
 import SideNavSupplier from "../components/SideNavSupplier";
@@ -12,25 +11,21 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const RetailerCart = () => {
   const [storeId, setStoreId] = useState(null);
-  // Handling different size of screen
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const { cartItems, addToCart, decreaseQty, removeFromCart } =
+    useContext(CartRetailerContext);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 1024);
     };
     handleResize();
-
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  const { cartItems, addToCart, decreaseQty, removeFromCart } =
-    useContext(CartRetailerContext);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,7 +48,6 @@ const RetailerCart = () => {
         setErrorMessage("Failed to fetch user data");
       }
     };
-
     fetchUserData();
   }, []);
 
@@ -183,9 +177,7 @@ const RetailerCart = () => {
 
       const { id: sessionId } = response.data;
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: sessionId,
-      });
+      const result = await stripe.redirectToCheckout({ sessionId });
 
       if (result.error) {
         console.log(result.error.message);
@@ -203,9 +195,7 @@ const RetailerCart = () => {
       const token = localStorage.getItem("auth-token");
       const response = await axios.post(
         "http://localhost:4000/cartretailer/clear",
-        {
-          storeId: storeId, // Include storeId
-        },
+        { storeId: storeId }, // Include storeId
         {
           headers: {
             "auth-token": token,
@@ -244,14 +234,11 @@ const RetailerCart = () => {
       <main
         className={`w-full ${isSmallScreen ? "" : "md:w-[80%]"} mr-10 mt-10`}
       >
-        <Header>
-          <DropdownMenu />
-        </Header>
         <section className="cart-items">
           <div className="container-cart">
             <div className="cart-details">
               {cartItems.length === 0 && (
-                <h1 className="no-items product">No Items are add in Cart</h1>
+                <h1 className="no-items product">No Items are added in Cart</h1>
               )}
               {cartItems.map((item) => {
                 const productQty = (item.price * item.qty).toFixed(2);
