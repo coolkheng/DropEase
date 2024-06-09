@@ -34,10 +34,13 @@ export const CartRetailerProvider = ({ children }) => {
       return updatedItems;
     });
   };
-  
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
   return (
-    <CartRetailerContext.Provider value={{ cartItems, addToCart, decreaseQty, removeFromCart }}>
+    <CartRetailerContext.Provider value={{ cartItems, addToCart, decreaseQty, removeFromCart, clearCart }}>
       {children}
     </CartRetailerContext.Provider>
   );
