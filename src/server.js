@@ -1032,8 +1032,9 @@ app.post("/create-checkout-session", fetchUser, async (req, res) => {
           quantity: product.quantity,
         })),
         mode: "payment",
-        success_url: "http://localhost:3000/customerhome",
-        cancel_url: "http://localhost:3000/customerhome",
+        success_url: `http://localhost:3000/customerhome/${userId}`,
+        cancel_url: `http://localhost:3000/customerhome/${userId}`,
+
       });
     }
 
