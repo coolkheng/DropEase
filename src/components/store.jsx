@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
-import Collections from "../components/Collections";
 import Products from "../components/Productss";
 import HeaderCustomer from "./Header(Customer)";
 
-
-
 const Store = () => {
-  const { storeId } = useParams(); // Get storeId from URL parameters
+  const { storeId } = useParams();
   const [userRole, setUserRole] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -40,17 +37,23 @@ const Store = () => {
 
   return (
     <div>
-      {userRole === "customer" && <HeaderCustomer/>}
-      <div style={{marginLeft:"30px"}} className="flex justify-between items-center mt-5">
+      {userRole === "customer" && <HeaderCustomer />}
+      <div
+        style={{ marginLeft: "30px" }}
+        className="flex justify-between items-center mt-5"
+      >
         <Header />
       </div>
-
 
       <div className="flex justify-center mt-5">
         <Hero storeId={storeId} />
       </div>
+
       <div>
-        <h2 style={{marginTop:"80px"}} className="flex justify-center pt-10 text-3xl font-bold">
+        <h2
+          style={{ marginTop: "80px" }}
+          className="flex justify-center pt-10 text-3xl font-bold"
+        >
           All Products
         </h2>
       </div>
@@ -58,11 +61,6 @@ const Store = () => {
       <div className="mb-20">
         <Products storeId={storeId} />
       </div>
-
-      
-
-      
-
     </div>
   );
 };

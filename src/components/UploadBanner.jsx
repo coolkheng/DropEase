@@ -24,7 +24,7 @@ const UploadBanner = () => {
         });
         const data = await response.json();
         if (data.success) {
-          setStoreId(data.data.storeId); // Ensure storeId is set correctly
+          setStoreId(data.data.storeId);
         } else {
           setErrorMessage(data.errors);
         }
@@ -61,7 +61,7 @@ const UploadBanner = () => {
       formData.append("banner", selectedImage);
       formData.append("storeId", storeId);
 
-      console.log("Form Data:", { banner: selectedImage, storeId }); // Log form data
+      console.log("Form Data:", { banner: selectedImage, storeId });
 
       const response = await axios.post(
         "http://localhost:4000/upload-banners",
@@ -69,14 +69,13 @@ const UploadBanner = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            "auth-token": localStorage.getItem("auth-token"), // Include auth token in the headers
+            "auth-token": localStorage.getItem("auth-token"),
           },
         }
       );
       console.log(response.data);
       setSuccess(true);
 
-      // Clear selected images and reset component state
       setSelectedImage(null);
       setPreviewImage(null);
     } catch (error) {
