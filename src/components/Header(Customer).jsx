@@ -100,7 +100,7 @@ export const HeaderCustomer = ({ customer }) => {
           >
             <NavLink
               className="nav-link"
-              to="/customercart"
+              to={`/${customer.customerId}/store/${customer.storeId}/customercart`}
               style={{ color: "black" }}
             >
               Shopping Cart
@@ -157,7 +157,9 @@ export const HeaderCustomer = ({ customer }) => {
           </li>
         </ul>
       </div>
-      {searchResults.length > 0 && <SearchResults results={searchResults} />}
+      {searchResults.length > 0 && (
+        <SearchResults results={searchResults} customer={customer.customerId} />
+      )}
     </div>
   );
 };

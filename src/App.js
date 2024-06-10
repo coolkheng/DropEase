@@ -110,7 +110,7 @@ function App() {
                   element={<ShopCategory category="Electronic" />}
                 />
                 <Route path="/profile" element={<Profile />} />
-                <Route path=":customerId/store/:storeId" element={<Store />} />
+                <Route path="/:customerId/store/:storeId" element={<Store />} />
               </Routes>
             </div>
           </div>
