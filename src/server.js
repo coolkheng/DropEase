@@ -5,6 +5,7 @@ const multer = require("multer");
 const cors = require("cors");
 const Order = require("./modal/ordermodal");
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 const session = require("express-session");
 const passport = require("passport");
@@ -446,10 +447,10 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-// Creating Endpoint for registering user
 app.post("/signup", async (req, res) => {
   try {
-    let check = await Users.findOne({ email: req.body.email }); // Check if the user has been registered before
+    // Check if the user has been registered before
+    let check = await Users.findOne({ email: req.body.email });
     if (check) {
       return res.status(400).json({
         success: false,
@@ -457,14 +458,14 @@ app.post("/signup", async (req, res) => {
       });
     }
 
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+
     const user = new Users({
       email: req.body.email,
-      password: req.body.password,
+      password: hashedPassword,
       role: req.body.role,
-      imageUrl: "",
-      store: "",
-      phoneno: "",
-      category: "",
     });
 
     await user.save(); // Save user in the database
@@ -489,43 +490,6 @@ app.post("/signup", async (req, res) => {
 
 passport.deserializeUser((user, done) => {
   done(null, user);
-});
-
-// Creating Endpoint for registering user
-app.post("/signup", async (req, res) => {
-  try {
-    let check = await Users.findOne({ email: req.body.email }); // Check if the user has been registered before
-    if (check) {
-      return res.status(400).json({
-        success: false,
-        errors: "Existing user found with the same email address",
-      });
-    }
-
-    const user = new Users({
-      email: req.body.email,
-      password: req.body.password,
-      role: req.body.role,
-    });
-
-    await user.save(); // Save user in the database
-
-    // Create token
-    const data = {
-      user: {
-        id: user.id,
-      },
-    };
-
-    const token = jwt.sign(data, "secret_token");
-    res.json({ success: true, token });
-  } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({
-      success: false,
-      errors: "Server error. Please try again later.",
-    });
-  }
 });
 
 // Creating endpoint for user log in
