@@ -8,6 +8,7 @@ import HeaderCustomer from "./Header(Customer)";
 
 const Store = () => {
   let Id = useParams(); // Get storeId from URL parameter
+  const storeId = useParams().storeId;
   console.log(Id);
   const [userRole, setUserRole] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -16,10 +17,12 @@ const Store = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const token = localStorage.getItem("auth-token");
         const response = await fetch("http://localhost:4000/userData", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "auth-token": token,
           },
         });
         const data = await response.json();
@@ -45,7 +48,7 @@ const Store = () => {
       ></div>
 
       <div className="flex justify-center mt-5">
-        <Hero storeId={Id.storeId} /> {/* Pass storeId to Hero component */}
+        <Hero storeId={storeId} />
       </div>
       <div>
         <h2
@@ -57,8 +60,7 @@ const Store = () => {
       </div>
 
       <div className="mb-20">
-        <Products storeId={Id.storeId} customerId={Id.customerId} />{" "}
-        {/* Pass storeId to Products component */}
+        <Products storeId={storeId} />
       </div>
     </div>
   );

@@ -1,108 +1,38 @@
 import React, { useContext, useEffect } from "react";
-import { FaXmark } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaTimes, FaPlus, FaMinus } from "react-icons/fa";
 import HeaderCustomer from "../components/Header(Customer)";
 import { CartContext } from "./cartContext";
-import "../style/Cart(Customer).css";
 import { loadStripe } from "@stripe/stripe-js";
+import "../style/Cart(Customer).css";
 import axios from "axios";
 import ShopCategory from "./ShopCategory(Customer)";
 
 const Cart = () => {
-  let Id = useParams();
-  const { cartItems, addToCart, decreaseQty, removeFromCart } =
+  const { cartItems, addToCart, decreaseQty, removeFromCart, clearCart } =
     useContext(CartContext);
-  const handleAddToCart = async (item) => {
-    await addToCart(item);
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post(
-        "http://localhost:4000/addtocart",
-        {
-          productId: item.id,
-          quantity: 1,
-        },
-        {
-          headers: {
-            "auth-token": token,
-          },
-        }
-      );
+  const authToken = localStorage.getItem("auth-token");
+  const customerId = useParams().customerId;
+  // Calculate total price of items
+  const totalPrice = cartItems.reduce(
+    (price, item) =>
+      price + item.quantity * Number((item.product.price * 1.1).toFixed(2)),
+    0
+  );
 
-      if (response.data === "Added to cart") {
-        console.log("Item added to cart successfully");
-      } else {
-        console.log("Failed to add item to cart");
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-    }
-  };
+  const productsData = cartItems.map((item) => ({
+    productName: item.product.name,
+    price: item.product.price,
+    quantity: item.quantity,
+    productImage: item.product.mainImages,
+    category: item.product.xcategory || "Uncategorized",
+  }));
 
-  const handleDecreaseQty = async (item) => {
-    await decreaseQty(item);
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post(
-        "http://localhost:4000/decreasequantity",
-        {
-          productId: item.id,
-        },
-        {
-          headers: {
-            "auth-token": token,
-          },
-        }
-      );
-
-      if (response.data === "Quantity decreased") {
-        console.log("Item quantity decreased successfully");
-      } else {
-        console.log("Failed to decrease item quantity");
-      }
-    } catch (error) {
-      console.error("Error decreasing item quantity:", error);
-    }
-  };
-
-  const totalPrice = cartItems
-    .reduce((price, item) => price + (item.qty ?? 0) * (item.price ?? 0), 0)
-    .toFixed(2);
+  console.log(cartItems);
+  console.log(productsData);
 
   const handleCheckout = async () => {
     console.log("Handle checkout function called!");
-
-    await clearCart();
-
-    const stripe = await loadStripe(
-      "pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D"
-    );
-
-    const body = {
-      products: cartItems.map((item) => ({
-        name: item.name,
-        price: item.price,
-        quantity: item.qty,
-        image: item.mainImages,
-      })),
-      userId: localStorage.getItem("auth-token"),
-    };
-
-    const userId = localStorage.getItem("auth-token");
-
-    const headers = {
-      "Content-Type": "application/json",
-      "auth-token": localStorage.getItem("auth-token"),
-    };
-
-    const productsData = cartItems.map((item) => ({
-      productName: item.name,
-      price: item.price,
-      quantity: item.qty,
-      productImage: item.mainImages,
-      category: item.category || "Uncategorized",
-    }));
 
     const orderData = {
       products: productsData,
@@ -114,151 +44,124 @@ const Cart = () => {
       payment_status: "Paid", // You may adjust this based on your business logic
       delivery_status: "Ready to Ship", // You may adjust this based on your business logic
     };
-
     // Make an HTTP request to your backend API to create the order
     try {
       const orderResponse = await axios.post(
         "http://localhost:4000/insert_orders",
         orderData,
-        { headers }
+        {
+          headers: {
+            "auth-token": authToken,
+            "Content-Type": "application/json",
+          },
+        } // Add headers variable here
       );
 
       console.log("Order response from backend:", orderResponse.data);
-    } catch (error) {
-      console.error("Checkout error:", error);
-    }
 
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/create-checkout-session-customer",
-        body,
-        { headers }
+      // Clear the cart before proceeding to checkout
+      await clearCart();
+
+      const stripe = await loadStripe(
+        "pk_test_51PNRN72MhvOMkL1SuBf1xlugNRrOIaWjFrNyg80sHZbgkCSwHrf50jA6oHUq04d03PaVvYlL9aZ9GAlC4i7IhtT400byNPNV9D"
       );
 
-      console.log("Response from backend:", response);
+      const body = {
+        products: cartItems.map((item) => ({
+          name: item.product.name,
+          price: Number((item.product.price * 1.1).toFixed(2)),
+          quantity: item.quantity,
+          image: item.product.mainImages,
+        })),
+        userId: authToken,
+      };
+
+      const response = await axios.post(
+        "http://localhost:4000/create-checkout-session",
+        body,
+        {
+          headers: {
+            "auth-token": authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status !== 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const { id: sessionId } = response.data;
-
-      const result = await stripe.redirectToCheckout({
-        sessionId: sessionId,
-      });
+      const result = await stripe.redirectToCheckout({ sessionId });
 
       if (result.error) {
         console.log(result.error.message);
-      } else {
-        console.log("Redirect to checkout successful");
       }
+
+      console.log("Proceeding to checkout with body:", body);
     } catch (error) {
       console.error("Checkout error:", error);
     }
   };
 
-  const clearCart = async () => {
-    console.log("Clear cart function called!");
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post(
-        "http://localhost:4000/clear",
-        {},
-        {
-          headers: {
-            "auth-token": token,
-          },
-        }
-      );
-
-      if (response.data.success) {
-        console.log("Cart cleared successfully");
-      } else {
-        console.log("Failed to clear cart");
-      }
-    } catch (error) {
-      console.error("Error clearing cart:", error);
-    }
-  };
-
-  const handleRemoveCartItem = async (itemId) => {
-    console.log("Attempting to remove item with ID:", itemId);
-    console.log("Current cart items before removal:", cartItems);
-
-    try {
-      const token = localStorage.getItem("auth-token");
-      const response = await axios.post(
-        "http://localhost:4000/removeFromCart",
-        {
-          productId: itemId,
-        },
-        {
-          headers: {
-            "auth-token": token,
-          },
-        }
-      );
-
-      if (response.data === "Item removed from cart") {
-        console.log("Item removed from cart successfully");
-        removeFromCart(itemId);
-        console.log("Current cart items after removal:", cartItems);
-      } else {
-        console.log("Failed to remove item from cart");
-      }
-    } catch (error) {
-      console.error("Error removing item from cart:", error);
-    }
-  };
-
   return (
     <>
-      <HeaderCustomer customer={Id} />
+      <HeaderCustomer customer={customerId} />
       <section className="cart-items">
         <div className="container-cart">
           <div className="cart-details">
             {cartItems.length === 0 && (
-              <h1 className="no-items product">No Items are added in Cart</h1>
+              <h1 className="no-items product">No Items in Cart</h1>
             )}
-            {cartItems.map((item) => {
-              const productQty = (item.price * item.qty).toFixed(2);
+            {cartItems.map((item, index) => {
+              if (!item || !item.product) {
+                return null;
+              }
+
+              const productQty =
+                Number((item.product.price * 1.1).toFixed(2)) * item.quantity;
               return (
-                <div className="cart-list" key={item.id}>
+                <div className="cart-list" key={index}>
                   <div className="img">
-                    <img src={item.mainImages} alt="" />
+                    <img
+                      src={item.product.mainImages}
+                      alt={item.product.name}
+                    />
                   </div>
                   <div className="cart-details">
-                    <h3>{item.name}</h3>
+                    <h3>{item.product.name}</h3>
                     <h4>
-                      RM {(item.price ?? 0).toFixed(2)} * {item.qty ?? 0}
-                      <span>RM {productQty}</span>
+                      RM {Number((item.product.price * 1.1).toFixed(2))} *{" "}
+                      {item.quantity}
+                      <span>RM {productQty.toFixed(2)}</span>
                     </h4>
                   </div>
                   <div className="cart-items-function">
                     <div className="removeCart">
                       <button
                         className="removeCartButton"
-                        onClick={() => handleRemoveCartItem(item.id)}
+                        onClick={() =>
+                          removeFromCart(item.product.id, authToken)
+                        }
                       >
-                        <FaXmark />
+                        <FaTimes />
                       </button>
                     </div>
                     <div className="cartControl">
                       <button
                         className="incCart"
-                        onClick={() => handleAddToCart(item)}
+                        onClick={() => addToCart(item.product, authToken)}
                       >
                         <FaPlus />
                       </button>
                       <button
                         className="desCart"
-                        onClick={() => handleDecreaseQty(item)}
+                        onClick={() => decreaseQty(item.product, authToken)}
                       >
                         <FaMinus />
                       </button>
                     </div>
                   </div>
-                  <div className="cart-item-price"></div>
                 </div>
               );
             })}
@@ -268,7 +171,7 @@ const Cart = () => {
               <h2>Cart Summary</h2>
               <div className="Total-product">
                 <h4>Total Price :</h4>
-                <h3>RM {totalPrice}</h3>
+                <h3>RM {totalPrice.toFixed(2)}</h3>
               </div>
               <button className="checkout-button" onClick={handleCheckout}>
                 Proceed to Checkout

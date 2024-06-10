@@ -16,7 +16,7 @@ const ProductCard = ({
   const navigate = useNavigate();
 
   const handleProductClick = () => {
-    navigate(`/${customerId}/store/${storeId}/product/${product.id}`, {
+    navigate(`/product/${product.id}`, {
       state: { product },
     });
   };
