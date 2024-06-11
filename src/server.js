@@ -1034,7 +1034,6 @@ app.post("/create-checkout-session", fetchUser, async (req, res) => {
         mode: "payment",
         success_url: `http://localhost:3000/customerhome/${userId}`,
         cancel_url: `http://localhost:3000/customerhome/${userId}`,
-
       });
     }
 
@@ -1128,7 +1127,6 @@ app.post("/clear", fetchUser, async (req, res) => {
   }
 });
 
-//TODO: Change productId based on Eugene's product-id
 app.post("/addtocart", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -1166,7 +1164,6 @@ app.post("/addtocart", fetchUser, async (req, res) => {
   }
 });
 
-//TODO: Change productId based on Eugene's product-id
 app.post("/removefromcart", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -1195,7 +1192,7 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
     res.status(500).json({ errors: "Internal Server Error" });
   }
 });
-//TODO: Change productId based on Eugene's product-id
+
 app.post("/decreasequantity", fetchUser, async (req, res) => {
   try {
     const userId = req.user.id;

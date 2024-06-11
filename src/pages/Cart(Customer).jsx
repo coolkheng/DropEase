@@ -37,8 +37,8 @@ const Cart = () => {
     const orderData = {
       products: productsData,
       customer: {
-        name: "Customer Name", // Replace with actual customer data
-        email: "customer@example.com", // Replace with actual customer data
+        name: "Jum Le", // Replace with actual customer data
+        email: "nnn@gmail.com", // Replace with actual customer data
       },
       orderDate: new Date(),
       payment_status: "Paid", // You may adjust this based on your business logic

@@ -73,7 +73,7 @@ const OrderPage = ({ data }) => {
               borderRadius: 9999,
               padding: "8px 6px",
               backgroundColor: value === "Fulfilled" ? "green" : "red",
-              width: 100,
+              width: 120,
               textAlign: "center",
               fontFamily: "Raleway, sans-serif",
             }}
@@ -203,15 +203,17 @@ const OrderPage = ({ data }) => {
           )}
 
           <div className="order-content">
-            <div style={{ fontSize: "25px", fontWeight: "bold" }}>My Orders</div>
+            <div style={{ fontSize: "25px", fontWeight: "bold" }}>
+              My Orders
+            </div>
             <hr
-            style={{
-              border: "1px solid #000",
-              width: "100%",
-              marginTop: "10px",
-              marginRight: "5px",
-            }}
-          />
+              style={{
+                border: "1px solid #000",
+                width: "100%",
+                marginTop: "10px",
+                marginRight: "5px",
+              }}
+            />
 
             <div className="mt-5">
               <MUIDataTable data={orders} columns={columns} options={options} />
